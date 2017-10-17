@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Mepo</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="personal_area_page_title">My Events</string>
+    <string name="upcoming_events_page_title">Upcoming Events</string>
+    <string name="local_events_page_title">Map</string>
 </resources>
