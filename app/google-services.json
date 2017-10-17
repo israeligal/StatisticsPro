@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "667180831351",
+    "firebase_url": "https://mepo-311cd.firebaseio.com",
+    "project_id": "mepo-311cd",
+    "storage_bucket": "mepo-311cd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:667180831351:android:9e34f0ae3203769b",
+        "android_client_info": {
+          "package_name": "com.example.shaha.mepo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "667180831351-p3mouko5lodlsia8crbcl7cdcbh2al0i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.shaha.mepo",
+            "certificate_hash": "5ed6a78f3d3f16d9e58ed1a4797de5b1988ee7f1"
+          }
+        },
+        {
+          "client_id": "667180831351-snetjnnmsgirf4gcqrog3730lnou77s6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6BqHRgOSgmyaIbOlee85FxuuArCA9c8k"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "667180831351-snetjnnmsgirf4gcqrog3730lnou77s6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
