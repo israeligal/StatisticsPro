@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layoutDirection="ltr"
+    tools:context="com.example.shaha.mepo.AddEventActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/add_event_margin"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/add_event_img"
+            android:layout_width="@dimen/add_event_img_size_w"
+            android:layout_height="@dimen/add_event_img_size_h"
+            android:background="@drawable/circle"
+            android:padding="@dimen/add_event_img_padding"
+            android:src="@drawable/ic_camera_alt_white_24dp" />
+
+        <EditText
+            android:id="@+id/add_event_event_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/add_event_txt_2_img_margin"
+            android:layout_weight="1"
+            android:hint="Event Name" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/add_event_margin"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add_event_address"
+            android:textColor="@color/com_facebook_button_background_color_selected"
+            android:textSize="@dimen/add_event_address" />
+
+        <EditText
+            android:id="@+id/add_event_edit_text_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/add_event_line_margin">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/add_event_type"
+                android:textColor="@color/com_facebook_button_background_color_selected"
+                android:textSize="@dimen/add_event_address" />
+
+            <Spinner
+                android:id="@+id/add_event_type_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/add_event_line_margin">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/add_event_date"
+                android:textColor="@color/com_facebook_button_background_color_selected"
+                android:textSize="@dimen/add_event_address" />
+            <EditText
+                android:id="@+id/event_date_edit_text"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:enabled="false"/>
+            <Button
+                android:id="@+id/add_event_date_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Choose date"
+                />
+        </LinearLayout>
+    </LinearLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/add_event_fab_submit_event"
+            android:layout_width="@dimen/add_event_submit"
+            android:layout_height="@dimen/add_event_submit"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/add_event_margin"
+            android:layout_marginLeft="@dimen/add_event_margin"
+            android:padding="20dp"
+            android:scaleType="center"
+            android:src="@drawable/ic_done_white_24dp"
+            app:fabSize="normal" />
+
+    </RelativeLayout>
+
+</LinearLayout>

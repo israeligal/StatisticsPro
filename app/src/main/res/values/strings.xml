@@ -7,4 +7,11 @@
     <string name="personal_area_page_title">My Events</string>
     <string name="upcoming_events_page_title">Upcoming Events</string>
     <string name="local_events_page_title">Map</string>
+    <string name="title_place_holder">TitleTitle</string>
+    <string name="last_msg_place_holder">blablablabla</string>
+    <string name="add_event_address">ADDRESS</string>
+    <string name="add_event_type">TYPE</string>
+    <string name="add_event_date">DATE</string>
+    <string name="option_other">other</string>
+    <string name="sign_out">Sign out</string>
 </resources>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="add_event_img_size_w">60dp</dimen>
+    <dimen name="add_event_img_size_h">60dp</dimen>
+    <dimen name="add_event_img_padding">10dp</dimen>
+    <dimen name="add_event_margin">12dp</dimen>
+    <dimen name="add_event_txt_2_img_margin">10dp</dimen>
+    <dimen name="add_event_submit">70dp</dimen>
+    <dimen name="add_event_address">20sp</dimen>
+    <dimen name="add_event_line_margin">12dp</dimen>
+</resources>
