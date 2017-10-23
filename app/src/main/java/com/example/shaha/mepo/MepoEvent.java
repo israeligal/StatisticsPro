@@ -10,13 +10,23 @@ public class MepoEvent {
     String eventName;
     String lastMessage;
     String description;
-    Date eventTime;
+    String address;
+    String eventTime;
+    public MepoEvent(){
 
-    public MepoEvent(String eventName, String description, Date eventTime){
+    }
+    /**
+     * The constructor
+     * @param eventName
+     * @param type
+     * @param eventTime
+     */
+    public MepoEvent(String eventName, String type, String eventTime, String address){
         this.eventName = eventName;
-        this.description = description;
+        this.description = type;
         this.eventTime = eventTime;
         this.lastMessage = "";
+        this.address = address;
     }
 
     public String getEventName() {
@@ -43,11 +53,15 @@ public class MepoEvent {
         this.description = description;
     }
 
-    public Date getEventTime() {
+    public String getEventTime() {
         return eventTime;
     }
 
-    public void setEventTime(Date eventTime) {
+    public void setEventTime(String eventTime) {
         this.eventTime = eventTime;
     }
+
+    public String getAddress() {return address;}
+
+    public void setAddress(String address) {this.address = address;}
 }

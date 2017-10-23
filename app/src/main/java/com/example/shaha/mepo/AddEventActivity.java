@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -17,7 +18,13 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class AddEventActivity extends AppCompatActivity {
@@ -26,7 +33,12 @@ public class AddEventActivity extends AppCompatActivity {
     private Calendar calendar;
     private int year, month, day;
     private ImageView addEventImg;
-
+    private FirebaseDatabase mFirebaseDatabase;
+    private DatabaseReference mDatabaseReference;
+    private final int EVENTNAME = 0;
+    private final int EVENTADDRESS = 1;
+    private final int EVENTTYPE = 2;
+    private final int EVENTDATE = 3;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,8 +51,39 @@ public class AddEventActivity extends AppCompatActivity {
         day = calendar.get(Calendar.DAY_OF_MONTH);
         setUpDateBtnListener();
 
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mDatabaseReference = mFirebaseDatabase.getReference().child("Events");
+
         setUpSpinner();
         setUpEventImgListener();
+        setUpAddEventBtnListener();
+    }
+
+    private void setUpAddEventBtnListener() {
+        FloatingActionButton addEventFab = (FloatingActionButton)findViewById(R.id.add_event_fab_submit_event);
+        addEventFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ArrayList<String> eventData = getEventInfo();
+                AddEventToDataBase(eventData);
+            }
+        });
+    }
+
+    private void AddEventToDataBase(ArrayList<String> eventData) {
+        MepoEvent event = new MepoEvent(eventData.get(EVENTNAME),eventData.get(EVENTTYPE),eventData.get(EVENTDATE),eventData.get(EVENTADDRESS));
+        mDatabaseReference.push().setValue(event);
+        Toast.makeText(AddEventActivity.this,"Event added go have fun",Toast.LENGTH_SHORT).show();
+        finish();
+    }
+
+    private ArrayList<String> getEventInfo(){
+        ArrayList<String> eventData = new ArrayList<>();
+        eventData.add(((EditText) findViewById(R.id.add_event_event_name)).getText().toString());
+        eventData.add(((EditText)findViewById(R.id.add_event_edit_text_address)).getText().toString());
+        eventData.add(((Spinner) findViewById(R.id.add_event_type_spinner)).getSelectedItem().toString());
+        eventData.add(((EditText) findViewById(R.id.event_date_edit_text)).getText().toString());
+        return eventData;
     }
 
     private void setUpEventImgListener() {

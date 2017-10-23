@@ -12,12 +12,21 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class PersonalAreaFragment extends Fragment {
-
-
+    private FirebaseDatabase mFirebaseDatabase;
+    private DatabaseReference mDatabaseReference;
+    private ChildEventListener mChildEventListener;
+    private List<MepoEvent> events;
+    private EventsListAdapter listAdapter;
     public PersonalAreaFragment() {
         // Required empty public constructor
     }
@@ -36,15 +45,11 @@ public class PersonalAreaFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_personal_area, container, false);
 
         //create a dummy arrayList of events
-        List<MepoEvent> events = new ArrayList<>();
-        events.add(new MepoEvent("event1","blabla",null));
-        events.add(new MepoEvent("event2","blabla",null));
-        events.add(new MepoEvent("event11","blabla",null));
-        events.add(new MepoEvent("event14","blabla",null));
+        events = new ArrayList<>();
 
         //set the list view
         ListView eventsListView = (ListView)view.findViewById(R.id.my_events_list_view);
-        EventsListAdapter listAdapter = new EventsListAdapter(getContext(),events);
+        listAdapter = new EventsListAdapter(getContext(),events);
         eventsListView.setAdapter(listAdapter);
 
         //
@@ -56,6 +61,40 @@ public class PersonalAreaFragment extends Fragment {
                 startActivity(intentAddEvent);
             }
         });
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mDatabaseReference = mFirebaseDatabase.getReference().child("Events");
+        mChildEventListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                MepoEvent newMepoEvent = dataSnapshot.getValue(MepoEvent.class);
+                listAdapter.add(newMepoEvent);
+                listAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                MepoEvent newMepoEvent = dataSnapshot.getValue(MepoEvent.class);
+                listAdapter.remove(newMepoEvent);
+                listAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+
+        };
+        mDatabaseReference.addChildEventListener(mChildEventListener);
         return view;
     }
 }
