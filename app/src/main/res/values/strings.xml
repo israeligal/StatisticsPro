@@ -19,4 +19,5 @@
     <string name="add_event_choose_time_btn">Choose time</string>
     <string name="add_event_until">Until:</string>
     <string name="add_event_from">From:</string>
+    <string name="add_event_pick_location_desc">Pick location</string>
 </resources>
