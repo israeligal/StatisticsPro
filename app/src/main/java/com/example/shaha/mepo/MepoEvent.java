@@ -11,22 +11,36 @@ public class MepoEvent {
     String lastMessage;
     String description;
     String address;
-    String eventTime;
-    public MepoEvent(){
+    Date startTime;
+    Date endTime;
 
+    public MepoEvent(){
+        //The default constructor
     }
-    /**
-     * The constructor
-     * @param eventName
-     * @param type
-     * @param eventTime
-     */
-    public MepoEvent(String eventName, String type, String eventTime, String address){
+
+    public MepoEvent(String eventName, String type, Date startTime, Date endTime, String address){
         this.eventName = eventName;
         this.description = type;
-        this.eventTime = eventTime;
+        this.startTime = startTime;
+        this.endTime = endTime;
         this.lastMessage = "";
         this.address = address;
+    }
+
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
     }
 
     public String getEventName() {
@@ -51,14 +65,6 @@ public class MepoEvent {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getEventTime() {
-        return eventTime;
-    }
-
-    public void setEventTime(String eventTime) {
-        this.eventTime = eventTime;
     }
 
     public String getAddress() {return address;}

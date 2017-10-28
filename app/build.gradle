@@ -26,15 +26,29 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     // Required only if Facebook login support is required
-    compile 'com.android.support:appcompat-v7:26.+'
+    compile 'com.android.support:appcompat-v7:26.0.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.firebaseui:firebase-ui-auth:3.0.0'
     compile 'com.facebook.android:facebook-login:4.27.0'
     compile 'com.android.support:design:26.1.0'
-    compile 'com.android.support:support-v4:26.+'
+    compile 'com.android.support:support-v4:26.0'
     compile 'com.google.firebase:firebase-database:11.4.2'
     testCompile 'junit:junit:4.12'
+
+    //Add library for time and date
+    compile 'com.github.wdullaer:MaterialDateTimePicker:v3.3.1'
 }
 
 // Add to the bottom of the file
 apply plugin: 'com.google.gms.google-services'
+
+configurations.all {
+    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+        def requested = details.requested
+        if (requested.group == 'com.android.support') {
+            if (!requested.name.startsWith("multidex")) {
+                details.useVersion '26.0.1'
+            }
+        }
+    }
+}
