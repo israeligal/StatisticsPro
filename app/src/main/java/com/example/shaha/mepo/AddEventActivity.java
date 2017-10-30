@@ -1,14 +1,20 @@
 package com.example.shaha.mepo;
 
+import android.*;
+import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -21,6 +27,9 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
@@ -32,6 +41,8 @@ import java.util.Objects;
 
 public class AddEventActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener {
     private static final int RC_PICK_IMAGE = 1;
+    private static final int MY_PERMISSION_FINE_LOCATION = 101;
+    private static final int PLACE_PICKER_REQUEST = 1;
     String[] options;
     private Calendar calendar;
     private int year, month, day;
@@ -53,6 +64,8 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_event);
 
+        requestPermission();
+
         //get current time
         calendar = Calendar.getInstance();
         year = calendar.get(Calendar.YEAR);
@@ -65,12 +78,58 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
         setupListeners();
     }
 
+    private void requestPermission() {
+        if(ActivityCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSION_FINE_LOCATION);
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        switch (requestCode){
+            case MY_PERMISSION_FINE_LOCATION:
+                if(grantResults[0] != PackageManager.PERMISSION_GRANTED){
+                    Toast.makeText(getApplicationContext(),"This app requires location permission to be granted",Toast.LENGTH_LONG).show();
+                    finish();
+                }
+                break;
+        }
+    }
+
     private void setupListeners() {
         setUpDateBtnListener();
         setUpClockBtnListener();
         setUpSpinner();
         setUpEventImgListener();
         setUpAddEventBtnListener();
+        setUpPickLocationBtnListener();
+    }
+
+    private void setUpPickLocationBtnListener() {
+        ImageButton pickPlaceBtn = (ImageButton)findViewById(R.id.add_event_pick_location_btn);
+        pickPlaceBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //open the place picker
+                openPlacePicker();
+            }
+        });
+    }
+
+    private void openPlacePicker() {
+        PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+        try {
+            Intent intent = builder.build(AddEventActivity.this);
+            startActivityForResult(intent,PLACE_PICKER_REQUEST);
+        } catch (GooglePlayServicesRepairableException e) {
+            e.printStackTrace();
+        } catch (GooglePlayServicesNotAvailableException e) {
+            e.printStackTrace();
+        }
     }
 
     private void setUpClockBtnListener() {

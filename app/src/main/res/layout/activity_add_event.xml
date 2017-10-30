@@ -64,10 +64,12 @@
                         android:layout_height="wrap_content"
                         android:inputType="text" />
                     <ImageButton
+                        android:id="@+id/add_event_pick_location_btn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/ic_add_location_black_24dp"
-                        android:contentDescription="@string/add_event_pick_location_desc"/>
+                        android:contentDescription="@string/add_event_pick_location_desc"
+                        android:padding="@dimen/add_event_margin"/>
                 </LinearLayout>
 
                 <LinearLayout
