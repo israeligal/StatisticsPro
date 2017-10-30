@@ -29,6 +29,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -37,12 +38,11 @@ import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Objects;
 
 public class AddEventActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener {
     private static final int RC_PICK_IMAGE = 1;
     private static final int MY_PERMISSION_FINE_LOCATION = 101;
-    private static final int PLACE_PICKER_REQUEST = 1;
+    private static final int PLACE_PICKER_REQUEST = 2;
     String[] options;
     private Calendar calendar;
     private int year, month, day;
@@ -58,6 +58,7 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
     private Calendar fromCal, untilCal; //stores the time of the event
     private boolean fromBtnClicked;
     private Date startTime,endTime;
+    private Location selectedPlace;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -169,13 +170,17 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
             @Override
             public void onClick(View view) {
                 ArrayList<Object> eventData = getEventInfo();
+                if(eventData==null){
+                    //there was a problem with one of the fields
+                    return;
+                }
                 AddEventToDataBase(eventData);
             }
         });
     }
 
     private void AddEventToDataBase(ArrayList<Object> eventData) {
-        MepoEvent event = new MepoEvent(eventData.get(EVENT_NAME).toString(), eventData.get(EVENT_TYPE).toString(), (Date)eventData.get(EVENT_START_TIME), (Date)eventData.get(EVENT_END_TIME), eventData.get(EVENT_ADDRESS).toString());
+        MepoEvent event = new MepoEvent(eventData.get(EVENT_NAME).toString(), eventData.get(EVENT_TYPE).toString(), (Date)eventData.get(EVENT_START_TIME), (Date)eventData.get(EVENT_END_TIME), (Location)eventData.get(EVENT_ADDRESS));
         mDatabaseReference.push().setValue(event);
         Toast.makeText(AddEventActivity.this, "Event added go have fun", Toast.LENGTH_SHORT).show();
         finish();
@@ -186,7 +191,7 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
         //check if all required fields are not empty
         if(isValid()) {
             eventData.add(((EditText) findViewById(R.id.add_event_event_name)).getText().toString());
-            eventData.add(((EditText) findViewById(R.id.add_event_edit_text_address)).getText().toString());
+            eventData.add(selectedPlace);
             eventData.add(((Spinner) findViewById(R.id.add_event_type_spinner)).getSelectedItem().toString());
             eventData.add(startTime);
             eventData.add(endTime);
@@ -198,15 +203,19 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
 
     private boolean isValid() {
         if(((EditText) findViewById(R.id.add_event_event_name)).getText().toString().equals("")){
+            Toast.makeText(getApplicationContext(),"Event name is required",Toast.LENGTH_SHORT).show();
             return false;
         }
         if(((EditText) findViewById(R.id.add_event_edit_text_address)).getText().toString().equals("")){
+            Toast.makeText(getApplicationContext(),"Event address is required",Toast.LENGTH_SHORT).show();
             return false;
         }
         if(startTime==null){
+            Toast.makeText(getApplicationContext(),"Start time is required",Toast.LENGTH_SHORT).show();
             return false;
         }
         if(endTime==null){
+            Toast.makeText(getApplicationContext(),"End time is required",Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
@@ -285,8 +294,17 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
                 Bitmap myImg = BitmapFactory.decodeFile(selectedImgUri.getPath());
                 addEventImg.setImageBitmap(myImg);
                 addEventImg.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            }else if(requestCode == PLACE_PICKER_REQUEST){
+                Place place = PlacePicker.getPlace(AddEventActivity.this,data);
+                selectedPlace = new Location(place.getName().toString(),place.getAddress().toString());
+                updateLocation(place);
             }
         }
+    }
+
+    private void updateLocation(Place selectedPlace) {
+        EditText placeAddressEditText = (EditText)findViewById(R.id.add_event_edit_text_address);
+        placeAddressEditText.setText(selectedPlace.getAddress());
     }
 
     @Override

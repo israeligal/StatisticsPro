@@ -1,5 +1,7 @@
 package com.example.shaha.mepo;
 
+import com.google.android.gms.location.places.Place;
+
 import java.util.Date;
 
 /**
@@ -10,7 +12,7 @@ public class MepoEvent {
     String eventName;
     String lastMessage;
     String description;
-    String address;
+    Location eventPlace;
     Date startTime;
     Date endTime;
 
@@ -18,13 +20,13 @@ public class MepoEvent {
         //The default constructor
     }
 
-    public MepoEvent(String eventName, String type, Date startTime, Date endTime, String address){
+    public MepoEvent(String eventName, String type, Date startTime, Date endTime, Location eventPlace){
         this.eventName = eventName;
         this.description = type;
         this.startTime = startTime;
         this.endTime = endTime;
         this.lastMessage = "";
-        this.address = address;
+        this.eventPlace = eventPlace;
     }
 
     public Date getStartTime() {
@@ -67,7 +69,7 @@ public class MepoEvent {
         this.description = description;
     }
 
-    public String getAddress() {return address;}
+    public Location getAddress() {return eventPlace;}
 
-    public void setAddress(String address) {this.address = address;}
+    public void setAddress(Location eventPlace) {this.eventPlace = eventPlace;}
 }
