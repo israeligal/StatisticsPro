@@ -1,4 +1,4 @@
-package com.example.shaha.mepo;
+package com.example.shaha.mepo.Adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -8,6 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import com.example.shaha.mepo.MepoEvent;
+import com.example.shaha.mepo.R;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

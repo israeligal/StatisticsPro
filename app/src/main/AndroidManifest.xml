@@ -35,6 +35,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".AddEventActivity"></activity>
+        <activity android:name=".EventInfoPopUpActivity"
+            android:theme="@style/PopUpTheme">
+        </activity>
+
     </application>
 
 </manifest>

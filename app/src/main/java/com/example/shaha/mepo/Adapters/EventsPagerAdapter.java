@@ -1,9 +1,14 @@
-package com.example.shaha.mepo;
+package com.example.shaha.mepo.Adapters;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+
+import com.example.shaha.mepo.Fragments.LocalEventsFragment;
+import com.example.shaha.mepo.Fragments.PersonalAreaFragment;
+import com.example.shaha.mepo.R;
+import com.example.shaha.mepo.Fragments.UpcomingEventsFragment;
 
 /**
  * Created by shaha on 17/10/2017.

@@ -7,5 +7,21 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
-
+    <style name="HeadLine">
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">@dimen/event_info_event_name</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_marginTop">@dimen/top_margin</item>
+    </style>
+    <style name="clickableButton">
+        <item name="android:textColor">@color/selector_txt</item>
+        <item name="android:background">@color/fui_transparent</item>
+    </style>
+    <style name="details">
+        <item name="android:color">@color/details</item>
+    </style>
+    <style name="PopUpTheme">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
+    </style>
 </resources>
