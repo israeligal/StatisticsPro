@@ -1,6 +1,8 @@
 package com.example.shaha.mepo;
 
 import android.net.Uri;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -8,21 +10,25 @@ import com.google.android.gms.maps.model.LatLng;
  * Created by shaha on 30/10/2017.
  */
 
-public class Location {
+public class Location implements Parcelable{
     private String locationName;
     private String locationAddress;
-    //private Uri locationWebsite;
-    //private LatLng locationLatLng;
+    private Coordinate coordinate;
 
     public Location(){
 
     }
 
-    public Location(String locationName, String locationAddress){
+    public Location(String locationName, String locationAddress, Coordinate coordinate){
         this.locationName = locationName;
         this.locationAddress = locationAddress;
-        //this.locationWebsite = locationWebsite;
-        //this.locationLatLng = locationLatLng;
+        this.coordinate = coordinate;
+    }
+
+    protected Location(Parcel in) {
+        locationName = in.readString();
+        locationAddress = in.readString();
+        coordinate = (Coordinate)in.readParcelable(Coordinate.class.getClassLoader());
     }
 
     public String getLocationName() {
@@ -41,19 +47,27 @@ public class Location {
         this.locationAddress = locationAddress;
     }
 
-//    public Uri getLocationWebsite() {
-//        return locationWebsite;
-//    }
-//
-//    public void setLocationWebsite(Uri locationWebsite) {
-//        this.locationWebsite = locationWebsite;
-//    }
-//
-//    public LatLng getLocationLatLng() {
-//        return locationLatLng;
-//    }
-//
-//    public void setLocationLatLng(LatLng locationLatLng) {
-//        this.locationLatLng = locationLatLng;
-//    }
+    public static final Creator<Location> CREATOR = new Creator<Location>() {
+        @Override
+        public Location createFromParcel(Parcel in) {
+            return new Location(in);
+        }
+
+        @Override
+        public Location[] newArray(int size) {
+            return new Location[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(locationName);
+        parcel.writeString(locationAddress);
+        parcel.writeParcelable(coordinate,1);
+    }
 }

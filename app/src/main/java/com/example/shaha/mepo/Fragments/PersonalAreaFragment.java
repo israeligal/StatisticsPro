@@ -11,6 +11,8 @@ import android.widget.ListView;
 
 import com.example.shaha.mepo.Adapters.EventsListAdapter;
 import com.example.shaha.mepo.AddEventActivity;
+import com.example.shaha.mepo.EventInfoPopUpActivity;
+import com.example.shaha.mepo.MainActivity;
 import com.example.shaha.mepo.MepoEvent;
 import com.example.shaha.mepo.MepoEventListView;
 import com.example.shaha.mepo.R;
@@ -36,8 +38,6 @@ public class PersonalAreaFragment extends Fragment  {
         super.onCreate(savedInstanceState);
     }
 
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -51,8 +51,6 @@ public class PersonalAreaFragment extends Fragment  {
         ListView eventsListView = (ListView)view.findViewById(R.id.my_events_list_view);
         MepoEventListView mepoEventListView = new MepoEventListView(eventsListView, getContext());
 
-
-        //
         FloatingActionButton addEvent = (FloatingActionButton)view.findViewById(R.id.fab);
         addEvent.setOnClickListener(new View.OnClickListener() {
             @Override

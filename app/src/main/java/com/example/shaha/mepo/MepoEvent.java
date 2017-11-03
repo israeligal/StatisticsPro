@@ -1,5 +1,8 @@
 package com.example.shaha.mepo;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.android.gms.location.places.Place;
 
 import java.util.Date;
@@ -8,7 +11,7 @@ import java.util.Date;
  * Created by shaha on 17/10/2017.
  */
 
-public class MepoEvent {
+public class MepoEvent implements Parcelable {
     String eventName;
     String lastMessage;
     String description;
@@ -28,6 +31,27 @@ public class MepoEvent {
         this.lastMessage = "";
         this.eventPlace = eventPlace;
     }
+
+    protected MepoEvent(Parcel in) {
+        eventName = in.readString();
+        lastMessage = in.readString();
+        description = in.readString();
+        eventPlace = (Location)in.readParcelable(Location.class.getClassLoader());
+        startTime = new Date(in.readLong());
+        endTime = new Date(in.readLong());
+    }
+
+    public static final Creator<MepoEvent> CREATOR = new Creator<MepoEvent>() {
+        @Override
+        public MepoEvent createFromParcel(Parcel in) {
+            return new MepoEvent(in);
+        }
+
+        @Override
+        public MepoEvent[] newArray(int size) {
+            return new MepoEvent[size];
+        }
+    };
 
     public Date getStartTime() {
         return startTime;
@@ -72,4 +96,19 @@ public class MepoEvent {
     public Location getAddress() {return eventPlace;}
 
     public void setAddress(Location eventPlace) {this.eventPlace = eventPlace;}
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(eventName);
+        parcel.writeString(lastMessage);
+        parcel.writeString(description);
+        parcel.writeParcelable(eventPlace,1);
+        parcel.writeLong(startTime.getTime());
+        parcel.writeLong(endTime.getTime());
+    }
 }

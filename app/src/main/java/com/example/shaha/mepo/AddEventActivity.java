@@ -1,6 +1,5 @@
 package com.example.shaha.mepo;
 
-import android.*;
 import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
@@ -11,7 +10,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
@@ -296,7 +294,7 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
                 addEventImg.setScaleType(ImageView.ScaleType.CENTER_CROP);
             }else if(requestCode == PLACE_PICKER_REQUEST){
                 Place place = PlacePicker.getPlace(AddEventActivity.this,data);
-                selectedPlace = new Location(place.getName().toString(),place.getAddress().toString());
+                selectedPlace = new Location(place.getName().toString(),place.getAddress().toString(), coordinate);
                 updateLocation(place);
             }
         }

@@ -2,60 +2,15 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <LinearLayout
-        android:id="@+id/event_info_header_description"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <TextView
-            style="@style/HeadLine"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:text="Event Name" />
-
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
-
-            <TextView
-                style="@style/details"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:text="@string/lorem_ipsum_3p" />
-        </ScrollView>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/top_margin"
-            android:orientation="horizontal"
-            >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/event_info_attending" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="122" />
-        </LinearLayout>
-
-
-    </LinearLayout>
+    android:layout_height="match_parent"
+    android:background="@color/popupBackground">
 
     <LinearLayout
         android:id="@+id/event_info_btns_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:orientation="horizontal"
-        android:layout_below="@+id/event_info_header_description">
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/event_info_join_btn"
@@ -64,7 +19,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/event_info_join_button"
-
             />
 
         <ImageButton
@@ -77,5 +31,51 @@
             android:text="@string/event_info_chat_button" />
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/attendence_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/top_margin"
+        android:orientation="horizontal"
+        android:layout_above="@+id/event_info_btns_layout"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/event_info_attending" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="122" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/event_info_header_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_above="@+id/attendence_layout">
+
+        <TextView
+            android:id="@+id/event_info_event_name_tv"
+            style="@style/HeadLine"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Event Name" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <TextView
+                style="@style/details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/lorem_ipsum_3p" />
+        </ScrollView>
+    </LinearLayout>
 
 </RelativeLayout>
