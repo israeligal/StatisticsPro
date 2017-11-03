@@ -13,6 +13,7 @@ import com.google.android.gms.maps.model.LatLng;
 public class Location implements Parcelable{
     private String locationName;
     private String locationAddress;
+
     private Coordinate coordinate;
 
     public Location(){
@@ -29,6 +30,14 @@ public class Location implements Parcelable{
         locationName = in.readString();
         locationAddress = in.readString();
         coordinate = (Coordinate)in.readParcelable(Coordinate.class.getClassLoader());
+    }
+
+    public Coordinate getCoordinate() {
+        return coordinate;
+    }
+
+    public void setCoordinate(Coordinate coordinate) {
+        this.coordinate = coordinate;
     }
 
     public String getLocationName() {

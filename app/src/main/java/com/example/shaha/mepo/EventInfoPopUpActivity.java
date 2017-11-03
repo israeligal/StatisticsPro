@@ -20,7 +20,7 @@ public class EventInfoPopUpActivity extends Activity {
 
         int[] width_height = getDimensions();
         //Set popup window to take portion of the screen.
-        getWindow().setLayout((int)(width_height[0]*0.7),(int)(width_height[1]*0.8));
+        getWindow().setLayout((int)(width_height[0]*0.8),(int)(width_height[1]*0.7));
 
         //get the MepoEvent object
         Intent i = getIntent();

@@ -55,7 +55,7 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
     private EditText timeEditText;
     private Calendar fromCal, untilCal; //stores the time of the event
     private boolean fromBtnClicked;
-    private Date startTime,endTime;
+    private Date startTime, endTime;
     private Location selectedPlace;
 
     @Override
@@ -78,7 +78,7 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
     }
 
     private void requestPermission() {
-        if(ActivityCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSION_FINE_LOCATION);
             }
@@ -89,10 +89,10 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        switch (requestCode){
+        switch (requestCode) {
             case MY_PERMISSION_FINE_LOCATION:
-                if(grantResults[0] != PackageManager.PERMISSION_GRANTED){
-                    Toast.makeText(getApplicationContext(),"This app requires location permission to be granted",Toast.LENGTH_LONG).show();
+                if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(getApplicationContext(), "This app requires location permission to be granted", Toast.LENGTH_LONG).show();
                     finish();
                 }
                 break;
@@ -109,7 +109,7 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
     }
 
     private void setUpPickLocationBtnListener() {
-        ImageButton pickPlaceBtn = (ImageButton)findViewById(R.id.add_event_pick_location_btn);
+        ImageButton pickPlaceBtn = (ImageButton) findViewById(R.id.add_event_pick_location_btn);
         pickPlaceBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -123,7 +123,7 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
         PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
         try {
             Intent intent = builder.build(AddEventActivity.this);
-            startActivityForResult(intent,PLACE_PICKER_REQUEST);
+            startActivityForResult(intent, PLACE_PICKER_REQUEST);
         } catch (GooglePlayServicesRepairableException e) {
             e.printStackTrace();
         } catch (GooglePlayServicesNotAvailableException e) {
@@ -168,7 +168,7 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
             @Override
             public void onClick(View view) {
                 ArrayList<Object> eventData = getEventInfo();
-                if(eventData==null){
+                if (eventData == null) {
                     //there was a problem with one of the fields
                     return;
                 }
@@ -178,7 +178,7 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
     }
 
     private void AddEventToDataBase(ArrayList<Object> eventData) {
-        MepoEvent event = new MepoEvent(eventData.get(EVENT_NAME).toString(), eventData.get(EVENT_TYPE).toString(), (Date)eventData.get(EVENT_START_TIME), (Date)eventData.get(EVENT_END_TIME), (Location)eventData.get(EVENT_ADDRESS));
+        MepoEvent event = new MepoEvent(eventData.get(EVENT_NAME).toString(), eventData.get(EVENT_TYPE).toString(), (Date) eventData.get(EVENT_START_TIME), (Date) eventData.get(EVENT_END_TIME), (Location) eventData.get(EVENT_ADDRESS));
         mDatabaseReference.push().setValue(event);
         Toast.makeText(AddEventActivity.this, "Event added go have fun", Toast.LENGTH_SHORT).show();
         finish();
@@ -187,33 +187,33 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
     private ArrayList<Object> getEventInfo() {
         ArrayList<Object> eventData = new ArrayList<>();
         //check if all required fields are not empty
-        if(isValid()) {
+        if (isValid()) {
             eventData.add(((EditText) findViewById(R.id.add_event_event_name)).getText().toString());
             eventData.add(selectedPlace);
             eventData.add(((Spinner) findViewById(R.id.add_event_type_spinner)).getSelectedItem().toString());
             eventData.add(startTime);
             eventData.add(endTime);
             return eventData;
-        }else{
+        } else {
             return null;
         }
     }
 
     private boolean isValid() {
-        if(((EditText) findViewById(R.id.add_event_event_name)).getText().toString().equals("")){
-            Toast.makeText(getApplicationContext(),"Event name is required",Toast.LENGTH_SHORT).show();
+        if (((EditText) findViewById(R.id.add_event_event_name)).getText().toString().equals("")) {
+            Toast.makeText(getApplicationContext(), "Event name is required", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if(((EditText) findViewById(R.id.add_event_edit_text_address)).getText().toString().equals("")){
-            Toast.makeText(getApplicationContext(),"Event address is required",Toast.LENGTH_SHORT).show();
+        if (((EditText) findViewById(R.id.add_event_edit_text_address)).getText().toString().equals("")) {
+            Toast.makeText(getApplicationContext(), "Event address is required", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if(startTime==null){
-            Toast.makeText(getApplicationContext(),"Start time is required",Toast.LENGTH_SHORT).show();
+        if (startTime == null) {
+            Toast.makeText(getApplicationContext(), "Start time is required", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if(endTime==null){
-            Toast.makeText(getApplicationContext(),"End time is required",Toast.LENGTH_SHORT).show();
+        if (endTime == null) {
+            Toast.makeText(getApplicationContext(), "End time is required", Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
@@ -265,12 +265,12 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
         fromCal = Calendar.getInstance();
         untilCal = Calendar.getInstance();
         //update the calender
-        fromCal.set(Calendar.YEAR,year);
-        fromCal.set(Calendar.MONTH,month);
-        fromCal.set(Calendar.DAY_OF_MONTH,days);
-        untilCal.set(Calendar.YEAR,year);
-        untilCal.set(Calendar.MONTH,month);
-        untilCal.set(Calendar.DAY_OF_MONTH,days);
+        fromCal.set(Calendar.YEAR, year);
+        fromCal.set(Calendar.MONTH, month);
+        fromCal.set(Calendar.DAY_OF_MONTH, days);
+        untilCal.set(Calendar.YEAR, year);
+        untilCal.set(Calendar.MONTH, month);
+        untilCal.set(Calendar.DAY_OF_MONTH, days);
         //create the date string and update the edit text
         String dateStr = days + "/" + month + "/" + year;
         EditText eventDateEditText = (EditText) findViewById(R.id.event_date_edit_text);
@@ -292,16 +292,16 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
                 Bitmap myImg = BitmapFactory.decodeFile(selectedImgUri.getPath());
                 addEventImg.setImageBitmap(myImg);
                 addEventImg.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            }else if(requestCode == PLACE_PICKER_REQUEST){
-                Place place = PlacePicker.getPlace(AddEventActivity.this,data);
-                selectedPlace = new Location(place.getName().toString(),place.getAddress().toString(), coordinate);
+            } else if (requestCode == PLACE_PICKER_REQUEST) {
+                Place place = PlacePicker.getPlace(AddEventActivity.this, data);
+                selectedPlace = new Location(place.getName().toString(), place.getAddress().toString(), new Coordinate(place.getLatLng().latitude, place.getLatLng().longitude));
                 updateLocation(place);
             }
         }
     }
 
     private void updateLocation(Place selectedPlace) {
-        EditText placeAddressEditText = (EditText)findViewById(R.id.add_event_edit_text_address);
+        EditText placeAddressEditText = (EditText) findViewById(R.id.add_event_edit_text_address);
         placeAddressEditText.setText(selectedPlace.getAddress());
     }
 
@@ -312,20 +312,20 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
         timeEditText.setText(timeStr);
         Calendar timeCal;
 
-        if(fromBtnClicked){
+        if (fromBtnClicked) {
             //the user clicked on the form clock dialog
             timeCal = fromCal;
-        }else{
+        } else {
             timeCal = untilCal;
         }
 
-        timeCal.set(Calendar.HOUR_OF_DAY,hourOfDay);
-        timeCal.set(Calendar.MINUTE,minute);
-        timeCal.set(Calendar.SECOND,second);
+        timeCal.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        timeCal.set(Calendar.MINUTE, minute);
+        timeCal.set(Calendar.SECOND, second);
 
-        if(fromBtnClicked) {
+        if (fromBtnClicked) {
             startTime = timeCal.getTime();
-        }else{
+        } else {
             endTime = timeCal.getTime();
         }
     }
