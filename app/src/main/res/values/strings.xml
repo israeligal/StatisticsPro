@@ -27,4 +27,5 @@
     <string name="map_mapTxt">Map</string>
     <string name="map_satelliteTxt">Satellite</string>
     <string name="map_hybridTxt">Hybrid</string>
+    <string name="event_info_host">Host</string>
 </resources>

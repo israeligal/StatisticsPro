@@ -32,23 +32,41 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/attendence_layout"
+        android:id="@+id/details_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/top_margin"
-        android:orientation="horizontal"
         android:layout_above="@+id/event_info_btns_layout"
-        >
+        android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/event_info_attending" />
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/event_info_host"
+                android:textColor="@color/event_details"/>
+        </LinearLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/attendence_layout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:text="122" />
+            android:layout_marginTop="@dimen/top_margin"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/event_details"
+                android:text="@string/event_info_attending" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="122" />
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -56,7 +74,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_above="@+id/attendence_layout">
+        android:layout_above="@+id/details_layout">
 
         <TextView
             android:id="@+id/event_info_event_name_tv"

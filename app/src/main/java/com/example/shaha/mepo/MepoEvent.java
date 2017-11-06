@@ -3,8 +3,6 @@ package com.example.shaha.mepo;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.google.android.gms.location.places.Place;
-
 import java.util.Date;
 
 /**
@@ -12,24 +10,26 @@ import java.util.Date;
  */
 
 public class MepoEvent implements Parcelable {
-    String eventName;
-    String lastMessage;
-    String description;
-    Location eventPlace;
-    Date startTime;
-    Date endTime;
+    private String eventName;
+    private String lastMessage;
+    private String description;
+    private Location eventPlace;
+    private Date startTime;
+    private Date endTime;
+    private MepoUser eventHost;
 
     public MepoEvent(){
         //The default constructor
     }
 
-    public MepoEvent(String eventName, String type, Date startTime, Date endTime, Location eventPlace){
+    public MepoEvent(String eventName, String type, Date startTime, Date endTime, Location eventPlace, MepoUser eventHost){
         this.eventName = eventName;
         this.description = type;
         this.startTime = startTime;
         this.endTime = endTime;
         this.lastMessage = "";
         this.eventPlace = eventPlace;
+        this.eventHost = eventHost;
     }
 
     protected MepoEvent(Parcel in) {
@@ -39,6 +39,7 @@ public class MepoEvent implements Parcelable {
         eventPlace = (Location)in.readParcelable(Location.class.getClassLoader());
         startTime = new Date(in.readLong());
         endTime = new Date(in.readLong());
+        eventHost = (MepoUser)in.readParcelable(MepoUser.class.getClassLoader());
     }
 
     public static final Creator<MepoEvent> CREATOR = new Creator<MepoEvent>() {
@@ -97,6 +98,14 @@ public class MepoEvent implements Parcelable {
 
     public void setAddress(Location eventPlace) {this.eventPlace = eventPlace;}
 
+    public MepoUser getEventHost() {
+        return eventHost;
+    }
+
+    public void setEventHost(MepoUser eventHost) {
+        this.eventHost = eventHost;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -110,5 +119,6 @@ public class MepoEvent implements Parcelable {
         parcel.writeParcelable(eventPlace,1);
         parcel.writeLong(startTime.getTime());
         parcel.writeLong(endTime.getTime());
+        parcel.writeParcelable(eventHost,1);
     }
 }

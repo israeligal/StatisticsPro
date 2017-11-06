@@ -52,6 +52,7 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
     private final int EVENT_TYPE = 2;
     private final int EVENT_START_TIME = 3;
     private final int EVENT_END_TIME = 4;
+    private final int EVENT_ACTIVE_USER =5;
     private EditText timeEditText;
     private Calendar fromCal, untilCal; //stores the time of the event
     private boolean fromBtnClicked;
@@ -178,7 +179,11 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
     }
 
     private void AddEventToDataBase(ArrayList<Object> eventData) {
-        MepoEvent event = new MepoEvent(eventData.get(EVENT_NAME).toString(), eventData.get(EVENT_TYPE).toString(), (Date) eventData.get(EVENT_START_TIME), (Date) eventData.get(EVENT_END_TIME), (Location) eventData.get(EVENT_ADDRESS));
+        /**
+         * change null at end of new Mepo event to current user
+         */
+        MepoEvent event = new MepoEvent(eventData.get(EVENT_NAME).toString(), eventData.get(EVENT_TYPE).toString(),
+                (Date) eventData.get(EVENT_START_TIME), (Date) eventData.get(EVENT_END_TIME), (Location) eventData.get(EVENT_ADDRESS),(MepoUser)eventData.get(EVENT_ACTIVE_USER));
         mDatabaseReference.push().setValue(event);
         Toast.makeText(AddEventActivity.this, "Event added go have fun", Toast.LENGTH_SHORT).show();
         finish();
@@ -193,6 +198,7 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
             eventData.add(((Spinner) findViewById(R.id.add_event_type_spinner)).getSelectedItem().toString());
             eventData.add(startTime);
             eventData.add(endTime);
+            eventData.add(MainActivity.getActiveUser());
             return eventData;
         } else {
             return null;
