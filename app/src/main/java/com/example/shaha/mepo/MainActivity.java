@@ -17,10 +17,7 @@ import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import static android.support.v4.app.ActivityCompat.startActivityForResult;
 
 public class MainActivity extends AppCompatActivity {
     //local variables for our use
@@ -39,10 +36,14 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(mPagerAdapter);
         TabLayout tabLayout = (TabLayout)findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(viewPager);
-        setupFirebaseConnection();
 
+        //connects the app to the firebase service which holds our database
+        setupFirebaseConnection();
     }
 
+    /**
+     * Connect to the Firebase services and set up the Auth listener
+     */
     private void setupFirebaseConnection() {
         FirebaseUtils.connectToFirebaseDatabase();
         mFirebaseAuth = FirebaseUtils.getmFirebaseAuth();
@@ -96,8 +97,8 @@ public class MainActivity extends AppCompatActivity {
         });
         popupMenu.show();
     }
-    public void setupFirebaseAuthListener(){
 
+    public void setupFirebaseAuthListener(){
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -112,6 +113,5 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
-
     }
 }

@@ -20,16 +20,15 @@ public class MepoEventUtils {
         mDatabaseReference = FirebaseUtils.getFirebaseReference("Events");
     }
 
-
     public static void addChildListener(final EventsListAdapter listAdaper) {
 
         ChildEventListener mChildEventListener = new ChildEventListener() {
+            //Handle a new event
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 MepoEvent newMepoEvent = dataSnapshot.getValue(MepoEvent.class);
                 listAdaper.add(newMepoEvent);
                 listAdaper.notifyDataSetChanged();
-
             }
 
             @Override
@@ -46,7 +45,6 @@ public class MepoEventUtils {
 
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
             }
 
             @Override

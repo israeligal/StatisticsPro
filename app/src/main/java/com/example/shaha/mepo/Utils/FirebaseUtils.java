@@ -17,9 +17,11 @@ import static android.support.v4.app.ActivityCompat.startActivityForResult;
 public class FirebaseUtils {
     private static FirebaseDatabase mFirebaseDatabase;
     private static FirebaseAuth mFirebaseAuth;
-
     private static List<AuthUI.IdpConfig> providers;
 
+    /**
+     * Connect to the database in firebase and load the Auth providers
+      */
     public static void connectToFirebaseDatabase() {
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mFirebaseAuth = FirebaseAuth.getInstance();
