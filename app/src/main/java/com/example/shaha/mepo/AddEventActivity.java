@@ -184,7 +184,9 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
          */
         MepoEvent event = new MepoEvent(eventData.get(EVENT_NAME).toString(), eventData.get(EVENT_TYPE).toString(),
                 (Date) eventData.get(EVENT_START_TIME), (Date) eventData.get(EVENT_END_TIME), (Location) eventData.get(EVENT_ADDRESS),(MepoUser)eventData.get(EVENT_ACTIVE_USER));
-        mDatabaseReference.push().setValue(event);
+        DatabaseReference pushReference = mDatabaseReference.push();
+        event.setEventId(pushReference.getKey());
+        pushReference.setValue(event);
         Toast.makeText(AddEventActivity.this, "Event added go have fun", Toast.LENGTH_SHORT).show();
         finish();
     }

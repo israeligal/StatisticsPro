@@ -41,6 +41,7 @@ public class FirebaseUtils {
     }
 
 
+
     public static List<AuthUI.IdpConfig> getProviders() {
         return providers;
     }

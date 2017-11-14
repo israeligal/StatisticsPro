@@ -15,9 +15,11 @@ import java.util.ArrayList;
 public class MepoEventUtils {
 
     private static DatabaseReference mDatabaseReference;
+    private static ArrayList<MepoEvent> mMepoEvents;
 
     static {
         mDatabaseReference = FirebaseUtils.getFirebaseReference("Events");
+        mMepoEvents = new ArrayList<>();
     }
 
     public static void addChildListener(final EventsListAdapter listAdaper) {
@@ -27,7 +29,10 @@ public class MepoEventUtils {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 MepoEvent newMepoEvent = dataSnapshot.getValue(MepoEvent.class);
-                listAdaper.add(newMepoEvent);
+                if(!mMepoEvents.contains(newMepoEvent)) {
+                    mMepoEvents.add(newMepoEvent);
+                }
+                //listAdaper.add(newMepoEvent);
                 listAdaper.notifyDataSetChanged();
             }
 
@@ -39,7 +44,8 @@ public class MepoEventUtils {
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 MepoEvent newMepoEvent = dataSnapshot.getValue(MepoEvent.class);
-                listAdaper.remove(newMepoEvent);
+                mMepoEvents.add(newMepoEvent);
+                //listAdaper.remove(newMepoEvent);
                 listAdaper.notifyDataSetChanged();
             }
 
@@ -54,5 +60,9 @@ public class MepoEventUtils {
 
         };
         mDatabaseReference.addChildEventListener(mChildEventListener);
+    }
+
+    public static ArrayList<MepoEvent> getEvents(){
+        return mMepoEvents;
     }
 }

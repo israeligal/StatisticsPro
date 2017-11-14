@@ -10,6 +10,7 @@ import java.util.Date;
  */
 
 public class MepoEvent implements Parcelable {
+    private String eventId;
     private String eventName;
     private String lastMessage;
     private String description;
@@ -33,6 +34,7 @@ public class MepoEvent implements Parcelable {
     }
 
     protected MepoEvent(Parcel in) {
+        eventId = in.readString();
         eventName = in.readString();
         lastMessage = in.readString();
         description = in.readString();
@@ -53,6 +55,14 @@ public class MepoEvent implements Parcelable {
             return new MepoEvent[size];
         }
     };
+
+    public String getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(String eventId) {
+        this.eventId = eventId;
+    }
 
     public Date getStartTime() {
         return startTime;
@@ -113,6 +123,7 @@ public class MepoEvent implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(eventId);
         parcel.writeString(eventName);
         parcel.writeString(lastMessage);
         parcel.writeString(description);

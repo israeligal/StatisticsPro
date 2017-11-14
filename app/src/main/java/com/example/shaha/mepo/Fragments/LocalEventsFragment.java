@@ -65,7 +65,7 @@ public class LocalEventsFragment extends Fragment implements OnMapReadyCallback 
         locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
         locationListener = new myLocationListener();
 
-        loc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        //loc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -135,8 +135,8 @@ public class LocalEventsFragment extends Fragment implements OnMapReadyCallback 
         public void onLocationChanged(Location loc) {
             if(mapReady){
                 moveToLocation(loc);
+                locationManager.removeUpdates(locationListener);
             }
-            locationManager.removeUpdates(locationListener);
         }
 
         @Override

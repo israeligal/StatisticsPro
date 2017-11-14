@@ -21,8 +21,8 @@ public class MepoEventListView {
 
     public MepoEventListView(ListView listView, Context context) {
         mListView = listView;
-        mEvents = new ArrayList<>(); // TODO REMOVE THIS LINE AFTER FIXING DATABASE
-        mListAdapter = new EventsListAdapter(context, mEvents);
+        mEvents = MepoEventUtils.getEvents();
+        mListAdapter = new EventsListAdapter(context,mEvents);
         mContext = context;
         mListView.setAdapter(mListAdapter);
         MepoEventUtils.addChildListener(mListAdapter);
@@ -40,6 +40,5 @@ public class MepoEventListView {
             }
         });
     }
-
 }
 
