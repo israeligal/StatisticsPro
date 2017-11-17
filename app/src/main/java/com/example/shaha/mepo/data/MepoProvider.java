@@ -1,5 +1,4 @@
 package com.example.shaha.mepo.data;
-
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -39,6 +38,10 @@ public class MepoProvider extends ContentProvider {
 
         sUriMatcher.addURI(MepoContracts.CONTENT_AUTHORITY, MepoContracts.PATH_EVENTS, EVENTS);
         sUriMatcher.addURI(MepoContracts.CONTENT_AUTHORITY, MepoContracts.PATH_EVENTS + "/#", EVENT_ID);
+
+
+
+
     }
     @Override
     public boolean onCreate() {
@@ -51,7 +54,7 @@ public class MepoProvider extends ContentProvider {
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
         SQLiteDatabase database = mMepoDbHelper.getWritableDatabase();
 
-        Cursor cursor = null;
+        Cursor cursor;
 
         // Figure out if the URI matcher can match the URI to a specific code
         int match = sUriMatcher.match(uri);
@@ -64,7 +67,11 @@ public class MepoProvider extends ContentProvider {
                 selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
                 cursor = database.query(EventsEntry.TABLE_NAME,projection,selection,selectionArgs,null,null,sortOrder);
                 break;
+            default:
+                throw new IllegalArgumentException("Mepo Provider Cannot query unknown URI " + uri);
         }
+
+        cursor.setNotificationUri(getContext().getContentResolver(), uri);
         return cursor;
     }
 
@@ -78,23 +85,42 @@ public class MepoProvider extends ContentProvider {
             case EVENT_ID:
                 return EventsEntry.CONTENT_ITEM_TYPE;
             default:
-                throw new IllegalStateException("Unknown uri "+ uri);
+                throw new IllegalStateException("Mepo Provider Unknown uri "+ uri);
         }
     }
 
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
-        return null;
+        final int match = sUriMatcher.match(uri);
+        switch (match){
+            case EVENTS:
+                return insertEvent(uri,values);
+            default:
+                throw new IllegalArgumentException("Mepo Provider Insertion to database got invalid uri " + uri);
+        }
+    }
+
+    private Uri insertEvent(Uri uri, ContentValues contentValues) {
+        SQLiteDatabase database = mMepoDbHelper.getWritableDatabase();
+        long id = database.insert(EventsEntry.TABLE_NAME, null, contentValues);
+        getContext().getContentResolver().notifyChange(uri, null);
+        return ContentUris.withAppendedId(uri, id);
     }
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
+        SQLiteDatabase database = mMepoDbHelper.getWritableDatabase();
+        long rowDel = database.delete(EventsEntry.TABLE_NAME, selection, selectionArgs);
+        getContext().getContentResolver().notifyChange(uri, null);
         return 0;
     }
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
+        SQLiteDatabase database = mMepoDbHelper.getWritableDatabase();
+        long rowsUpdated = database.update(EventsEntry.TABLE_NAME,values, selection, selectionArgs);
+        getContext().getContentResolver().notifyChange(uri, null);
         return 0;
     }
 }

@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private static FirebaseAuth.AuthStateListener mAuthStateListener;
     private static final int RC_SIGN_IN = 1;
     private static FirebaseAuth mFirebaseAuth;
-    private static MepoUser activeUser;
+    private static MepoUser currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if(user!=null){
                     //we are logged in
-                    activeUser = new MepoUser(user);
+                    currentUser = new MepoUser(user);
                 }else{
                     List<AuthUI.IdpConfig> providers = FirebaseUtils.getProviders();
                     //the user signed off
@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
         };
     }
 
-    public static MepoUser getActiveUser() {
-        return activeUser;
+    public static MepoUser getCurrentUser() {
+        return currentUser;
     }
 }

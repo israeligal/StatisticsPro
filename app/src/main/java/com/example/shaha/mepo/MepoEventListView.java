@@ -25,7 +25,7 @@ public class MepoEventListView {
         mListAdapter = new EventsListAdapter(context,mEvents);
         mContext = context;
         mListView.setAdapter(mListAdapter);
-        MepoEventUtils.addChildListener(mListAdapter);
+        MepoEventUtils.addChildListener(mListAdapter,null);
         setOnItemClickListener();
     }
 

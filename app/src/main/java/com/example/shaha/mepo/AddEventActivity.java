@@ -4,8 +4,10 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -13,6 +15,9 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -25,6 +30,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.shaha.mepo.data.MepoContracts.EventsEntry;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
@@ -47,12 +53,6 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
     private ImageView addEventImg;
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mDatabaseReference;
-    private final int EVENT_NAME = 0;
-    private final int EVENT_ADDRESS = 1;
-    private final int EVENT_TYPE = 2;
-    private final int EVENT_START_TIME = 3;
-    private final int EVENT_END_TIME = 4;
-    private final int EVENT_ACTIVE_USER =5;
     private EditText timeEditText;
     private Calendar fromCal, untilCal; //stores the time of the event
     private boolean fromBtnClicked;
@@ -177,16 +177,25 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
             }
         });
     }
-
+    private void insertEventToSQLDb(MepoEvent newMepoEvent) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(EventsEntry.COLUMN_EVENT_NAME, newMepoEvent.getEventName());
+        contentValues.put(EventsEntry.COLUMN_EVENT_HOST_EMAIL,  newMepoEvent.getEventHost().getEmail());
+        contentValues.put(EventsEntry.COLUMN_EVENT_LOCATION,  newMepoEvent.getAddress());
+        contentValues.put(EventsEntry.COLUMN_EVENT_TYPE,  newMepoEvent.getDescription());
+        contentValues.put(EventsEntry.COLUMN_EVENT_START,  newMepoEvent.getStartTime().getTime());
+        contentValues.put(EventsEntry.COLUMN_EVENT_END,  newMepoEvent.getEndTime().getTime());
+        getContentResolver().insert(EventsEntry.CONTENT_URI,contentValues);
+    }
     private void AddEventToDataBase(ArrayList<Object> eventData) {
         /**
          * change null at end of new Mepo event to current user
          */
-        MepoEvent event = new MepoEvent(eventData.get(EVENT_NAME).toString(), eventData.get(EVENT_TYPE).toString(),
-                (Date) eventData.get(EVENT_START_TIME), (Date) eventData.get(EVENT_END_TIME), (Location) eventData.get(EVENT_ADDRESS),(MepoUser)eventData.get(EVENT_ACTIVE_USER));
         DatabaseReference pushReference = mDatabaseReference.push();
-        event.setEventId(pushReference.getKey());
-        pushReference.setValue(event);
+        MepoEvent newMepoEvent = new MepoEvent(eventData);
+        newMepoEvent.setEventId(pushReference.getKey());
+        insertEventToSQLDb(newMepoEvent);
+        pushReference.setValue(newMepoEvent);
         Toast.makeText(AddEventActivity.this, "Event added go have fun", Toast.LENGTH_SHORT).show();
         finish();
     }
@@ -200,7 +209,7 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
             eventData.add(((Spinner) findViewById(R.id.add_event_type_spinner)).getSelectedItem().toString());
             eventData.add(startTime);
             eventData.add(endTime);
-            eventData.add(MainActivity.getActiveUser());
+            eventData.add(MainActivity.getCurrentUser());
             return eventData;
         } else {
             return null;

@@ -3,6 +3,7 @@ package com.example.shaha.mepo;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -10,6 +11,12 @@ import java.util.Date;
  */
 
 public class MepoEvent implements Parcelable {
+    final static int EVENT_NAME = 0;
+    final static int EVENT_ADDRESS = 1;
+    final static int EVENT_TYPE = 2;
+    final static int EVENT_START_TIME = 3;
+    final static int EVENT_END_TIME = 4;
+    final static int EVENT_ACTIVE_USER = 5;
     private String eventId;
     private String eventName;
     private String lastMessage;
@@ -18,9 +25,18 @@ public class MepoEvent implements Parcelable {
     private Date startTime;
     private Date endTime;
     private MepoUser eventHost;
-
+    // Using for tests
     public MepoEvent(){
-        //The default constructor
+        this.eventName = "NewEvent";
+        this.description = "Sports";
+        Date start = new Date();
+        this.startTime = start;
+        this.endTime = start;
+        this.lastMessage = "";
+        Location loc = new Location("asd","asd",new Coordinate(1.2,1.3));
+        this.eventPlace = loc;
+        MepoUser ss = new MepoUser("Gal","email@email","0509919999");
+        this.eventHost = ss;
     }
 
     public MepoEvent(String eventName, String type, Date startTime, Date endTime, Location eventPlace, MepoUser eventHost){
@@ -31,6 +47,14 @@ public class MepoEvent implements Parcelable {
         this.lastMessage = "";
         this.eventPlace = eventPlace;
         this.eventHost = eventHost;
+    }
+    public MepoEvent(ArrayList<Object> eventData){
+        this(eventData.get(EVENT_NAME).toString()
+                , eventData.get(EVENT_TYPE).toString(),
+                (Date) eventData.get(EVENT_START_TIME),
+                (Date) eventData.get(EVENT_END_TIME),
+                (Location) eventData.get(EVENT_ADDRESS),
+                (MepoUser) eventData.get(EVENT_ACTIVE_USER));
     }
 
     protected MepoEvent(Parcel in) {
@@ -104,7 +128,10 @@ public class MepoEvent implements Parcelable {
         this.description = description;
     }
 
-    public Location getAddress() {return eventPlace;}
+    public String getAddress() {
+
+        return eventPlace.getLocationAddress();
+    }
 
     public void setAddress(Location eventPlace) {this.eventPlace = eventPlace;}
 
