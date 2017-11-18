@@ -17,14 +17,15 @@ public class MepoDbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_EVENT_TABLE = "CREATE TABLE "+ EventsEntry.TABLE_NAME  + " ("
-                + EventsEntry._ID
-                + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + EventsEntry.COLUMN_EVENT_NAME + " TEXT NOT NULL,"
-                + EventsEntry.COLUMN_EVENT_HOST_EMAIL + " TEXT NOT NULL, "+
-                EventsEntry.COLUMN_EVENT_LOCATION + " TEXT NOT NULL,"+
-                EventsEntry.COLUMN_EVENT_TYPE + " TEXT NOT NULL, " +
-                EventsEntry.COLUMN_EVENT_START + " TEXT NOT NULL, " +
-                EventsEntry.COLUMN_EVENT_END + " TEXT NOT NULL);";
+                + EventsEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT , "
+                + EventsEntry.COLUMN_EVENT_FIREBASE_ID + " TEXT UNIQUE NOT NULL, "
+                + EventsEntry.COLUMN_EVENT_NAME + " TEXT NOT NULL, "
+                + EventsEntry.COLUMN_EVENT_HOST_EMAIL + " TEXT NOT NULL, "
+                + EventsEntry.COLUMN_EVENT_LOCATION + " TEXT NOT NULL, "
+                + EventsEntry.COLUMN_EVENT_TYPE + " TEXT NOT NULL, "
+                + EventsEntry.COLUMN_EVENT_LAST_MESSAGE + " TEXT , "
+                + EventsEntry.COLUMN_EVENT_START + " TEXT NOT NULL, "
+                + EventsEntry.COLUMN_EVENT_END + " TEXT NOT NULL);";
 
         db.execSQL(CREATE_EVENT_TABLE);
     }

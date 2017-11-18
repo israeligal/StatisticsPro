@@ -10,12 +10,15 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import com.example.shaha.mepo.data.MepoContracts.EventsEntry;
 
 
-public class EventInfoPopUpActivity extends FragmentActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class EventInfoPopUpActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     private Uri mEventUri;
     private TextView mTextView;
     private static int EVENT_DB_LOADER_ID = 1;
@@ -71,7 +74,6 @@ public class EventInfoPopUpActivity extends FragmentActivity implements LoaderMa
         if (data == null || data.getCount() < 1) {
             return;
         }
-
         // Proceed with moving to the first row of the cursor and reading data from it
         // (This should be the only row in the cursor)
         if (data.moveToFirst()) {
@@ -84,6 +86,8 @@ public class EventInfoPopUpActivity extends FragmentActivity implements LoaderMa
             // Update the views on the screen with the values from the database
             mTextView.setText(name);
         }
+        Button btn = (Button) findViewById(R.id.event_info_join_btn);
+        btn.setVisibility(View.GONE);
     }
 
     @Override

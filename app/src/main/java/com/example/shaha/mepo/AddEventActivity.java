@@ -30,6 +30,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.shaha.mepo.Utils.MepoEventUtils;
 import com.example.shaha.mepo.data.MepoContracts.EventsEntry;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -177,24 +178,13 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
             }
         });
     }
-    private void insertEventToSQLDb(MepoEvent newMepoEvent) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(EventsEntry.COLUMN_EVENT_NAME, newMepoEvent.getEventName());
-        contentValues.put(EventsEntry.COLUMN_EVENT_HOST_EMAIL,  newMepoEvent.getEventHost().getEmail());
-        contentValues.put(EventsEntry.COLUMN_EVENT_LOCATION,  newMepoEvent.getAddress());
-        contentValues.put(EventsEntry.COLUMN_EVENT_TYPE,  newMepoEvent.getDescription());
-        contentValues.put(EventsEntry.COLUMN_EVENT_START,  newMepoEvent.getStartTime().getTime());
-        contentValues.put(EventsEntry.COLUMN_EVENT_END,  newMepoEvent.getEndTime().getTime());
-        getContentResolver().insert(EventsEntry.CONTENT_URI,contentValues);
-    }
+
     private void AddEventToDataBase(ArrayList<Object> eventData) {
         /**
          * change null at end of new Mepo event to current user
          */
         DatabaseReference pushReference = mDatabaseReference.push();
-        MepoEvent newMepoEvent = new MepoEvent(eventData);
-        newMepoEvent.setEventId(pushReference.getKey());
-        insertEventToSQLDb(newMepoEvent);
+        MepoEvent newMepoEvent = new MepoEvent(eventData,pushReference.getKey());
         pushReference.setValue(newMepoEvent);
         Toast.makeText(AddEventActivity.this, "Event added go have fun", Toast.LENGTH_SHORT).show();
         finish();

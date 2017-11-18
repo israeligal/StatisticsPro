@@ -24,8 +24,10 @@ public class MepoContracts {
         public static final String TABLE_NAME = "events";
 
         public static final String _ID = BaseColumns._ID;
+        public static final String COLUMN_EVENT_FIREBASE_ID = "fireBaseId";
         public static final String COLUMN_EVENT_NAME = "eventName";
         public static final String COLUMN_EVENT_TYPE = "type";
+        public static final String COLUMN_EVENT_LAST_MESSAGE = "lastMessage";
         public static final String COLUMN_EVENT_LOCATION = "location";
         public static final String COLUMN_EVENT_START = "startTime";
         public static final String COLUMN_EVENT_END = "endTime";

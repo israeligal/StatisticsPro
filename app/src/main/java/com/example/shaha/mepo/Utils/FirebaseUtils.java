@@ -21,12 +21,17 @@ public class FirebaseUtils {
 
     /**
      * Connect to the database in firebase and load the Auth providers
-      */
+     */
     public static void connectToFirebaseDatabase() {
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mFirebaseAuth = FirebaseAuth.getInstance();
         setProviders();
     }
+
+    public static void goOffLine() {
+        mFirebaseDatabase.goOffline();
+    }
+
 
     public static DatabaseReference getFirebaseReference(String reference) {
         return mFirebaseDatabase.getReference(reference);

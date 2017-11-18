@@ -12,16 +12,16 @@ import java.util.Date;
 
 public class MepoEvent implements Parcelable {
     final static int EVENT_NAME = 0;
-    final static int EVENT_ADDRESS = 1;
+    final static int EVENT_LOCATION = 1;
     final static int EVENT_TYPE = 2;
     final static int EVENT_START_TIME = 3;
     final static int EVENT_END_TIME = 4;
     final static int EVENT_ACTIVE_USER = 5;
-    private String eventId;
+    private String eventFireBaseId;
     private String eventName;
     private String lastMessage;
     private String description;
-    private Location eventPlace;
+    private Location eventLocation;
     private Date startTime;
     private Date endTime;
     private MepoUser eventHost;
@@ -34,35 +34,37 @@ public class MepoEvent implements Parcelable {
         this.endTime = start;
         this.lastMessage = "";
         Location loc = new Location("asd","asd",new Coordinate(1.2,1.3));
-        this.eventPlace = loc;
+        this.eventLocation = loc;
         MepoUser ss = new MepoUser("Gal","email@email","0509919999");
         this.eventHost = ss;
     }
 
-    public MepoEvent(String eventName, String type, Date startTime, Date endTime, Location eventPlace, MepoUser eventHost){
+    public MepoEvent(String eventName, String type, Date startTime, Date endTime, Location eventLocation,
+                     MepoUser eventHost,String eventFireBaseId){
         this.eventName = eventName;
         this.description = type;
         this.startTime = startTime;
         this.endTime = endTime;
         this.lastMessage = "";
-        this.eventPlace = eventPlace;
+        this.eventLocation = eventLocation;
         this.eventHost = eventHost;
+        this.eventFireBaseId = eventFireBaseId;
     }
-    public MepoEvent(ArrayList<Object> eventData){
+    public MepoEvent(ArrayList<Object> eventData,String eventFireBaseID){
         this(eventData.get(EVENT_NAME).toString()
                 , eventData.get(EVENT_TYPE).toString(),
                 (Date) eventData.get(EVENT_START_TIME),
                 (Date) eventData.get(EVENT_END_TIME),
-                (Location) eventData.get(EVENT_ADDRESS),
-                (MepoUser) eventData.get(EVENT_ACTIVE_USER));
+                (Location) eventData.get(EVENT_LOCATION),
+                (MepoUser) eventData.get(EVENT_ACTIVE_USER),eventFireBaseID);
     }
 
     protected MepoEvent(Parcel in) {
-        eventId = in.readString();
+        eventFireBaseId = in.readString();
         eventName = in.readString();
         lastMessage = in.readString();
         description = in.readString();
-        eventPlace = (Location)in.readParcelable(Location.class.getClassLoader());
+        eventLocation = (Location)in.readParcelable(Location.class.getClassLoader());
         startTime = new Date(in.readLong());
         endTime = new Date(in.readLong());
         eventHost = (MepoUser)in.readParcelable(MepoUser.class.getClassLoader());
@@ -80,13 +82,13 @@ public class MepoEvent implements Parcelable {
         }
     };
 
-    public String getEventId() {
-        return eventId;
+    public String getEventFireBaseId() {
+        return eventFireBaseId;
     }
 
-    public void setEventId(String eventId) {
-        this.eventId = eventId;
-    }
+//    public void setEventFireBaseId(String eventFireBaseId) {
+//        this.eventFireBaseId = eventFireBaseId;
+//    }
 
     public Date getStartTime() {
         return startTime;
@@ -128,12 +130,12 @@ public class MepoEvent implements Parcelable {
         this.description = description;
     }
 
-    public String getAddress() {
+    public Location getEventLocation() {
 
-        return eventPlace.getLocationAddress();
+        return eventLocation;
     }
 
-    public void setAddress(Location eventPlace) {this.eventPlace = eventPlace;}
+    public void setAddress(Location eventLocation) {this.eventLocation = eventLocation;}
 
     public MepoUser getEventHost() {
         return eventHost;
@@ -150,11 +152,11 @@ public class MepoEvent implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(eventId);
+        parcel.writeString(eventFireBaseId);
         parcel.writeString(eventName);
         parcel.writeString(lastMessage);
         parcel.writeString(description);
-        parcel.writeParcelable(eventPlace,1);
+        parcel.writeParcelable(eventLocation,1);
         parcel.writeLong(startTime.getTime());
         parcel.writeLong(endTime.getTime());
         parcel.writeParcelable(eventHost,1);

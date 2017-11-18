@@ -47,7 +47,6 @@ public class PersonalAreaFragment extends Fragment implements LoaderManager.Load
         ListView eventsListView = (ListView)view.findViewById(R.id.my_events_list_view);
         PersonalFragmentListView personalFragmentListView = new PersonalFragmentListView(eventsListView, getContext());
         myMyMepoEventsCursorAdapter = personalFragmentListView.getmListAdapter();
-
         FloatingActionButton addEvent = (FloatingActionButton)view.findViewById(R.id.fab);
         addEvent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,8 +58,6 @@ public class PersonalAreaFragment extends Fragment implements LoaderManager.Load
 
         return view;
     }
-
-
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {

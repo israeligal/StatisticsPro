@@ -22,11 +22,14 @@ public class MepoEventListView {
     public MepoEventListView(ListView listView, Context context) {
         mListView = listView;
         mEvents = MepoEventUtils.getEvents();
-        mListAdapter = new EventsListAdapter(context,mEvents);
+        mListAdapter = MepoEventUtils.getmAllEventsListAdapter();
         mContext = context;
         mListView.setAdapter(mListAdapter);
-        MepoEventUtils.addChildListener(mListAdapter,null);
         setOnItemClickListener();
+    }
+
+    public EventsListAdapter getmListAdapter() {
+        return mListAdapter;
     }
 
     private void setOnItemClickListener() {

@@ -63,7 +63,7 @@ public class MepoProvider extends ContentProvider {
                 cursor = database.query(EventsEntry.TABLE_NAME,projection,null, null, null, null, sortOrder);
                 break;
             case EVENT_ID:
-                selection = EventsEntry._ID + "=?";
+                selection = EventsEntry.COLUMN_EVENT_FIREBASE_ID + "=?";
                 selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
                 cursor = database.query(EventsEntry.TABLE_NAME,projection,selection,selectionArgs,null,null,sortOrder);
                 break;
@@ -103,7 +103,7 @@ public class MepoProvider extends ContentProvider {
 
     private Uri insertEvent(Uri uri, ContentValues contentValues) {
         SQLiteDatabase database = mMepoDbHelper.getWritableDatabase();
-        long id = database.insert(EventsEntry.TABLE_NAME, null, contentValues);
+        long id = database.insertWithOnConflict(EventsEntry.TABLE_NAME, null, contentValues,SQLiteDatabase.CONFLICT_REPLACE);
         getContext().getContentResolver().notifyChange(uri, null);
         return ContentUris.withAppendedId(uri, id);
     }
