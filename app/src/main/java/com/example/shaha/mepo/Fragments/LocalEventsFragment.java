@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.shaha.mepo.R;
+import com.example.shaha.mepo.Utils.MapUtils;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -127,6 +128,7 @@ public class LocalEventsFragment extends Fragment implements OnMapReadyCallback 
     public void onMapReady(GoogleMap googleMap) {
         mapReady = true;
         mMap = googleMap;
+        MapUtils.setEventMarkers(mMap);
     }
 
     private class myLocationListener implements LocationListener {

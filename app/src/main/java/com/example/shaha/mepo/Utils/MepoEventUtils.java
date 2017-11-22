@@ -118,6 +118,4 @@ public class MepoEventUtils {
         contentValues.put(EventsEntry.COLUMN_EVENT_END,  newMepoEvent.getEndTime().getTime());
         return contentValues;
     }
-
-
 }

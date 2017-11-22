@@ -7,21 +7,21 @@ import android.os.Parcelable;
  * Created by shaha on 03/11/2017.
  */
 
-class Coordinate implements Parcelable{
+public class MepoCoordinate implements Parcelable{
     private double latitude;
-
     private double longtitude;
-    public Coordinate(){
+
+    public MepoCoordinate(){
         //An empty constructor
         //this is crucial for the app to load from firebase
     }
 
-    public Coordinate(double latitude, double longtitude) {
+    public MepoCoordinate(double latitude, double longtitude) {
         this.latitude = latitude;
         this.longtitude = longtitude;
     }
 
-    protected Coordinate(Parcel in) {
+    protected MepoCoordinate(Parcel in) {
         latitude = in.readDouble();
         longtitude = in.readDouble();
     }
@@ -42,15 +42,15 @@ class Coordinate implements Parcelable{
         this.longtitude = longtitude;
     }
 
-    public static final Creator<Coordinate> CREATOR = new Creator<Coordinate>() {
+    public static final Creator<MepoCoordinate> CREATOR = new Creator<MepoCoordinate>() {
         @Override
-        public Coordinate createFromParcel(Parcel in) {
-            return new Coordinate(in);
+        public MepoCoordinate createFromParcel(Parcel in) {
+            return new MepoCoordinate(in);
         }
 
         @Override
-        public Coordinate[] newArray(int size) {
-            return new Coordinate[size];
+        public MepoCoordinate[] newArray(int size) {
+            return new MepoCoordinate[size];
         }
     };
 

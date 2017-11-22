@@ -18,7 +18,7 @@ import android.widget.TextView;
 import com.example.shaha.mepo.data.MepoContracts.EventsEntry;
 
 
-public class EventInfoPopUpActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class EventInfoPopUpActivity extends FragmentActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     private Uri mEventUri;
     private TextView mTextView;
     private static int EVENT_DB_LOADER_ID = 1;

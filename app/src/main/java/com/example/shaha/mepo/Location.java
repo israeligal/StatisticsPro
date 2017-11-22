@@ -1,10 +1,7 @@
 package com.example.shaha.mepo;
 
-import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import com.google.android.gms.maps.model.LatLng;
 
 /**
  * Created by shaha on 30/10/2017.
@@ -13,31 +10,30 @@ import com.google.android.gms.maps.model.LatLng;
 public class Location implements Parcelable{
     private String locationName;
     private String locationAddress;
-
-    private Coordinate coordinate;
+    private MepoCoordinate mepoCoordinate;
 
     public Location(){
 
     }
 
-    public Location(String locationName, String locationAddress, Coordinate coordinate){
+    public Location(String locationName, String locationAddress, MepoCoordinate mepoCoordinate){
         this.locationName = locationName;
         this.locationAddress = locationAddress;
-        this.coordinate = coordinate;
+        this.mepoCoordinate = mepoCoordinate;
     }
 
     protected Location(Parcel in) {
         locationName = in.readString();
         locationAddress = in.readString();
-        coordinate = (Coordinate)in.readParcelable(Coordinate.class.getClassLoader());
+        mepoCoordinate = (MepoCoordinate)in.readParcelable(MepoCoordinate.class.getClassLoader());
     }
 
-    public Coordinate getCoordinate() {
-        return coordinate;
+    public MepoCoordinate getMepoCoordinate() {
+        return mepoCoordinate;
     }
 
-    public void setCoordinate(Coordinate coordinate) {
-        this.coordinate = coordinate;
+    public void setMepoCoordinate(MepoCoordinate mepoCoordinate) {
+        this.mepoCoordinate = mepoCoordinate;
     }
 
     public String getLocationName() {
@@ -77,6 +73,6 @@ public class Location implements Parcelable{
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(locationName);
         parcel.writeString(locationAddress);
-        parcel.writeParcelable(coordinate,1);
+        parcel.writeParcelable(mepoCoordinate,1);
     }
 }

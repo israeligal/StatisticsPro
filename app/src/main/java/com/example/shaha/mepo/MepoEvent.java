@@ -33,7 +33,7 @@ public class MepoEvent implements Parcelable {
         this.startTime = start;
         this.endTime = start;
         this.lastMessage = "";
-        Location loc = new Location("asd","asd",new Coordinate(1.2,1.3));
+        Location loc = new Location("asd","asd",new MepoCoordinate(1.2,1.3));
         this.eventLocation = loc;
         MepoUser ss = new MepoUser("Gal","email@email","0509919999");
         this.eventHost = ss;
