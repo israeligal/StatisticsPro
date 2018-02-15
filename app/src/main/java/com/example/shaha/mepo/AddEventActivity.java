@@ -3,7 +3,7 @@ package com.example.shaha.mepo;
 import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -17,12 +17,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -31,27 +31,36 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
-public class AddEventActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener {
+public class AddEventActivity extends AppCompatActivity {
     private static final int RC_PICK_IMAGE = 1;
     private static final int MY_PERMISSION_FINE_LOCATION = 101;
     private static final int PLACE_PICKER_REQUEST = 2;
     String[] options;
-    private Calendar calendar;
-    private int year, month, day;
     private ImageView addEventImg;
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mDatabaseReference;
-    private EditText timeEditText;
-    private Calendar fromCal, untilCal; //stores the time of the event
-    private boolean fromBtnClicked;
-    private Date startTime, endTime;
     private Location selectedPlace;
+    private int day, month, year;
+    private int dayFinal, monthFinal, yearFinal;
+    DatePickerDialog.OnDateSetListener from_dateListener, to_dateListener;
+    private TimePickerDialog.OnTimeSetListener from_timeListener, to_timeListener;
+    private Date fromDate, toDate;
+    private String eventName;
+    private String eventAddress;
+    private String startTime;
+    private String endTime;
+    private double longtitude;
+    private double latitude;
+    private int type;
+    private EditText timeFromEditText, timeUntilEditText;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,11 +69,8 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
 
         requestPermission();
 
-        //get current time
-        calendar = Calendar.getInstance();
-        year = calendar.get(Calendar.YEAR);
-        month = calendar.get(Calendar.MONTH);
-        day = calendar.get(Calendar.DAY_OF_MONTH);
+        timeFromEditText = (EditText) findViewById(R.id.add_event_time_from_edit_text);
+        timeUntilEditText = (EditText) findViewById(R.id.add_event_time_until_edit_text);
 
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mDatabaseReference = mFirebaseDatabase.getReference().child("Events");
@@ -95,12 +101,74 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
     }
 
     private void setupListeners() {
-        setUpDateBtnListener();
         setUpClockBtnListener();
         setUpSpinner();
+        setDateAndTimeListener();
         setUpEventImgListener();
         setUpAddEventBtnListener();
         setUpPickLocationBtnListener();
+    }
+
+    private void setDateAndTimeListener() {
+        from_dateListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+                yearFinal = i;
+                monthFinal = i1;
+                dayFinal = i2;
+
+                fromDate = new GregorianCalendar(yearFinal, monthFinal, dayFinal).getTime();
+                //after pick the time
+                openTimePicker(from_timeListener);
+            }
+        };
+
+        from_timeListener = new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker timePicker, int i, int i1) {
+                int hour = i;
+                int minute = i1;
+
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(fromDate);
+                cal.add(Calendar.HOUR_OF_DAY, hour);
+                cal.add(Calendar.MINUTE, minute);
+                fromDate = cal.getTime();
+                SimpleDateFormat ft = new SimpleDateFormat("MM/dd/yyyy HH:mm:00.00");
+                Toast.makeText(AddEventActivity.this, ft.format(fromDate).toString(), Toast.LENGTH_SHORT).show();
+                timeFromEditText.setText(ft.format(fromDate));
+            }
+        };
+
+        to_dateListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+                yearFinal = i;
+                monthFinal = i1;
+                dayFinal = i2;
+
+                toDate = new GregorianCalendar(yearFinal, monthFinal, dayFinal).getTime();
+                //after pick the time
+                openTimePicker(to_timeListener);
+            }
+        };
+
+        to_timeListener = new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker timePicker, int i, int i1) {
+                int hour = i;
+                int minute = i1;
+
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(toDate);
+                cal.add(Calendar.HOUR_OF_DAY, hour);
+                cal.add(Calendar.MINUTE, minute);
+                toDate = cal.getTime();
+                SimpleDateFormat ft = new SimpleDateFormat("MM/dd/yyyy HH:mm:00.00");
+                Toast.makeText(AddEventActivity.this, ft.format(toDate).toString(), Toast.LENGTH_SHORT).show();
+                timeUntilEditText.setText(ft.format(toDate));
+            }
+        };
     }
 
     private void setUpPickLocationBtnListener() {
@@ -127,34 +195,40 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
     }
 
     private void setUpClockBtnListener() {
-        final ImageButton timeFromBtn = (ImageButton) findViewById(R.id.add_event_time_from_btn);
+        ImageButton timeFromBtn = (ImageButton) findViewById(R.id.add_event_time_from_btn);
         ImageButton timeUntilBtn = (ImageButton) findViewById(R.id.add_event_time_until_btn);
         timeFromBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                fromBtnClicked = true;
-                timeEditText = (EditText) findViewById(R.id.add_event_time_from_edit_text);
-                openTimePicker();
+                //first pick the date
+                openDatePicker(from_dateListener);
             }
         });
         timeUntilBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                fromBtnClicked = false;
-                timeEditText = (EditText) findViewById(R.id.add_event_time_until_edit_text);
-                openTimePicker();
+                openDatePicker(to_dateListener);
             }
         });
     }
 
-    private void openTimePicker() {
+    private void openDatePicker(DatePickerDialog.OnDateSetListener listener) {
+        Calendar calendar = Calendar.getInstance();
+        day = calendar.get(Calendar.DAY_OF_MONTH);
+        month = calendar.get(Calendar.MONTH);
+        year = calendar.get(Calendar.YEAR);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(AddEventActivity.this, listener, year, month, day);
+        datePickerDialog.show();
+    }
+
+    private void openTimePicker(TimePickerDialog.OnTimeSetListener listener) {
         Calendar now = Calendar.getInstance();
-        TimePickerDialog tpd = TimePickerDialog.newInstance(AddEventActivity.this,
-                now.get(Calendar.HOUR_OF_DAY),
-                now.get(Calendar.MINUTE),
-                true //24 hours
-        );
-        tpd.show(getFragmentManager(), "TimePickerDialog");
+        int hour = now.get(Calendar.HOUR_OF_DAY);
+        int minute = now.get(Calendar.MINUTE);
+
+        TimePickerDialog timePickerDialog = new TimePickerDialog(AddEventActivity.this, listener, hour, minute, true);
+        timePickerDialog.show();
     }
 
     private void setUpAddEventBtnListener() {
@@ -200,11 +274,11 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
     }
 
     private boolean isValid() {
-        if (((EditText) findViewById(R.id.add_event_event_name)).getText().toString().equals("")) {
+        if (eventName.equals("")) {
             Toast.makeText(getApplicationContext(), "Event name is required", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (((EditText) findViewById(R.id.add_event_edit_text_address)).getText().toString().equals("")) {
+        if (eventAddress.equals("")) {
             Toast.makeText(getApplicationContext(), "Event address is required", Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -230,51 +304,6 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
                 startActivityForResult(Intent.createChooser(intent, ""), RC_PICK_IMAGE);
             }
         });
-    }
-
-    @SuppressWarnings("deprecation")
-    private void setUpDateBtnListener() {
-        Button dateBtn = (Button) findViewById(R.id.add_event_date_btn);
-        dateBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showDialog(1);
-            }
-        });
-    }
-
-    private DatePickerDialog.OnDateSetListener mDateListener = new DatePickerDialog.OnDateSetListener() {
-        @Override
-        public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-            showDate(year, month + 1, day);
-        }
-    };
-
-    @Override
-    @SuppressWarnings("deprecation")
-    protected Dialog onCreateDialog(int id) {
-        if (id == 1) {
-            return new DatePickerDialog(this, mDateListener, year, month, day);
-        }
-        return super.onCreateDialog(id);
-    }
-
-
-    private void showDate(int year, int month, int days) {
-        //initiate the calenders
-        fromCal = Calendar.getInstance();
-        untilCal = Calendar.getInstance();
-        //update the calender
-        fromCal.set(Calendar.YEAR, year);
-        fromCal.set(Calendar.MONTH, month);
-        fromCal.set(Calendar.DAY_OF_MONTH, days);
-        untilCal.set(Calendar.YEAR, year);
-        untilCal.set(Calendar.MONTH, month);
-        untilCal.set(Calendar.DAY_OF_MONTH, days);
-        //create the date string and update the edit text
-        String dateStr = days + "/" + month + "/" + year;
-        EditText eventDateEditText = (EditText) findViewById(R.id.event_date_edit_text);
-        eventDateEditText.setText(dateStr);
     }
 
     private void setUpSpinner() {
@@ -304,30 +333,5 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
     private void updateLocation(Place selectedPlace) {
         EditText placeAddressEditText = (EditText) findViewById(R.id.add_event_edit_text_address);
         placeAddressEditText.setText(selectedPlace.getAddress());
-    }
-
-    @Override
-    public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
-        //update the edit text to show the time
-        String timeStr = String.format("%02d", hourOfDay) + ":" + String.format("%02d", minute) + ":" + String.format("%02d", second);
-        timeEditText.setText(timeStr);
-        Calendar timeCal;
-
-        if (fromBtnClicked) {
-            //the user clicked on the form clock dialog
-            timeCal = fromCal;
-        } else {
-            timeCal = untilCal;
-        }
-
-        timeCal.set(Calendar.HOUR_OF_DAY, hourOfDay);
-        timeCal.set(Calendar.MINUTE, minute);
-        timeCal.set(Calendar.SECOND, second);
-
-        if (fromBtnClicked) {
-            startTime = timeCal.getTime();
-        } else {
-            endTime = timeCal.getTime();
-        }
     }
 }

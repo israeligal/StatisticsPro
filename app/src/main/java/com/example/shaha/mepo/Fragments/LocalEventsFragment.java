@@ -11,8 +11,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v13.app.FragmentCompat;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +22,17 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.shaha.mepo.R;
+import com.example.shaha.mepo.Utils.LocationHelper;
 import com.example.shaha.mepo.Utils.MapUtils;
+import com.example.shaha.mepo.Utils.PermissionUtils;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -29,16 +41,17 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.ArrayList;
+
 /**
  * This is the map fragment of the app
  */
-public class LocalEventsFragment extends Fragment implements OnMapReadyCallback {
-    private static final int RC_GPS_LOCATION = 1;
+public class LocalEventsFragment extends Fragment implements OnMapReadyCallback,GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,FragmentCompat.OnRequestPermissionsResultCallback {
     private GoogleMap mMap;
     private boolean mapReady = false;
-    private LocationManager locationManager;
-    private LocationListener locationListener;
-    private Location loc;
+    private Location mLastLocation;
+    private LocationHelper locationHelper;
 
     public LocalEventsFragment() {
         // Required empty public constructor
@@ -61,24 +74,6 @@ public class LocalEventsFragment extends Fragment implements OnMapReadyCallback 
         //set the mapFragment to call the mapReady callback when the map is loaded
         SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
-        //change the camera of the map to point on current location
-        locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
-        locationListener = new myLocationListener();
-
-        //loc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{
-                        Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION,
-                        Manifest.permission.INTERNET
-                },RC_GPS_LOCATION);
-                return;
-            }
-        }else{
-            configureLocation();
-        }
 
         Button mapBtn = (Button) view.findViewById(R.id.map_map_btn);
         mapBtn.setOnClickListener(new View.OnClickListener() {
@@ -107,21 +102,23 @@ public class LocalEventsFragment extends Fragment implements OnMapReadyCallback 
                 }
             }
         });
+
+        //get the current location
+        getCurrentLocation();
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode){
-            case RC_GPS_LOCATION:
-                if(grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                    configureLocation();
-                }
-                return;
+    private void getCurrentLocation() {
+        locationHelper = new LocationHelper(getContext());
+        locationHelper.checkpermission();
+
+        // check availability of play services
+        if (locationHelper.checkPlayServices()) {
+
+            // Building the GoogleApi client
+            //locationHelper.buildGoogleApiClient();
+            //mLastLocation = locationHelper.getLocation();
         }
-    }
 
-    private void configureLocation() {
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0, locationListener);
     }
 
     @Override
@@ -131,35 +128,46 @@ public class LocalEventsFragment extends Fragment implements OnMapReadyCallback 
         MapUtils.setEventMarkers(mMap);
     }
 
-    private class myLocationListener implements LocationListener {
-
-        @Override
-        public void onLocationChanged(Location loc) {
-            if(mapReady){
-                moveToLocation(loc);
-                locationManager.removeUpdates(locationListener);
-            }
-        }
-
-        @Override
-        public void onStatusChanged(String s, int i, Bundle bundle) {
-
-        }
-
-        @Override
-        public void onProviderEnabled(String s) {
-
-        }
-
-        @Override
-        public void onProviderDisabled(String s) {
-
-        }
-    }
-
     private void moveToLocation(Location loc) {
         LatLng curPosition = new LatLng(loc.getLatitude(),loc.getLongitude());
         CameraPosition target = CameraPosition.builder().target(curPosition).zoom(14).build();
         mMap.moveCamera(CameraUpdateFactory.newCameraPosition(target));
+    }
+
+    /**
+     * Google api callback methods
+     */
+    @Override
+    public void onConnectionFailed(ConnectionResult result) {
+        Log.i("Connection failed:", " ConnectionResult.getErrorCode() = "
+                + result.getErrorCode());
+    }
+
+    @Override
+    public void onConnected(Bundle arg0) {
+
+        // Once connected with google api, get the location
+        mLastLocation=locationHelper.getLocation();
+    }
+
+    @Override
+    public void onConnectionSuspended(int arg0) {
+        locationHelper.connectApiClient();
+    }
+
+
+    // Permission check functions
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        // redirects to utils
+        locationHelper.onRequestPermissionsResult(requestCode,permissions,grantResults);
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        locationHelper.checkPlayServices();
     }
 }

@@ -22,16 +22,11 @@ import java.util.Map;
 
 public class PermissionUtils
 {
-
     Context context;
     Activity current_activity;
-
     PermissionResultCallback permissionResultCallback;
-
-
     ArrayList<String> permission_list=new ArrayList<>();
     ArrayList<String> listPermissionsNeeded=new ArrayList<>();
-
     String dialog_content="";
     int req_code;
 
@@ -41,8 +36,6 @@ public class PermissionUtils
         this.current_activity= (Activity) context;
 
         permissionResultCallback= (PermissionResultCallback) context;
-
-
     }
 
     public PermissionUtils(Context context, PermissionResultCallback callback)
@@ -51,8 +44,6 @@ public class PermissionUtils
         this.current_activity= (Activity) context;
 
         permissionResultCallback= callback;
-
-
     }
 
 

@@ -1,9 +1,13 @@
 package com.example.shaha.mepo.Utils;
 
+import android.content.Context;
+
 import com.example.shaha.mepo.Fragments.PersonalAreaFragment;
 import com.example.shaha.mepo.Manifest;
 import com.example.shaha.mepo.MepoCoordinate;
 import com.example.shaha.mepo.MepoEvent;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -29,19 +33,5 @@ public class MapUtils {
 
     private static void setMarker(double latitude, double longtitude,String eventName) {
         mMap.addMarker(new MarkerOptions().position(new LatLng(latitude,longtitude)).title(eventName));
-    }
-
-    public static void getCurrentLocation(GoogleMap map){
-        //check permissions
-        ArrayList<String> permissions=new ArrayList<>();
-        PermissionUtils permissionUtils;
-
-//        permissionUtils = new PermissionUtils(MapUtils.this);
-//
-//        permissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
-//        permissions.add(Manifest.permission.ACCESS_COARSE_LOCATION);
-//
-//        permissionUtils.check_permission(permissions,"Need GPS permission for getting your location",1);
-
     }
 }
