@@ -3,6 +3,8 @@ package com.example.shaha.mepo;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.example.shaha.mepo.Utils.EventType;
+
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -25,6 +27,9 @@ public class MepoEvent implements Parcelable {
     private Date startTime;
     private Date endTime;
     private MepoUser eventHost;
+
+    private EventType type;
+
     // Using for tests
     public MepoEvent(){
         this.eventName = "NewEvent";
@@ -39,24 +44,17 @@ public class MepoEvent implements Parcelable {
         this.eventHost = ss;
     }
 
-    public MepoEvent(String eventName, String type, Date startTime, Date endTime, Location eventLocation,
-                     MepoUser eventHost,String eventFireBaseId){
+    public MepoEvent(String eventName, String description, Date startTime, Date endTime, Location eventLocation,
+                     MepoUser eventHost,String eventFireBaseId, EventType type){
         this.eventName = eventName;
-        this.description = type;
+        this.description = description;
         this.startTime = startTime;
         this.endTime = endTime;
         this.lastMessage = "";
         this.eventLocation = eventLocation;
         this.eventHost = eventHost;
         this.eventFireBaseId = eventFireBaseId;
-    }
-    public MepoEvent(ArrayList<Object> eventData,String eventFireBaseID){
-        this(eventData.get(EVENT_NAME).toString()
-                , eventData.get(EVENT_TYPE).toString(),
-                (Date) eventData.get(EVENT_START_TIME),
-                (Date) eventData.get(EVENT_END_TIME),
-                (Location) eventData.get(EVENT_LOCATION),
-                (MepoUser) eventData.get(EVENT_ACTIVE_USER),eventFireBaseID);
+        this.type = type;
     }
 
     protected MepoEvent(Parcel in) {
@@ -68,6 +66,7 @@ public class MepoEvent implements Parcelable {
         startTime = new Date(in.readLong());
         endTime = new Date(in.readLong());
         eventHost = (MepoUser)in.readParcelable(MepoUser.class.getClassLoader());
+        type = EventType.valueOf(in.readString());
     }
 
     public static final Creator<MepoEvent> CREATOR = new Creator<MepoEvent>() {
@@ -86,16 +85,20 @@ public class MepoEvent implements Parcelable {
         return eventFireBaseId;
     }
 
-//    public void setEventFireBaseId(String eventFireBaseId) {
-//        this.eventFireBaseId = eventFireBaseId;
-//    }
-
     public Date getStartTime() {
         return startTime;
     }
 
     public void setStartTime(Date startTime) {
         this.startTime = startTime;
+    }
+
+    public EventType getType() {
+        return type;
+    }
+
+    public void setType(EventType type) {
+        this.type = type;
     }
 
     public Date getEndTime() {
@@ -160,5 +163,6 @@ public class MepoEvent implements Parcelable {
         parcel.writeLong(startTime.getTime());
         parcel.writeLong(endTime.getTime());
         parcel.writeParcelable(eventHost,1);
+        parcel.writeString(type.name());
     }
 }

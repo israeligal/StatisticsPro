@@ -10,6 +10,24 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"></ListView>
 
+    <LinearLayout
+        android:id="@+id/personal_empty_state"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="You don't have any events that you participate in.
+            Press the plus button to add a new event or join an existing event"/>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/empty_events"/>
+    </LinearLayout>
+
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"

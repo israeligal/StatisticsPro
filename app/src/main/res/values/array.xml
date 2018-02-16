@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="add_event_types">
-        <item>Sports</item>
-        <item>Education</item>
-        <item>Yard sale</item>
-        <item>Fun</item>
-        <item>Promotion</item>
-        <item>Other</item>
+        <item>Sport</item>
+        <item>Carpool</item>
+        <item>Sale</item>
+        <item>Party</item>
+        <item>Bar sale</item>
+        <item>Misc</item>
     </string-array>
 </resources>

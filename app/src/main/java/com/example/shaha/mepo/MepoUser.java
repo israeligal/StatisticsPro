@@ -9,25 +9,25 @@ import com.google.firebase.auth.FirebaseUser;
  * Created by shaha on 06/11/2017.
  */
 
-public class MepoUser implements Parcelable{
+public class MepoUser implements Parcelable {
     private String displayName;
     private String email;
     private String phoneNumber;
 
 
     public MepoUser() {
-        }
+    }
 
     public MepoUser(String displayName, String email, String phoneNumber) {
         this.displayName = displayName;
         this.email = email;
         this.phoneNumber = phoneNumber;
     }
-    public MepoUser(FirebaseUser user){
+
+    public MepoUser(FirebaseUser user) {
         this.displayName = user.getDisplayName();
         this.email = user.getEmail();
         this.phoneNumber = user.getPhoneNumber();
-
     }
 
     protected MepoUser(Parcel in) {
@@ -35,7 +35,6 @@ public class MepoUser implements Parcelable{
         email = in.readString();
         phoneNumber = in.readString();
     }
-
 
 
     public String getDisplayName() {
@@ -61,6 +60,7 @@ public class MepoUser implements Parcelable{
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
+
     public static final Creator<MepoUser> CREATOR = new Creator<MepoUser>() {
         @Override
         public MepoUser createFromParcel(Parcel in) {

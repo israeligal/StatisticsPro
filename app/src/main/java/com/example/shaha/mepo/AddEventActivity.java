@@ -16,6 +16,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -25,6 +26,7 @@ import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.example.shaha.mepo.Utils.EventType;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
@@ -60,6 +62,8 @@ public class AddEventActivity extends AppCompatActivity {
     private double latitude;
     private int type;
     private EditText timeFromEditText, timeUntilEditText;
+    private Location location;
+    private MepoUser user;
 
 
     @Override
@@ -74,6 +78,8 @@ public class AddEventActivity extends AppCompatActivity {
 
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mDatabaseReference = mFirebaseDatabase.getReference().child("Events");
+
+        user = MainActivity.getCurrentUser();
 
         setupListeners();
     }
@@ -236,41 +242,30 @@ public class AddEventActivity extends AppCompatActivity {
         addEventFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ArrayList<Object> eventData = getEventInfo();
-                if (eventData == null) {
+                //pre process - get all the events form fields
+                extractFields();
+
+                if (isValid()) {
                     //there was a problem with one of the fields
+                    AddEventToDataBase();
+                }else{
+                    //there was a problem
                     return;
                 }
-                AddEventToDataBase(eventData);
             }
         });
     }
 
-    private void AddEventToDataBase(ArrayList<Object> eventData) {
+    private void AddEventToDataBase() {
         /**
          * change null at end of new Mepo event to current user
          */
+
         DatabaseReference pushReference = mDatabaseReference.push();
-        MepoEvent newMepoEvent = new MepoEvent(eventData,pushReference.getKey());
-        pushReference.setValue(newMepoEvent);
+        MepoEvent newMepoEvent = new MepoEvent(eventName,"description",fromDate,toDate,location,user, pushReference.getKey(), EventType.values()[type]);
+        //pushReference.setValue(newMepoEvent);
         Toast.makeText(AddEventActivity.this, "Event added go have fun", Toast.LENGTH_SHORT).show();
         finish();
-    }
-
-    private ArrayList<Object> getEventInfo() {
-        ArrayList<Object> eventData = new ArrayList<>();
-        //check if all required fields are not empty
-        if (isValid()) {
-            eventData.add(((EditText) findViewById(R.id.add_event_event_name)).getText().toString());
-            eventData.add(selectedPlace);
-            eventData.add(((Spinner) findViewById(R.id.add_event_type_spinner)).getSelectedItem().toString());
-            eventData.add(startTime);
-            eventData.add(endTime);
-            eventData.add(MainActivity.getCurrentUser());
-            return eventData;
-        } else {
-            return null;
-        }
     }
 
     private boolean isValid() {
@@ -311,6 +306,17 @@ public class AddEventActivity extends AppCompatActivity {
         Spinner eventTypeSpinner = (Spinner) findViewById(R.id.add_event_type_spinner);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, options);
         eventTypeSpinner.setAdapter(adapter);
+        eventTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+                type = position + 1;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                type = 1;
+            }
+        });
     }
 
     @Override
@@ -333,5 +339,17 @@ public class AddEventActivity extends AppCompatActivity {
     private void updateLocation(Place selectedPlace) {
         EditText placeAddressEditText = (EditText) findViewById(R.id.add_event_edit_text_address);
         placeAddressEditText.setText(selectedPlace.getAddress());
+
+        latitude = selectedPlace.getLatLng().latitude;
+        longtitude = selectedPlace.getLatLng().longitude;
+
+        location = new Location("","",new MepoCoordinate(latitude,longtitude));
+    }
+
+    private void extractFields() {
+        eventName = ((EditText) findViewById(R.id.add_event_event_name)).getText().toString();
+        eventAddress = ((EditText) findViewById(R.id.add_event_edit_text_address)).getText().toString();
+        startTime = timeFromEditText.getText().toString();
+        endTime = timeUntilEditText.getText().toString();
     }
 }

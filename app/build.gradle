@@ -36,6 +36,7 @@ dependencies {
     compile 'com.android.support:support-v4:26.0'
     compile 'com.google.firebase:firebase-database:11.4.2'
     compile 'com.github.wdullaer:MaterialDateTimePicker:v3.3.1'
+    compile 'com.google.maps.android:android-maps-utils:0.5+'
     compile 'com.google.android.gms:play-services-places:11.4.2'
     compile 'com.google.android.gms:play-services-maps:11.4.2'
     compile 'com.google.android.gms:play-services-location:11.4.2'

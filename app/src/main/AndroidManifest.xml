@@ -44,11 +44,6 @@
             android:name=".EventInfoPopUpActivity"
             android:theme="@style/PopUpTheme" />
 
-        <provider
-            android:name=".data.MepoProvider"
-            android:authorities="com.example.shaha.mepo"
-            android:exported="false" />
-
     </application>
 
 </manifest>

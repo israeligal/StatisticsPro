@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Intent intent = getIntent();
         //get current user from firebase
         mFirebaseAuth = FirebaseUtils.getmFirebaseAuth();
@@ -36,9 +37,9 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(mPagerAdapter);
         TabLayout tabLayout = (TabLayout)findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(viewPager);
+
         //connects the app to the firebase service which holds our database
         MepoEventUtils.addDatabaseListener(this);
-
     }
 
     @Override

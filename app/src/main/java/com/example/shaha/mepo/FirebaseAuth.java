@@ -23,11 +23,13 @@ public class FirebaseAuth extends AppCompatActivity {
 
         setupFirebaseConnection();
     }
+
     private void setupFirebaseConnection() {
         FirebaseUtils.connectToFirebaseDatabase();
         mFirebaseAuth = FirebaseUtils.getmFirebaseAuth();
         setupFirebaseAuthListener();
     }
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -39,24 +41,24 @@ public class FirebaseAuth extends AppCompatActivity {
         super.onResume();
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
     }
+
     /**
      * Connect to the Firebase services and set up the Auth listener
      */
-    public void setupFirebaseAuthListener(){
+    public void setupFirebaseAuthListener() {
         mAuthStateListener = new com.google.firebase.auth.FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull com.google.firebase.auth.FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
-                if(user!=null){
+                if (user != null) {
                     //we are logged in
                     Intent intent = new Intent(FirebaseAuth.this, MainActivity.class);
                     startActivity(intent);
-
-                }else{
+                } else {
                     List<AuthUI.IdpConfig> providers = FirebaseUtils.getProviders();
                     //the user signed off
                     startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().setIsSmartLockEnabled(false)
-                            .setAvailableProviders(providers).build(),RC_SIGN_IN);
+                            .setAvailableProviders(providers).build(), RC_SIGN_IN);
                 }
             }
         };
