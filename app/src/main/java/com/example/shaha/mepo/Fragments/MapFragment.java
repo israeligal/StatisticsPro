@@ -7,11 +7,10 @@ package com.example.shaha.mepo.Fragments;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.example.shaha.eventfinderandroid.Fragments.LocalEventsFragment;
-import com.example.shaha.eventfinderandroid.MyEvent;
-import com.example.shaha.eventfinderandroid.R;
 import com.example.shaha.mepo.EventItem;
 import com.example.shaha.mepo.MepoEvent;
+import com.example.shaha.mepo.R;
+import com.example.shaha.mepo.Utils.MepoEventUtils;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -22,14 +21,13 @@ import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by shaha on 18/01/2018.
  */
 
-public class MapUtils extends LocalEventsFragment {
+public class MapFragment extends LocalEventsFragment {
     //Beer Sheva langtitude and longtitude
     private static final Double LATITUDE = 31.252973;
     private static final Double LONGTITUDE = 34.7914620000000024;
@@ -45,7 +43,7 @@ public class MapUtils extends LocalEventsFragment {
         @Override
         protected void onBeforeClusterItemRendered(EventItem item, MarkerOptions markerOptions) {
             // Draw a single event.
-            MyEvent event = item.getEvent();
+            MepoEvent event = item.getEvent();
 
             switch (event.getType()) {
                 case SPORT:
@@ -86,8 +84,8 @@ public class MapUtils extends LocalEventsFragment {
 
         mMap.setOnCameraIdleListener(mClusterManager);
         for (MepoEvent event : events) {
-            double latitude = event.getLatitude();
-            double longtitude = event.getLongtitude();
+            double latitude = event.getEventLocation().getMepoCoordinate().getLatitude();
+            double longtitude = event.getEventLocation().getMepoCoordinate().getLongtitude();
 
             EventItem item = new EventItem(latitude, longtitude, event.getEventName(), event.getDescription(), event);
             mClusterManager.addItem(item);
@@ -101,26 +99,6 @@ public class MapUtils extends LocalEventsFragment {
 
     @Override
     protected void startMapActions() {
-        //get the events first
-        EventsAsyncTask task = new EventsAsyncTask();
-        task.execute();
+        setEventMarkers(getMap(), MepoEventUtils.getEvents());
     }
-
-    private class EventsAsyncTask extends AsyncTask<Void, Void, List<MyEvent>> {
-
-        @Override
-        protected List<MyEvent> doInBackground(Void... voids) {
-            List<MyEvent> events = InternetUtils.getAllEvents();
-            return events;
-        }
-
-        @Override
-        protected void onPostExecute(List<MyEvent> events) {
-            super.onPostExecute(events);
-
-            //set markers
-            setEventMarkers(getMap(), events);
-        }
-    }
-
 }

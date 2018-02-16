@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.example.shaha.mepo.Fragments.LocalEventsFragment;
+import com.example.shaha.mepo.Fragments.MapFragment;
 import com.example.shaha.mepo.Fragments.PersonalAreaFragment;
 import com.example.shaha.mepo.R;
 import com.example.shaha.mepo.Fragments.UpcomingEventsFragment;
@@ -30,7 +31,7 @@ public class EventsPagerAdapter extends FragmentPagerAdapter {
             case 1:
                 return new UpcomingEventsFragment();
             case 2:
-                return new LocalEventsFragment();
+                return new MapFragment();
             default:
                 return new PersonalAreaFragment();
         }
