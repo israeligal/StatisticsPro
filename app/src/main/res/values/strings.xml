@@ -1,12 +1,12 @@
 <resources>
-    <string name="app_name">Mepo</string>
+    <string name="app_name">מומחה הסטטיסטיקה</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
-    <string name="personal_area_page_title">My Events</string>
-    <string name="upcoming_events_page_title">Upcoming Events</string>
-    <string name="local_events_page_title">Map</string>
+    <string name="choose_numbers_page_title">סטטיסטיקת מספרים</string>
+    <string name="search_statistics_queries_page_title">סטטיסטיקה כללית</string>
+    <string name="settings_page_title">הגדרות</string>
     <string name="title_place_holder">TitleTitle</string>
     <string name="last_msg_place_holder">blablablabla</string>
     <string name="add_event_address">ADDRESS</string>
@@ -21,7 +21,6 @@
     <string name="add_event_from">From:</string>
     <string name="add_event_pick_location_desc">Pick location</string>
     <string name="event_info_join_button">Join</string>
-    <string name="lorem_ipsum_3p">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas sodales fermentum felis, vitae congue ante rutrum et. Nullam auctor tellus ac eros lacinia dapibus. Nam porttitor suscipit turpis pellentesque porttitor. Donec finibus tellus eu arcu bibendum, vel tincidunt purus gravida. Aenean eu ex maximus, vehicula magna vitae, mattis justo. Donec at lectus ut ligula molestie pulvinar eget in mauris. Curabitur hendrerit at massa non ornare. Aliquam a condimentum ante.  Duis non congue nunc. Cras in augue orci. Sed vitae commodo massa. Etiam aliquam arcu sed eros facilisis, in varius mi commodo. Sed sapien est, congue non vulputate ut, eleifend at turpis. Cras gravida libero nibh, sit amet laoreet odio ullamcorper eget. Donec eget dictum diam. Fusce dictum sed enim vitae vestibulum. Curabitur at aliquam lorem. Vestibulum tempus egestas nulla, ullamcorper accumsan nisi accumsan vitae.  Nullam gravida, velit id rhoncus molestie, nibh turpis efficitur nisi, nec maximus purus nibh sit amet urna. Donec non rutrum quam, vel elementum mauris. Ut nec magna vitae magna faucibus lobortis. Donec lobortis ligula neque. Mauris lacinia lectus sit amet mauris dictum blandit. Vestibulum aliquet dignissim semper. Quisque in consequat quam, nec lobortis lectus. Nullam facilisis, lacus at viverra dignissim, libero massa sagittis dui, nec iaculis massa libero ut sem. Mauris vitae vulputate orci. Suspendisse id sem quis ligula scelerisque ornare. Sed at iaculis odio.</string>
     <string name="event_info_chat_button">Chat</string>
     <string name="event_info_attending">Attending: </string>
     <string name="map_mapTxt">Map</string>
@@ -29,5 +28,13 @@
     <string name="map_hybridTxt">Hybrid</string>
     <string name="event_info_host">Host</string>
     <string name="test_event">Test Event</string>
-    <string name="title_activity_fire_base_auth">Mepo</string>
+    <string name="title_activity_fire_base_auth">StatisticsPro</string>
+    <string name="first_color">first_color</string>
+    <string name="second_color">second_color</string>
+    <string name="third_color">third_color</string>
+    <string name="tolerance">tolerance</string>
+    <string name="chosen_number_frag_stat_btn">הרץ סטטיסטיקה</string>
+    <string name="chosen_number_frag_ET_start_date">תאריך התחלה</string>
+    <string name="chosen_number_frag_ET_end_date">תאריך סיום</string>
+    <string name="date_isnt_valid">תאריך לא תקין</string>
 </resources>

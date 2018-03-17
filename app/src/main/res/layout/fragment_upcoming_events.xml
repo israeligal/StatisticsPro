@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.shaha.mepo.Fragments.PersonalAreaFragment">
+    tools:context="com.example.rami.statistics_pro.Fragments.PersonalAreaFragment">
 
     <ListView
         android:id="@+id/upcoming_events_list_view"

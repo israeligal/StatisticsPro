@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.shaha.mepo">
+    package="com.example.rami.statistics_pro">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -21,28 +21,25 @@
         android:supportsRtl="false"
         android:theme="@style/AppTheme"
         tools:replace="android:supportsRtl">
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBpCdjRFpac5hD3rxv5XlDVawNwZp1SalQ" />
+            android:value="AIzaSyDkCID5Hd-SoUdFxvKtQEaQGEGsgJB6gjg" />
 
         <activity
-            android:name=".FirebaseAuth"
+            android:name="com.example.rami.statistics_pro.FirebaseAuth"
             android:label="@string/title_activity_fire_base_auth">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
 
         <activity
-            android:name=".MainActivity"/>
-        <activity android:name=".AddEventActivity" />
-        <activity
-            android:name=".EventInfoPopUpActivity"
-            android:theme="@style/PopUpTheme" />
+            android:name="com.example.rami.statistics_pro.MainActivity"/>
+
 
     </application>
 
