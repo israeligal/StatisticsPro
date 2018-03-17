@@ -37,4 +37,5 @@
     <string name="chosen_number_frag_ET_start_date">תאריך התחלה</string>
     <string name="chosen_number_frag_ET_end_date">תאריך סיום</string>
     <string name="date_isnt_valid">תאריך לא תקין</string>
+    <string name="download_statistics_file">מוריד קובץ סטטיסטיקה</string>
 </resources>
