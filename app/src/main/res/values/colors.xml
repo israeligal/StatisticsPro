@@ -1,9 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
+    <!--<color name="colorPrimary">#3F51B5</color> 3493EC 303F9F-->
+    <!--<color name="colorPrimary">#3493EC</color>-->
+    <color name="colorPrimary">#E54C82</color>
+    <color name="colorPrimaryText">#001374</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="selectedNumbers">#303F9F</color>
+    <color name="numberStatisticsBackground">#E54C82</color>
     <color name="details">#c0c0c0</color>
     <color name="popupBackground">#FFFFFF</color>
     <color name="event_details">#87CEFA</color>
+    <color name="tabSelected">#87CEFA</color>
+    <color name="tabsColor">#FAFAFA</color>
+    <color name="tabsTextColor">#4B4954</color>
+    <color name="tabSelectedColor">#001374</color>
+    <color name="tabSelectedTextColor">#00008B</color>
+
 </resources>
