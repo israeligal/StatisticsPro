@@ -1,6 +1,7 @@
 package com.example.rami.statistics_pro.Games.GameTripleSeven;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TableLayout;
@@ -8,6 +9,8 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import com.example.rami.statistics_pro.Interfaces.Game;
 import com.example.rami.statistics_pro.Interfaces.Raffle;
+import com.example.rami.statistics_pro.Interfaces.Statistics;
+import com.example.rami.statistics_pro.SqlLiteDataBase.StatisticsProContracts;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,6 +25,7 @@ public class GameTripleSeven implements Game {
     static final int table_columns = 10;
     private TableLayout game_table;
     private ArrayList<Raffle> gameRaffles;
+    private Uri SQL_RAFFLE_DB = StatisticsProContracts.TripleSevenRaffleEntry.CONTENT_URI;
 
     public GameTripleSeven(Context context, View.OnClickListener clickListener){
         gameRaffles = new ArrayList<>();
@@ -59,11 +63,16 @@ public class GameTripleSeven implements Game {
 
 
     @Override
-    public void addRaffleFromCsv(String[] csvString) {
+    public Raffle addRaffleFromCsv(String[] csvString) {
         System.out.println(Arrays.toString(csvString));
         RaffleTripleSeven raffleTripleSeven = new RaffleTripleSeven(csvString);
         gameRaffles.add(raffleTripleSeven);
-        System.out.println(raffleTripleSeven.toString());
+        return raffleTripleSeven;
+    }
+
+    @Override
+    public Uri getSqlRaffleDb() {
+        return SQL_RAFFLE_DB;
     }
 
     public ArrayList<Raffle> getGameRaffles() {
@@ -96,4 +105,10 @@ public class GameTripleSeven implements Game {
     public String getCsvUrl() {
         return CsvContractTripleSeven.CSV_URL;
     }
+
+    @Override
+    public void loadStatistics(){
+        StatisticsTripleSeven.init(SQL_RAFFLE_DB);
+    }
+
 }

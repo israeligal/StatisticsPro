@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:ads="http://schemas.android.com/apk/lib/com.google.ads"
     android:orientation="vertical"
@@ -42,8 +42,6 @@
             android:layout_height="wrap_content"
             android:labelFor="@string/chosen_number_frag_ET_start_date"
             android:hint="@string/chosen_number_frag_ET_start_date"
-
-
             />
         <EditText
             android:id="@+id/timeUntilEditText"
@@ -54,5 +52,25 @@
             />
     </LinearLayout>
 
+    <TableLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <TableRow
+            android:id="@+id/statisticsAppearanceRow"
+            android:layout_weight="1"
+            android:background="@color/statisticsAppearanceRowBackground">
 
-</LinearLayout>
+        </TableRow>
+
+    </TableLayout>
+
+    <ListView
+        android:id="@+id/statisticsListView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/statisticsListViewBackground"
+        >
+
+    </ListView>
+
+</ScrollView>

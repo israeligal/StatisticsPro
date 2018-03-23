@@ -16,5 +16,7 @@
     <color name="tabsTextColor">#4B4954</color>
     <color name="tabSelectedColor">#001374</color>
     <color name="tabSelectedTextColor">#00008B</color>
+    <color name="statisticsAppearanceRowBackground">#00008B</color>
+    <color name="statisticsListViewBackground">#00008B</color>
 
 </resources>

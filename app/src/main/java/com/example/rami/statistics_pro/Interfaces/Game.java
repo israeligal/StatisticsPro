@@ -1,5 +1,6 @@
 package com.example.rami.statistics_pro.Interfaces;
 
+import android.net.Uri;
 import android.widget.TableLayout;
 
 import java.util.ArrayList;
@@ -16,8 +17,9 @@ public interface Game {
 
     public void setGameRaffles(ArrayList<Raffle> gameRaffles);
 
-    public void addRaffleFromCsv(String[] csvString);
-
+    public Raffle addRaffleFromCsv(String[] csvString);
+    public Uri getSqlRaffleDb();
+    public void loadStatistics();
     public String getCsvUrl();
 
 }

@@ -2,6 +2,7 @@ package com.example.rami.statistics_pro.Fragments;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -40,7 +42,7 @@ import java.util.GregorianCalendar;
 import java.util.Map;
 
 public class ChooseNumbersFragment extends Fragment {
-    LinearLayout mview;
+    ScrollView mview;
     Game curGame;
     ArrayList<CheckBox> choosenNumbers;
     TableRow choosenNumbersTableRow;
@@ -70,7 +72,7 @@ public class ChooseNumbersFragment extends Fragment {
                              Bundle savedInstanceState) {
 
 
-        mview = (LinearLayout) inflater.inflate(R.layout.fragment_choose_numbers_statistics, container, false);
+        mview = (ScrollView) inflater.inflate(R.layout.fragment_choose_numbers_statistics, container, false);
 
         final Context mContext = mview.getContext();
         View.OnClickListener onClickListener = createGameOnClickListerner(mContext);
@@ -94,13 +96,14 @@ public class ChooseNumbersFragment extends Fragment {
             public void onClick(View view) {
                 FileReader fileReader = CsvUtils.readCsvFile(mview, curGame.getCsvUrl());
                 if (fileReader != null) {
-                    loadStatistics(fileReader);
+                    loadRaffles(fileReader, mview);
+                    loadStatistics();
                 }
             }
         });
     }
 
-    private void loadStatistics(FileReader fileReader) {
+    private void loadRaffles(FileReader fileReader, View mview) {
         try {
             CSVReader reader = new CSVReader(fileReader);
 
@@ -109,12 +112,20 @@ public class ChooseNumbersFragment extends Fragment {
             while ((nextLine = reader.readNext()) != null) {
                 // nextLine[] is an array of values from the line
 
-                curGame.addRaffleFromCsv(nextLine);
-//                System.out.println(curGame.getGameRaffles().get(0).toString());
+                Raffle raffle = curGame.addRaffleFromCsv(nextLine);
+                ContentValues raffleContentValues = raffle.raffleToContentValues();
+                mview.getContext().getContentResolver().insert(curGame.getSqlRaffleDb(), raffleContentValues);
+
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+    }
+
+    private void loadStatistics(){
+        curGame.loadStatistics();
+
 
     }
 
