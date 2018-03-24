@@ -39,4 +39,7 @@
     <string name="date_isnt_valid">תאריך לא תקין</string>
     <string name="download_statistics_file">מוריד קובץ סטטיסטיקה</string>
     <string name="please_chose_start_date_first">בבקשה בחר תאריך התחלה קודם</string>
+    <string name="appearance_number">מספר הופעות:</string>
+    <string name="choosen_numbers">מספרים נבחרים</string>
+    <string name="chosen_number_tr_string">chosen_number_table_row_string</string>
 </resources>

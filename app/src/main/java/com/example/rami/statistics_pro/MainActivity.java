@@ -70,7 +70,6 @@ public class MainActivity extends AppCompatActivity {
                         mFirebaseAuth.signOut();
                         finish(); //finish Main Activity return to FirebaseAuth
                     default:
-                        System.out.println("erererererer\n\nerererererer\n\n");
                         return true;
                 }
             }

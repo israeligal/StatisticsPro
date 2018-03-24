@@ -4,7 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.example.rami.statistics_pro.Interfaces.Raffle;
-import com.example.rami.statistics_pro.SqlLiteDataBase.StatisticsProContracts;
+import com.example.rami.statistics_pro.SqlLiteDataBase.StatisticsProContracts.TripleSevenRaffleEntry;
+import com.example.rami.statistics_pro.SqlLiteDataBase.StatisticsProContracts.TripleSevenRaffleNumbersEntry;
 
 import java.util.Arrays;
 
@@ -49,12 +50,12 @@ public class RaffleTripleSeven implements Raffle, Parcelable{
         mRaffleYear = in.readInt();
         mRaffleDate = in.readString();
 
-        String raffleResultNumbersString = in.readString(); //read numbers string array to int array
-        String[] s = raffleResultNumbersString.split(",");
-        for (int curr = 0; curr < s.length; curr++)
-            mRaffleResultNumbers[curr] = Integer.parseInt(s[curr]);
+//        String raffleResultNumbersString = in.readString(); //read numbers string array to int array
+//        String[] s = raffleResultNumbersString.split(",");
+//        for (int curr = 0; curr < s.length; curr++)
+//            mRaffleResultNumbers[curr] = Integer.parseInt(s[curr]);
 //        mRaffleResultNumbers = in.createIntArray();
-
+        in.readIntArray(mRaffleResultNumbers);
         mRaffleId = in.readInt();
         mRaffleWinnersNumber = in.readInt();
     }
@@ -173,24 +174,31 @@ public class RaffleTripleSeven implements Raffle, Parcelable{
         dest.writeInt(mRaffleMonth);
         dest.writeInt(mRaffleYear);
         dest.writeString(mRaffleDate);
-
-        String stringNumbersArray = Arrays.toString(mRaffleResultNumbers);
-
-        dest.writeString(stringNumbersArray);
+        dest.writeIntArray(mRaffleResultNumbers);
         dest.writeInt(mRaffleId);
         dest.writeInt(mRaffleWinnersNumber);
     }
 
     public ContentValues raffleToContentValues(){
         ContentValues contentValues = new ContentValues();
-        contentValues.put(StatisticsProContracts.TripleSevenRaffleEntry.COLUMN_RAFFLE_ID, mRaffleId);
-        contentValues.put(StatisticsProContracts.TripleSevenRaffleEntry.COLUMN_RAFFLE_DAY,  mRaffleDay);
-        contentValues.put(StatisticsProContracts.TripleSevenRaffleEntry.COLUMN_RAFFLE_MONTH,  mRaffleMonth);
-        contentValues.put(StatisticsProContracts.TripleSevenRaffleEntry.COLUMN_RAFFLE_YEAR,  mRaffleYear);
-        contentValues.put(StatisticsProContracts.TripleSevenRaffleEntry.COLUMN_RAFFLE_DATE,  mRaffleDate);
-        contentValues.put(StatisticsProContracts.TripleSevenRaffleEntry.COLUMN_RAFFLE_RESULT_NUMBERS,  getRaffleNumbersString());
-        contentValues.put(StatisticsProContracts.TripleSevenRaffleEntry.COLUMN_RAFFLE_WINNERS_NUMBER,  mRaffleWinnersNumber);
+        contentValues.put(TripleSevenRaffleEntry.COLUMN_RAFFLE_ID, mRaffleId);
+        contentValues.put(TripleSevenRaffleEntry.COLUMN_RAFFLE_DAY,  mRaffleDay);
+        contentValues.put(TripleSevenRaffleEntry.COLUMN_RAFFLE_MONTH,  mRaffleMonth);
+        contentValues.put(TripleSevenRaffleEntry.COLUMN_RAFFLE_YEAR,  mRaffleYear);
+        contentValues.put(TripleSevenRaffleEntry.COLUMN_RAFFLE_DATE,  mRaffleDate);
+        contentValues.put(TripleSevenRaffleEntry.COLUMN_RAFFLE_RESULT_NUMBERS,  getRaffleNumbersString());
+        contentValues.put(TripleSevenRaffleEntry.COLUMN_RAFFLE_WINNERS_NUMBER,  mRaffleWinnersNumber);
         return contentValues;
     }
+    public ContentValues numbersToContentValues(){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(TripleSevenRaffleNumbersEntry.COLUMN_RAFFLE_ID, mRaffleId);
+        StringBuilder stringBuilder = new StringBuilder(TripleSevenRaffleNumbersEntry.COLUMN_RAFFLE_NUMBER_1);
+        stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+        for (int i = 0 ; i < mRaffleResultNumbers.length ; i++) {
+            contentValues.put(stringBuilder.toString() + i,  mRaffleResultNumbers[i]);
+        }
 
+        return contentValues;
+    }
 }

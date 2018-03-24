@@ -13,23 +13,25 @@ import com.example.rami.statistics_pro.Interfaces.Statistics;
 import com.example.rami.statistics_pro.SqlLiteDataBase.StatisticsProContracts;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 
 public class GameTripleSeven implements Game {
 
     static final int TOTAL_NUMBERS = 70;
     static final int FILLED_NUMBERS = 17;
-    static final int RESULT_NUMBERS = 7;
+    static final int RESULT_NUMBER = 7;
     static final int table_rows = 7;
     static final int table_columns = 10;
-    private TableLayout game_table;
+    private TableLayout gameTable;
     private ArrayList<Raffle> gameRaffles;
     private Uri SQL_RAFFLE_DB = StatisticsProContracts.TripleSevenRaffleEntry.CONTENT_URI;
+    private Uri SQL_RAFFLE_NUMBERS_DB = StatisticsProContracts.TripleSevenRaffleNumbersEntry.CONTENT_URI;
+    private StatisticsTripleSeven mStatisticsTripleSeven;
 
     public GameTripleSeven(Context context, View.OnClickListener clickListener){
         gameRaffles = new ArrayList<>();
-        game_table = new TableLayout(context);
+        gameTable = new TableLayout(context);
+        mStatisticsTripleSeven = new StatisticsTripleSeven(this);
         CheckBox[][] buttonsArray = new CheckBox[table_rows][table_columns];
         for(int row = 0; row < buttonsArray.length; row++) {
             TableRow currentTableRow = new TableRow(context);
@@ -39,9 +41,10 @@ public class GameTripleSeven implements Game {
                 buttonsArray[row][col] = curButton;
                 currentTableRow.addView(curButton);
             }
-            game_table.addView(currentTableRow);
+            gameTable.addView(currentTableRow);
         }
-        game_table.setPadding(5,5,5,5);
+        gameTable.setPadding(5,5,5,5);
+
     }
 
 
@@ -61,10 +64,8 @@ public class GameTripleSeven implements Game {
         return curButton;
     }
 
-
     @Override
     public Raffle addRaffleFromCsv(String[] csvString) {
-        System.out.println(Arrays.toString(csvString));
         RaffleTripleSeven raffleTripleSeven = new RaffleTripleSeven(csvString);
         gameRaffles.add(raffleTripleSeven);
         return raffleTripleSeven;
@@ -75,6 +76,11 @@ public class GameTripleSeven implements Game {
         return SQL_RAFFLE_DB;
     }
 
+    @Override
+    public Uri getSqlRaffleNumbersDb() {
+        return SQL_RAFFLE_NUMBERS_DB;
+    }
+
     public ArrayList<Raffle> getGameRaffles() {
         return gameRaffles;
     }
@@ -83,7 +89,7 @@ public class GameTripleSeven implements Game {
         this.gameRaffles = gameRaffles;
     }
 
-    public int getAmount_numbers() {
+    public int getTOTAL_NUMBERS() {
         return TOTAL_NUMBERS;
     }
 
@@ -93,12 +99,12 @@ public class GameTripleSeven implements Game {
         return FILLED_NUMBERS;
     }
 
-    public TableLayout getGame_table() {
-        return game_table;
+    public TableLayout getGameTable() {
+        return gameTable;
     }
 
-    public void setGame_table(TableLayout game_table) {
-        this.game_table = game_table;
+    public void setGameTable(TableLayout gameTable) {
+        this.gameTable = gameTable;
     }
 
 
@@ -107,8 +113,17 @@ public class GameTripleSeven implements Game {
     }
 
     @Override
-    public void loadStatistics(){
-        StatisticsTripleSeven.init(SQL_RAFFLE_DB);
+    public int getResult_Number() {
+        return RESULT_NUMBER;
     }
 
+//    public void getStatistics(ArrayList<CheckBox> choosenNumbers, String timeFrom, String timeEnd, TableRow tableRow, ListView listView){
+//        StatisticsTripleSeven.time_stats_from_sql(SQL_RAFFLE_DB, choosenNumbers, timeFrom, timeEnd, tableRow, listView);
+//        StatisticsTripleSeven.time_stats_from_list(this, choosenNumbers, timeFrom, timeEnd, tableRow, listView);
+//    }
+
+    @Override
+    public Statistics getStatistics(){
+        return mStatisticsTripleSeven;
+    }
 }

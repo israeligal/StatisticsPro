@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 
 public class StatisticsProProvider extends ContentProvider {
@@ -38,6 +39,8 @@ public class StatisticsProProvider extends ContentProvider {
 
         sUriMatcher.addURI(StatisticsProContracts.CONTENT_AUTHORITY, StatisticsProContracts.PATH_TRIPLE_SEVEN_RAFFLES, RAFFLES);
         sUriMatcher.addURI(StatisticsProContracts.CONTENT_AUTHORITY, StatisticsProContracts.PATH_TRIPLE_SEVEN_RAFFLES + "/#", RAFFLE_ID);
+        sUriMatcher.addURI(StatisticsProContracts.CONTENT_AUTHORITY, StatisticsProContracts.PATH_TRIPLE_SEVEN_RAFFLES_NUMBERS + "/#", RAFFLES);
+        sUriMatcher.addURI(StatisticsProContracts.CONTENT_AUTHORITY, StatisticsProContracts.PATH_TRIPLE_SEVEN_RAFFLES_NUMBERS + "/#", RAFFLE_ID);
 
 
 
@@ -45,6 +48,7 @@ public class StatisticsProProvider extends ContentProvider {
     }
     @Override
     public boolean onCreate() {
+        Log.d("TAg", "CREATING STATISTICSFB HELPER");
         mStatisticsProDbHelper = new StatisticsProDbHelper(getContext());
         return true;
     }

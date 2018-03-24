@@ -16,6 +16,7 @@ import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -26,38 +27,40 @@ import android.widget.Toast;
 import com.example.rami.statistics_pro.Games.GameTripleSeven.GameTripleSeven;
 import com.example.rami.statistics_pro.Interfaces.Game;
 import com.example.rami.statistics_pro.Interfaces.Raffle;
+import com.example.rami.statistics_pro.Interfaces.Statistics;
 import com.example.rami.statistics_pro.R;
 import com.example.rami.statistics_pro.Utils.CsvUtils;
-import com.opencsv.CSVParser;
 import com.opencsv.CSVReader;
-import com.opencsv.ICSVParser;
+
+import org.w3c.dom.Text;
 
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Map;
 
 public class ChooseNumbersFragment extends Fragment {
-    ScrollView mview;
+    LinearLayout mview;
     Game curGame;
-    ArrayList<CheckBox> choosenNumbers;
+    ArrayList<CheckBox> chosenNumbers;
     TableRow choosenNumbersTableRow;
     private int dayFinal, monthFinal, yearFinal;
     DatePickerDialog.OnDateSetListener from_dateListener, to_dateListener;
     private TimePickerDialog.OnTimeSetListener from_timeListener, to_timeListener;
     private EditText timeFromEditText, timeUntilEditText;
     private Date fromDate, toDate;
+    private Button mSearchBtn;
     private static String LOG_TAG = ChooseNumbersFragment.class.getName();
 
 
 
     public ChooseNumbersFragment() {
         // Required empty public constructor
-        choosenNumbers = new ArrayList<>();
+        chosenNumbers = new ArrayList<>();
 
     }
 
@@ -72,16 +75,17 @@ public class ChooseNumbersFragment extends Fragment {
                              Bundle savedInstanceState) {
 
 
-        mview = (ScrollView) inflater.inflate(R.layout.fragment_choose_numbers_statistics, container, false);
-
+        ScrollView scrollView = (ScrollView) inflater.inflate(R.layout.fragment_choose_numbers_statistics, container, false);
+        mview = (LinearLayout) scrollView.getChildAt(0);
         final Context mContext = mview.getContext();
         View.OnClickListener onClickListener = createGameOnClickListerner(mContext);
         // here we can add user choice for different games
         curGame = new GameTripleSeven(mview.getContext(), onClickListener);
-        TableLayout gameTable = curGame.getGame_table();
+        Statistics curStatistics = curGame.getStatistics();
+        TableLayout gameTable = curGame.getGameTable();
         choosenNumbersTableRow = create_chosen_numbers_table(mContext);
         mview.addView(gameTable, 0);
-
+        mSearchBtn = mview.findViewById(R.id.search_btn);
         setEditTextTime();
         setDateAndTimeListener();
         setSearchButton();
@@ -91,6 +95,7 @@ public class ChooseNumbersFragment extends Fragment {
 
     private void setSearchButton() {
         Button btn = (Button) mview.findViewById(R.id.search_btn);
+        resetView(); // TODO create reset view
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -101,6 +106,10 @@ public class ChooseNumbersFragment extends Fragment {
                 }
             }
         });
+    }
+
+    private void resetView() {
+        // TODO create reset view
     }
 
     private void loadRaffles(FileReader fileReader, View mview) {
@@ -115,6 +124,9 @@ public class ChooseNumbersFragment extends Fragment {
                 Raffle raffle = curGame.addRaffleFromCsv(nextLine);
                 ContentValues raffleContentValues = raffle.raffleToContentValues();
                 mview.getContext().getContentResolver().insert(curGame.getSqlRaffleDb(), raffleContentValues);
+//                ContentValues raffleNumbersContentValues = raffle.numbersToContentValues(); TODO fix content provider
+//                mview.getContext().getContentResolver().insert(curGame.getSqlRaffleNumbersDb(), raffleNumbersContentValues);
+
 
             }
         } catch (IOException e) {
@@ -124,7 +136,28 @@ public class ChooseNumbersFragment extends Fragment {
     }
 
     private void loadStatistics(){
-        curGame.loadStatistics();
+        String timeFrom = timeFromEditText.getText().toString();
+        String timeTo = timeUntilEditText.getText().toString();
+        TableRow tableRow = mview.findViewById(R.id.statisticsAppearanceRow);
+        ListView listView = mview.findViewById(R.id.statisticsListView);
+
+        Statistics statistics = curGame.getStatistics();
+        statistics.time_stats_from_list(timeFrom, timeTo);
+        int[] numberAppearance = statistics.statisticsNumberAppearance(chosenNumbers);
+        Log.d(LOG_TAG, "numberAppearance " + Arrays.toString(numberAppearance));
+        TextView numberone = mview.findViewById(R.id.number_one_tv);
+        numberone.setVisibility(TextView.VISIBLE);
+        int number = numberAppearance[0];
+        System.out.println("number" + number);
+        numberone.setText(String.valueOf(number));
+        tableRow.setVisibility(View.VISIBLE);
+        for(int i = 2; i < numberAppearance.length; ++i){// TODO put this inside game related class
+            TextView textView = (TextView)tableRow.getChildAt(i);
+            int num = numberAppearance[i];
+            textView.setText(String.valueOf(num));
+            textView.setVisibility(TextView.VISIBLE);
+            Log.d(LOG_TAG, "set text to" + num);
+        }
 
 
     }
@@ -136,15 +169,17 @@ public class ChooseNumbersFragment extends Fragment {
             public void onClick(View view) {
                 int filled_numbers = curGame.getFilled_numbers();
                 CheckBox checkBox = (CheckBox) view;
-                if (choosenNumbers.size() >= filled_numbers && checkBox.isChecked()) {
+
+
+                if (chosenNumbers.size() >= filled_numbers && checkBox.isChecked()) {
                     Log.d(LOG_TAG, "game clickListener, maximal number has been chosen");
 
                     checkBox.setChecked(false);
                     Toast.makeText(mContext, "נבחר מספר מקסימלי של מספרים", Toast.LENGTH_SHORT).show();
                 } else if (!checkBox.isChecked()) {
                     System.out.println("else if label");
-                    int removeNumberIndex = choosenNumbers.indexOf(checkBox);
-                    choosenNumbers.remove(checkBox);
+                    int removeNumberIndex = chosenNumbers.indexOf(checkBox);
+                    chosenNumbers.remove(checkBox);
                     int i;
                     CharSequence lastText;
                     CharSequence curText = "";
@@ -157,9 +192,15 @@ public class ChooseNumbersFragment extends Fragment {
 
                 } else {
                     System.out.println("else label");
-                    TextView textView = (TextView) choosenNumbersTableRow.getChildAt(choosenNumbers.size());
-                    choosenNumbers.add(checkBox);
+                    TextView textView = (TextView) choosenNumbersTableRow.getChildAt(chosenNumbers.size());
+                    chosenNumbers.add(checkBox);
                     textView.setText(checkBox.getText());
+                }
+                if(chosenNumbers.size() < 3){
+                    mSearchBtn.setEnabled(false);
+                }
+                else{
+                    mSearchBtn.setEnabled(true);
                 }
             }
         };
@@ -174,7 +215,7 @@ public class ChooseNumbersFragment extends Fragment {
     //TABLE
     private TableRow create_chosen_numbers_table(Context context) {
         TableRow tableRow = (TableRow) mview.findViewById(R.id.chooseNumbersRow);
-        for (int i = 0; i < curGame.getFilled_numbers(); i++) {
+        for (int i = 0; i < curGame.getResult_Number(); i++) {
             TextView curTextView = (TextView) LayoutInflater.from(context).inflate(R.layout.textview_chosen_numbers_triple_seven, null);
             tableRow.addView(curTextView);
         }
@@ -241,6 +282,7 @@ public class ChooseNumbersFragment extends Fragment {
                 SimpleDateFormat ft = new SimpleDateFormat("dd/MM/yyyy");
                 Toast.makeText(mview.getContext(), ft.format(fromDate).toString(), Toast.LENGTH_SHORT).show();
                 timeFromEditText.setText(ft.format(fromDate));
+
             }
         };
 

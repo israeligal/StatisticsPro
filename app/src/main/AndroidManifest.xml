@@ -44,6 +44,10 @@
         <activity
             android:name="com.example.rami.statistics_pro.MainActivity"/>
 
+        <provider android:name=".SqlLiteDataBase.StatisticsProProvider"
+            android:authorities="com.example.rami.statistics_pro"
+            android:exported="false" >
+        </provider>
 
     </application>
 
