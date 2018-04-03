@@ -44,13 +44,13 @@ public class GameTripleSeven implements Game {
             currentTableRow.setWeightSum(1);
 
             for (int col = 0; col < buttonsArray[row].length; col++) {
-                TableRow.LayoutParams btn_params = new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 4, 0.1f);
+                TableRow.LayoutParams btn_params = new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 30, 0.1f);
                 ToggleButton curButton = createNewToggleButton(currentTableRow,clickListener, row, col);
                 buttonsArray[row][col] = curButton;
                 btn_params.setMargins(5,0,5,0);
                 currentTableRow.addView(curButton, btn_params);
             }
-            TableLayout.LayoutParams row_params = new TableLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 4, 1f);
+            TableLayout.LayoutParams row_params = new TableLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 100, 1f);
             gameTable.addView(currentTableRow, row_params);
 
         }

@@ -225,7 +225,7 @@ public class ChooseNumbersFragment extends Fragment {
     private void set_chosen_numbers_table_style(Context context, TableRow tableRow) {
 //        Drawable border = getResources().getDrawable(R.drawable.border);
         Drawable border = getResources().getDrawable(R.drawable.circular_border);
-        tableRow.setBackgroundColor(Color.BLUE); // set from xml
+//        tableRow.setBackgroundColor(Color.BLUE); // set from xml
         float cols_num = tableRow.getChildCount();
         for (int i = 0; i < cols_num; i++) {
             TextView curTextView = (TextView) tableRow.getChildAt(i);
@@ -237,6 +237,7 @@ public class ChooseNumbersFragment extends Fragment {
             curTextView.setTextSize(32);
             curTextView.setTextAlignment(TextView.TEXT_ALIGNMENT_CENTER);
 //            curTextView.setGravity(View.TEXT_ALIGNMENT_CENTER);
+//            curTextView.setBackground(Color.BLUE);
             curTextView.setBackground(border);
         }
     }
