@@ -20,7 +20,7 @@
         app:tabBackground="@color/colorPrimaryText"
         app:tabIndicatorColor="@color/numberStatisticsBackground"
         app:tabSelectedTextColor="@color/tabSelectedColor"
-        app:tabTextColor="@color/colorPrimaryText"
+        app:tabTextColor="@color/tabsTextColor"
 
 
 

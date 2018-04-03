@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:ads="http://schemas.android.com/apk/lib/com.google.ads"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     >
@@ -11,25 +10,33 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:id="@+id/chooseNumbersLayout"
-
         >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
 
+            >
+            <TableLayout
+                android:id="@+id/gameTableId"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
 
+                >
+
+            </TableLayout>
+        </LinearLayout>
 
 
 <TableLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/border"
+
     >
     <TableRow
         android:id="@+id/chooseNumbersRow"
         android:layout_weight="1"
-        android:background="@color/selectedNumbers"
         >
-
-
-
 
 
     </TableRow>
@@ -37,7 +44,7 @@
 </TableLayout>
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="horizontal">
         <Button
             android:id="@+id/search_btn"
@@ -47,19 +54,24 @@
             android:text="@string/chosen_number_frag_stat_btn"
             />
         <EditText
-            android:id="@+id/timeFromEditText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:labelFor="@string/chosen_number_frag_ET_start_date"
-            android:hint="@string/chosen_number_frag_ET_start_date"
-            />
-        <EditText
             android:id="@+id/timeUntilEditText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:labelFor="@string/chosen_number_frag_ET_end_date"
             android:hint="@string/chosen_number_frag_ET_end_date"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
             />
+        <EditText
+            android:id="@+id/timeFromEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:labelFor="@string/chosen_number_frag_ET_start_date"
+            android:hint="@string/chosen_number_frag_ET_start_date"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            />
+
     </LinearLayout>
 
     <TableLayout
@@ -67,61 +79,69 @@
         android:layout_height="wrap_content">
         <TableRow
             android:id="@+id/statisticsAppearanceRow"
-            android:background="@color/statisticsAppearanceRowBackground"
             android:visibility="gone"
+            android:layout_width="match_parent"
             >
             <TextView
                 android:id="@+id/number_one_tv"
                 android:text=""
                 android:visibility="gone"
+                android:background="@drawable/circular_border"
 
                 />
             <TextView
                 android:id="@+id/number_two_tv"
                 android:text=""
                 android:visibility="gone"
+                android:background="@drawable/circular_border"
                 />
             <TextView
                 android:id="@+id/number_three_tv"
                 android:text=""
                 android:visibility="gone"
+                android:background="@drawable/circular_border"
                 />
             <TextView
                 android:id="@+id/number_four_tv"
                 android:text=""
                 android:visibility="gone"
+                android:background="@drawable/circular_border"
                 />
             <TextView
                 android:id="@+id/number_five_tv"
                 android:text=""
                 android:visibility="gone"
+                android:background="@drawable/circular_border"
                 />
             <TextView
                 android:id="@+id/number_six_tv"
                 android:text=""
                 android:visibility="gone"
+                android:background="@drawable/circular_border"
                 />
             <TextView
                 android:id="@+id/number_seven_tv"
                 android:text=""
                 android:visibility="gone"
+                android:background="@drawable/circular_border"
                 />
             <TextView
                 android:id="@+id/chosen_number_table_row"
                 android:text="@string/chosen_number_tr_string"
                 android:visibility="gone"
+
                 />
         </TableRow>
 
     </TableLayout>
 
-    <ListView
-        android:id="@+id/statisticsListView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@color/statisticsListViewBackground"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/statisticsLinearLayout"
+        android:orientation="horizontal"
         >
 
-    </ListView>
+    </LinearLayout>
     </LinearLayout>
 </ScrollView>

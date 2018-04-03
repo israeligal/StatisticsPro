@@ -6,6 +6,7 @@ import android.util.Log;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TableRow;
+import android.widget.ToggleButton;
 
 import com.example.rami.statistics_pro.Interfaces.Game;
 import com.example.rami.statistics_pro.Interfaces.Raffle;
@@ -24,7 +25,7 @@ public class StatisticsTripleSeven implements Statistics {
         game = gameTripleSeven;
     }
 
-    public void time_stats_from_sql(Uri sql_raffle_db, ArrayList<CheckBox> choosenNumbers, String timeFrom, String timeEnd, TableRow tableRow, ListView listView) {
+    public void time_stats_from_sql(Uri sql_raffle_db, ArrayList<ToggleButton> choosenNumbers, String timeFrom, String timeEnd, TableRow tableRow, ListView listView) {
     }
 
     public void time_stats_from_list(String timeFromFull, String timeEndFull) {
@@ -68,11 +69,11 @@ public class StatisticsTripleSeven implements Statistics {
         }
     }
 
-    public int[] statisticsNumberAppearance( ArrayList<CheckBox> chosenNumbers) {
+    public int[] statisticsNumberAppearance( ArrayList<ToggleButton> chosenNumbers) {
         int[] chosenNumberAppearance = new int[chosenNumbers.size()];
         int i = 0;
-        for (CheckBox checkBox: chosenNumbers) {
-            int num = Integer.parseInt(checkBox.getText().toString());
+        for (ToggleButton toggleButton: chosenNumbers) {
+            int num = Integer.parseInt(toggleButton.getText().toString());
             chosenNumberAppearance[i] = mNumberAppearance[num - 1];
         }
 

@@ -2,14 +2,16 @@ package com.example.rami.statistics_pro.Games.GameTripleSeven;
 
 import android.content.Context;
 import android.net.Uri;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.CheckBox;
+import android.view.ViewGroup;
 import android.widget.TableLayout;
 import android.widget.TableRow;
-import android.widget.TextView;
+import android.widget.ToggleButton;
 import com.example.rami.statistics_pro.Interfaces.Game;
 import com.example.rami.statistics_pro.Interfaces.Raffle;
 import com.example.rami.statistics_pro.Interfaces.Statistics;
+import com.example.rami.statistics_pro.R;
 import com.example.rami.statistics_pro.SqlLiteDataBase.StatisticsProContracts;
 
 import java.util.ArrayList;
@@ -20,7 +22,7 @@ public class GameTripleSeven implements Game {
     static final int TOTAL_NUMBERS = 70;
     static final int FILLED_NUMBERS = 17;
     static final int RESULT_NUMBER = 7;
-    static final int table_rows = 7;
+    static final int table_rows = 4;
     static final int table_columns = 10;
     private TableLayout gameTable;
     private ArrayList<Raffle> gameRaffles;
@@ -28,41 +30,79 @@ public class GameTripleSeven implements Game {
     private Uri SQL_RAFFLE_NUMBERS_DB = StatisticsProContracts.TripleSevenRaffleNumbersEntry.CONTENT_URI;
     private StatisticsTripleSeven mStatisticsTripleSeven;
 
-    public GameTripleSeven(Context context, View.OnClickListener clickListener){
-        gameRaffles = new ArrayList<>();
-        gameTable = new TableLayout(context);
-        mStatisticsTripleSeven = new StatisticsTripleSeven(this);
-        CheckBox[][] buttonsArray = new CheckBox[table_rows][table_columns];
-        for(int row = 0; row < buttonsArray.length; row++) {
-            TableRow currentTableRow = new TableRow(context);
-            for (int col = 0; col < buttonsArray[row].length; col++) {
+    public GameTripleSeven(View view, View.OnClickListener clickListener){
+        Context context = view.getContext();
 
-                CheckBox curButton = createNewCheckBox(context,clickListener, row, col);
+        gameRaffles = new ArrayList<>();
+        gameTable = view.findViewById(R.id.gameTableId);
+        mStatisticsTripleSeven = new StatisticsTripleSeven(this);
+        ToggleButton[][] buttonsArray = new ToggleButton[table_rows][table_columns];
+        for(int row = 0; row < buttonsArray.length; row++) {
+            TableRow currentTableRow = (TableRow) LayoutInflater.from(gameTable.getContext()).inflate(R.layout.game_table_row, gameTable, false);
+
+//            TableRow currentTableRow = (TableRow)gameTable.getChildAt(row);
+            currentTableRow.setWeightSum(1);
+
+            for (int col = 0; col < buttonsArray[row].length; col++) {
+                TableRow.LayoutParams btn_params = new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 4, 0.1f);
+                ToggleButton curButton = createNewToggleButton(currentTableRow,clickListener, row, col);
                 buttonsArray[row][col] = curButton;
-                currentTableRow.addView(curButton);
+                btn_params.setMargins(5,0,5,0);
+                currentTableRow.addView(curButton, btn_params);
             }
-            gameTable.addView(currentTableRow);
+            TableLayout.LayoutParams row_params = new TableLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 4, 1f);
+            gameTable.addView(currentTableRow, row_params);
+
         }
-        gameTable.setPadding(5,5,5,5);
+        gameTable.setStretchAllColumns(true);
+        gameTable.setPadding(3,3,3,3);
 
     }
+    private ToggleButton createNewToggleButton(TableRow currentTableRow, View.OnClickListener clickListener,
+                                               int row, int col){
+        ToggleButton curButton = new ToggleButton(currentTableRow.getContext());
+//        ToggleButton curButton = (ToggleButton) LayoutInflater.from(currentTableRow.getContext()).inflate(R.layout.game_toggle_button_number, currentTableRow, false);
+//        ToggleButton curButton = (ToggleButton)currentTableRow.getChildAt(col);
 
-
-
-    private CheckBox createNewCheckBox(Context context, View.OnClickListener clickListener,
-                                       int row, int col){
-        CheckBox curButton = new CheckBox(context);
         int buttonNumber = row * 10 + col + 1;
         String buttonNumberString = String.valueOf(buttonNumber);
-        TextView buttonNumberTextView = new TextView(context);
-        buttonNumberTextView.setText(buttonNumberString);
-        curButton.setOnClickListener(clickListener);
-        curButton.setText(buttonNumberString);
 
-        curButton.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+        curButton.setOnClickListener(clickListener);
+        curButton.setHeight(4);
+        curButton.setText(buttonNumberString);
+        curButton.setTextOff(buttonNumberString);
+        curButton.setTextOn(buttonNumberString);
+        curButton.setTextSize(6);
+        curButton.setButtonDrawable(R.drawable.check);
 
         return curButton;
     }
+
+//    public GameTripleSeven(View view, View.OnClickListener clickListener){
+//        Context context = view.getContext();
+//
+//        gameRaffles = new ArrayList<>();
+//        gameTable = view.findViewById(R.id.gameTable);
+//        mStatisticsTripleSeven = new StatisticsTripleSeven(this);
+//        ToggleButton[][] buttonsArray = new ToggleButton[table_rows][table_columns];
+//        for(int row = 0; row < buttonsArray.length; row++) {
+//
+//            TableRow currentTableRow =new TableRow(context);
+//            for (int col = 0; col < buttonsArray[row].length; col++) {
+//
+//                ToggleButton curButton = createNewToggleButton(view,clickListener, row, col);
+//
+//                buttonsArray[row][col] = curButton;
+//                currentTableRow.addView(curButton);
+//            }
+//            gameTable.addView(currentTableRow);
+//        }
+//        gameTable.setStretchAllColumns(true);
+//        gameTable.setPadding(5,5,5,5);
+//
+//    }
+
+
 
     @Override
     public Raffle addRaffleFromCsv(String[] csvString) {

@@ -1,6 +1,8 @@
 package com.example.rami.statistics_pro.Interfaces;
 
 import android.net.Uri;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TableLayout;
@@ -9,6 +11,7 @@ import android.widget.TableRow;
 import java.util.ArrayList;
 
 public interface Game {
+
 
     public int getFilled_numbers();
 

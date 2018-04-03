@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -22,6 +22,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 
 import com.example.rami.statistics_pro.Games.GameTripleSeven.GameTripleSeven;
@@ -31,8 +32,6 @@ import com.example.rami.statistics_pro.Interfaces.Statistics;
 import com.example.rami.statistics_pro.R;
 import com.example.rami.statistics_pro.Utils.CsvUtils;
 import com.opencsv.CSVReader;
-
-import org.w3c.dom.Text;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -46,7 +45,7 @@ import java.util.GregorianCalendar;
 public class ChooseNumbersFragment extends Fragment {
     LinearLayout mview;
     Game curGame;
-    ArrayList<CheckBox> chosenNumbers;
+    ArrayList<ToggleButton> chosenNumbers;
     TableRow choosenNumbersTableRow;
     private int dayFinal, monthFinal, yearFinal;
     DatePickerDialog.OnDateSetListener from_dateListener, to_dateListener;
@@ -80,11 +79,12 @@ public class ChooseNumbersFragment extends Fragment {
         final Context mContext = mview.getContext();
         View.OnClickListener onClickListener = createGameOnClickListerner(mContext);
         // here we can add user choice for different games
-        curGame = new GameTripleSeven(mview.getContext(), onClickListener);
+
+
+        curGame = new GameTripleSeven(mview, onClickListener);
         Statistics curStatistics = curGame.getStatistics();
         TableLayout gameTable = curGame.getGameTable();
         choosenNumbersTableRow = create_chosen_numbers_table(mContext);
-        mview.addView(gameTable, 0);
         mSearchBtn = mview.findViewById(R.id.search_btn);
         setEditTextTime();
         setDateAndTimeListener();
@@ -124,7 +124,7 @@ public class ChooseNumbersFragment extends Fragment {
                 Raffle raffle = curGame.addRaffleFromCsv(nextLine);
                 ContentValues raffleContentValues = raffle.raffleToContentValues();
                 mview.getContext().getContentResolver().insert(curGame.getSqlRaffleDb(), raffleContentValues);
-//                ContentValues raffleNumbersContentValues = raffle.numbersToContentValues(); TODO fix content provider
+//                ContentValues raffleNumbersContentValues = raffle.numbersToContentValues(); TODO fix content provider class java
 //                mview.getContext().getContentResolver().insert(curGame.getSqlRaffleNumbersDb(), raffleNumbersContentValues);
 
 
@@ -139,7 +139,7 @@ public class ChooseNumbersFragment extends Fragment {
         String timeFrom = timeFromEditText.getText().toString();
         String timeTo = timeUntilEditText.getText().toString();
         TableRow tableRow = mview.findViewById(R.id.statisticsAppearanceRow);
-        ListView listView = mview.findViewById(R.id.statisticsListView);
+        LinearLayout linearLayout = mview.findViewById(R.id.statisticsLinearLayout);
 
         Statistics statistics = curGame.getStatistics();
         statistics.time_stats_from_list(timeFrom, timeTo);
@@ -148,14 +148,15 @@ public class ChooseNumbersFragment extends Fragment {
         TextView numberone = mview.findViewById(R.id.number_one_tv);
         numberone.setVisibility(TextView.VISIBLE);
         int number = numberAppearance[0];
-        System.out.println("number" + number);
         numberone.setText(String.valueOf(number));
         tableRow.setVisibility(View.VISIBLE);
         for(int i = 2; i < numberAppearance.length; ++i){// TODO put this inside game related class
             TextView textView = (TextView)tableRow.getChildAt(i);
             int num = numberAppearance[i];
             textView.setText(String.valueOf(num));
+            textView.setTextSize(20);
             textView.setVisibility(TextView.VISIBLE);
+            textView.setBackgroundColor(Color.BLUE);
             Log.d(LOG_TAG, "set text to" + num);
         }
 
@@ -167,19 +168,17 @@ public class ChooseNumbersFragment extends Fragment {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int filled_numbers = curGame.getFilled_numbers();
-                CheckBox checkBox = (CheckBox) view;
+                int filled_numbers = curGame.getResult_Number();
+                ToggleButton toggleButton = (ToggleButton) view;
 
-
-                if (chosenNumbers.size() >= filled_numbers && checkBox.isChecked()) {
+                if (chosenNumbers.size() >= filled_numbers && toggleButton.isChecked()) {
                     Log.d(LOG_TAG, "game clickListener, maximal number has been chosen");
-
-                    checkBox.setChecked(false);
+                    toggleButton.setChecked(false);
                     Toast.makeText(mContext, "נבחר מספר מקסימלי של מספרים", Toast.LENGTH_SHORT).show();
-                } else if (!checkBox.isChecked()) {
-                    System.out.println("else if label");
-                    int removeNumberIndex = chosenNumbers.indexOf(checkBox);
-                    chosenNumbers.remove(checkBox);
+                } else if (!toggleButton.isChecked()) {
+                    Log.d(LOG_TAG, "game clickListener, number " + toggleButton.getText() + " toggle off");
+                    int removeNumberIndex = chosenNumbers.indexOf(toggleButton);
+                    chosenNumbers.remove(toggleButton);
                     int i;
                     CharSequence lastText;
                     CharSequence curText = "";
@@ -191,10 +190,10 @@ public class ChooseNumbersFragment extends Fragment {
                     }
 
                 } else {
-                    System.out.println("else label");
+                    Log.d(LOG_TAG, "game clickListener, number " + toggleButton.getText() + " toggle on");
                     TextView textView = (TextView) choosenNumbersTableRow.getChildAt(chosenNumbers.size());
-                    chosenNumbers.add(checkBox);
-                    textView.setText(checkBox.getText());
+                    chosenNumbers.add(toggleButton);
+                    textView.setText(toggleButton.getText());
                 }
                 if(chosenNumbers.size() < 3){
                     mSearchBtn.setEnabled(false);
@@ -216,7 +215,7 @@ public class ChooseNumbersFragment extends Fragment {
     private TableRow create_chosen_numbers_table(Context context) {
         TableRow tableRow = (TableRow) mview.findViewById(R.id.chooseNumbersRow);
         for (int i = 0; i < curGame.getResult_Number(); i++) {
-            TextView curTextView = (TextView) LayoutInflater.from(context).inflate(R.layout.textview_chosen_numbers_triple_seven, null);
+            TextView curTextView = (TextView) LayoutInflater.from(context).inflate(R.layout.game_chosen_number_text_view, tableRow, false);
             tableRow.addView(curTextView);
         }
         set_chosen_numbers_table_style(context, tableRow);
@@ -224,17 +223,20 @@ public class ChooseNumbersFragment extends Fragment {
     }
 
     private void set_chosen_numbers_table_style(Context context, TableRow tableRow) {
-        Drawable border = getResources().getDrawable(R.drawable.border);
-//        tableRow.setBackgroundColor(Color.RED); set from xml
+//        Drawable border = getResources().getDrawable(R.drawable.border);
+        Drawable border = getResources().getDrawable(R.drawable.circular_border);
+        tableRow.setBackgroundColor(Color.BLUE); // set from xml
         float cols_num = tableRow.getChildCount();
         for (int i = 0; i < cols_num; i++) {
             TextView curTextView = (TextView) tableRow.getChildAt(i);
 
             TableRow.LayoutParams params = (TableRow.LayoutParams) curTextView.getLayoutParams();
             params.weight = 1 / cols_num;
-
+            params.setMargins(0,0,5,0);
             curTextView.setLayoutParams(params);
             curTextView.setTextSize(32);
+            curTextView.setTextAlignment(TextView.TEXT_ALIGNMENT_CENTER);
+//            curTextView.setGravity(View.TEXT_ALIGNMENT_CENTER);
             curTextView.setBackground(border);
         }
     }
