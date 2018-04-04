@@ -21,6 +21,9 @@ android {
     }
     productFlavors {
     }
+    sourceSets {
+        main.res.srcDirs += 'src/main/res/drawable/resVector'
+    }
 }
 
 dependencies {

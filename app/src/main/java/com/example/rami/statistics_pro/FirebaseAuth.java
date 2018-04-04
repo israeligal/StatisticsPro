@@ -54,6 +54,7 @@ public class FirebaseAuth extends AppCompatActivity {
                     //we are logged in
                     Intent intent = new Intent(FirebaseAuth.this, MainActivity.class);
                     startActivity(intent);
+                    finish();
                 } else {
                     List<AuthUI.IdpConfig> providers = FirebaseUtils.getProviders();
                     //the user signed off

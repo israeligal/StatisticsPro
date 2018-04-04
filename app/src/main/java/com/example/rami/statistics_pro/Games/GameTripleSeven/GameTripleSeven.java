@@ -1,6 +1,7 @@
 package com.example.rami.statistics_pro.Games.GameTripleSeven;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,17 +14,21 @@ import com.example.rami.statistics_pro.Interfaces.Raffle;
 import com.example.rami.statistics_pro.Interfaces.Statistics;
 import com.example.rami.statistics_pro.R;
 import com.example.rami.statistics_pro.SqlLiteDataBase.StatisticsProContracts;
+import com.example.rami.statistics_pro.Utils.GameStringUtils;
 
 import java.util.ArrayList;
 
 
 public class GameTripleSeven implements Game {
 
-    static final int TOTAL_NUMBERS = 70;
+    private static final int TOTAL_NUMBERS = 70;
     static final int FILLED_NUMBERS = 17;
-    static final int RESULT_NUMBER = 7;
-    static final int table_rows = 4;
-    static final int table_columns = 10;
+    private static final int RESULT_NUMBER = 7;
+    private static final int TABLE_ROWS = 7;
+    private static final int TABLE_COLUMNS = 10;
+    private static final int IMAGE_HEIGHT = 70;
+    private static final int IMAGE_WIDTH = 0;
+
     private TableLayout gameTable;
     private ArrayList<Raffle> gameRaffles;
     private Uri SQL_RAFFLE_DB = StatisticsProContracts.TripleSevenRaffleEntry.CONTENT_URI;
@@ -36,71 +41,66 @@ public class GameTripleSeven implements Game {
         gameRaffles = new ArrayList<>();
         gameTable = view.findViewById(R.id.gameTableId);
         mStatisticsTripleSeven = new StatisticsTripleSeven(this);
-        ToggleButton[][] buttonsArray = new ToggleButton[table_rows][table_columns];
+
+        // create game table
+        ToggleButton[][] buttonsArray = new ToggleButton[TABLE_ROWS][TABLE_COLUMNS];
         for(int row = 0; row < buttonsArray.length; row++) {
-            TableRow currentTableRow = (TableRow) LayoutInflater.from(gameTable.getContext()).inflate(R.layout.game_table_row, gameTable, false);
+//            TableRow currentTableRow = (TableRow) LayoutInflater.from(gameTable.getContext()).inflate(R.layout.game_table_row, gameTable, false);
+            TableRow currentTableRow = new TableRow(gameTable.getContext());
+//            currentTableRow.setWeightSum(1); // a must
 
 //            TableRow currentTableRow = (TableRow)gameTable.getChildAt(row);
-            currentTableRow.setWeightSum(1);
 
             for (int col = 0; col < buttonsArray[row].length; col++) {
-                TableRow.LayoutParams btn_params = new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 30, 0.1f);
+
+                TableRow.LayoutParams btn_params = new TableRow.LayoutParams(IMAGE_WIDTH, IMAGE_HEIGHT);
                 ToggleButton curButton = createNewToggleButton(currentTableRow,clickListener, row, col);
                 buttonsArray[row][col] = curButton;
-                btn_params.setMargins(5,0,5,0);
+                btn_params.setMargins(0,0,0,0);
+                curButton.setPadding(0,0,0,0);
                 currentTableRow.addView(curButton, btn_params);
+
             }
-            TableLayout.LayoutParams row_params = new TableLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 100, 1f);
+            TableLayout.LayoutParams row_params = new TableLayout.LayoutParams(IMAGE_WIDTH, IMAGE_HEIGHT);
+            row_params.setMargins(0,0,0,10);
+            currentTableRow.setPadding(0,0,0,0);
+//            gameTable.setWeightSum(1);
+
             gameTable.addView(currentTableRow, row_params);
 
         }
+//        gameTable.setWeightSum(1);
         gameTable.setStretchAllColumns(true);
-        gameTable.setPadding(3,3,3,3);
+        gameTable.setPadding(0,5,0,5);
 
     }
     private ToggleButton createNewToggleButton(TableRow currentTableRow, View.OnClickListener clickListener,
                                                int row, int col){
+
+        int buttonNumber = row * 10 + col + 1;
+        int resourceId = GameStringUtils.getNumberResourceName(buttonNumber, currentTableRow,false);
         ToggleButton curButton = new ToggleButton(currentTableRow.getContext());
 //        ToggleButton curButton = (ToggleButton) LayoutInflater.from(currentTableRow.getContext()).inflate(R.layout.game_toggle_button_number, currentTableRow, false);
 //        ToggleButton curButton = (ToggleButton)currentTableRow.getChildAt(col);
 
-        int buttonNumber = row * 10 + col + 1;
         String buttonNumberString = String.valueOf(buttonNumber);
 
         curButton.setOnClickListener(clickListener);
-        curButton.setHeight(4);
-        curButton.setText(buttonNumberString);
+        curButton.setText(buttonNumberString); // used for taking the number later
         curButton.setTextOff(buttonNumberString);
         curButton.setTextOn(buttonNumberString);
-        curButton.setTextSize(6);
-        curButton.setButtonDrawable(R.drawable.check);
+        curButton.setContentDescription(buttonNumberString);
+//        curButton.setTextSize(12);
+//        curButton.setBackgroundResource(R.drawable.master_a);
+        curButton.setTextSize(0);
+        curButton.setBackgroundResource(resourceId);
+
+
+//        curButton.setScaleX(0.9f);
+
 
         return curButton;
     }
-
-//    public GameTripleSeven(View view, View.OnClickListener clickListener){
-//        Context context = view.getContext();
-//
-//        gameRaffles = new ArrayList<>();
-//        gameTable = view.findViewById(R.id.gameTable);
-//        mStatisticsTripleSeven = new StatisticsTripleSeven(this);
-//        ToggleButton[][] buttonsArray = new ToggleButton[table_rows][table_columns];
-//        for(int row = 0; row < buttonsArray.length; row++) {
-//
-//            TableRow currentTableRow =new TableRow(context);
-//            for (int col = 0; col < buttonsArray[row].length; col++) {
-//
-//                ToggleButton curButton = createNewToggleButton(view,clickListener, row, col);
-//
-//                buttonsArray[row][col] = curButton;
-//                currentTableRow.addView(curButton);
-//            }
-//            gameTable.addView(currentTableRow);
-//        }
-//        gameTable.setStretchAllColumns(true);
-//        gameTable.setPadding(5,5,5,5);
-//
-//    }
 
 
 
