@@ -1,12 +1,13 @@
-package com.example.rami.statistics_pro.Utils;
+package com.example.rami.statistics_pro.Tasks;
 
-import android.app.DownloadManager;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.PowerManager;
 import android.util.Log;
-import android.view.View;
 import android.widget.ProgressBar;
+
+import com.example.rami.statistics_pro.Utils.CsvUtils;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -25,8 +26,7 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
     private ProgressBar mProgressBar;
     private static String LOG_TAG = DownloadTask.class.getName();
 
-
-    DownloadTask(Context context, ProgressBar progressBar) {
+    public DownloadTask(Context context, ProgressBar progressBar) {
         this.context = context;
         this.mProgressBar = progressBar;
 
@@ -89,7 +89,7 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
             input = connection.getInputStream();
 //            String path = context.getFilesDir();
             String path = context.getFilesDir().getPath();
-            String file_path = path + "/" +CsvUtils.FILE_NAME;
+            String file_path = path + "/" + CsvUtils.FILE_NAME;
             output = new FileOutputStream(file_path);
             Log.d(LOG_TAG, "file path: " + file_path);
             byte data[] = new byte[4096];

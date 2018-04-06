@@ -2,12 +2,13 @@ package com.example.rami.statistics_pro.Utils;
 
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+
+import com.example.rami.statistics_pro.Tasks.DownloadTask;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,7 +19,7 @@ import java.util.concurrent.ExecutionException;
 
 public class CsvUtils {
     private static File csvFile;
-    static String FILE_NAME = "statisticsPro.csv";
+    public static String FILE_NAME = "statisticsPro.csv";
 
     public static FileInputStream getInputStream() {
         return inputStream;

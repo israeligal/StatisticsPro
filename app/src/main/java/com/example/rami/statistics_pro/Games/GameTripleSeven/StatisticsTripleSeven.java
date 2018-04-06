@@ -1,10 +1,14 @@
 package com.example.rami.statistics_pro.Games.GameTripleSeven;
 
 
+import android.annotation.SuppressLint;
 import android.net.Uri;
 import android.util.Log;
+import android.view.View;
 import android.widget.CheckBox;
+import android.widget.HorizontalScrollView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TableRow;
 import android.widget.ToggleButton;
 
@@ -28,8 +32,11 @@ public class StatisticsTripleSeven implements Statistics {
     public void time_stats_from_sql(Uri sql_raffle_db, ArrayList<ToggleButton> choosenNumbers, String timeFrom, String timeEnd, TableRow tableRow, ListView listView) {
     }
 
-    public void time_stats_from_list(String timeFromFull, String timeEndFull) {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy");
+    public void time_stats_from_list(String timeFromFull, String timeEndFull, View view) {
+        ProgressBar mProgressBar = new ProgressBar(view.getContext());
+        mProgressBar.setVisibility(View.VISIBLE);
+        mProgressBar.setMax(game.getGameRaffles().size());
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy");
         if (timeFromFull == null || timeEndFull == null){
             timeFromFull = "01/03/2018";
             timeEndFull = "23/03/2018";
@@ -51,6 +58,7 @@ public class StatisticsTripleSeven implements Statistics {
         }
         for(Raffle curRaffle: game.getGameRaffles()){
             try {
+                mProgressBar.setProgress(mProgressBar.getProgress() + 1);
                 Date strDate = sdf.parse(curRaffle.getmRaffleDate());
                 if ((strDate.after(timeFromDate) || strDate.equals(timeFromDate)) &&
                         (strDate.before(timeEndDate) || strDate.equals(timeEndDate))) {
@@ -64,6 +72,9 @@ public class StatisticsTripleSeven implements Statistics {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
+            finally {
+                mProgressBar.setVisibility(View.GONE);
+            }
 
 
         }
@@ -72,7 +83,7 @@ public class StatisticsTripleSeven implements Statistics {
     public int[] statisticsNumberAppearance( ArrayList<ToggleButton> chosenNumbers) {
         int[] chosenNumberAppearance = new int[chosenNumbers.size()];
         int i = 0;
-        for (ToggleButton toggleButton: chosenNumbers) {
+        for (ToggleButton toggleButton : chosenNumbers) {
             int num = Integer.parseInt(toggleButton.getText().toString());
             chosenNumberAppearance[i] = mNumberAppearance[num - 1];
         }

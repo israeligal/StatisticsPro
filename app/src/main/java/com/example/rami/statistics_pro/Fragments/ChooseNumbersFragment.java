@@ -1,25 +1,21 @@
 package com.example.rami.statistics_pro.Fragments;
 
 import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
 import android.content.ContentValues;
-import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
-import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,28 +29,22 @@ import com.example.rami.statistics_pro.Interfaces.Statistics;
 import com.example.rami.statistics_pro.R;
 import com.example.rami.statistics_pro.Utils.CsvUtils;
 import com.example.rami.statistics_pro.Utils.GameStringUtils;
-import com.google.zxing.common.StringUtils;
+import com.example.rami.statistics_pro.Utils.TimeUtils;
 import com.opencsv.CSVReader;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 
 public class ChooseNumbersFragment extends Fragment {
     LinearLayout mview;
     Game curGame;
     ArrayList<ToggleButton> chosenNumbers;
     TableRow choosenNumbersTableRow;
-    private int dayFinal, monthFinal, yearFinal;
-    DatePickerDialog.OnDateSetListener from_dateListener, to_dateListener;
-    private EditText timeFromEditText, timeUntilEditText;
-    private Date fromDate, toDate;
     private Button mSearchBtn;
+    EditText timeFromEditText,  timeUntilEditText;
     private static String LOG_TAG = ChooseNumbersFragment.class.getName();
 
 
@@ -71,6 +61,12 @@ public class ChooseNumbersFragment extends Fragment {
     }
 
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        chosenNumbers.clear();
+
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -84,14 +80,17 @@ public class ChooseNumbersFragment extends Fragment {
         View.OnClickListener onClickListener = createGameOnClickListerner();
         // here we can add user choice for different games
 
-
         curGame = new GameTripleSeven(mview, onClickListener);
         Statistics curStatistics = curGame.getStatistics();
         choosenNumbersTableRow = create_chosen_numbers_table();
         mSearchBtn = mview.findViewById(R.id.search_btn);
-        setEditTextTime();
-        setDateAndTimeListener();
+
+        timeFromEditText =  (EditText) mview.findViewById(R.id.timeFromEditText);
+        timeUntilEditText = (EditText) mview.findViewById(R.id.timeUntilEditText);
+        TimeUtils.setEditTextsDate(timeFromEditText, timeUntilEditText, mview);
         setSearchButton();
+
+
 
 
 
@@ -99,16 +98,19 @@ public class ChooseNumbersFragment extends Fragment {
     }
 
     private void setSearchButton() {
-        Button btn = (Button) mview.findViewById(R.id.search_btn);
+        final Button btn = (Button) mview.findViewById(R.id.search_btn);
         resetView(); // TODO create reset view
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                btn.setEnabled(false);
                 FileReader fileReader = CsvUtils.readCsvFile(mview, curGame.getCsvUrl());
                 if (fileReader != null) {
+                    setStatisticsProgressBar(view);
                     loadRaffles(fileReader, mview);
                     loadStatistics();
                 }
+                btn.setEnabled(true);
             }
         });
     }
@@ -117,18 +119,24 @@ public class ChooseNumbersFragment extends Fragment {
         // TODO create reset view
     }
 
+    private void setStatisticsProgressBar(View view) {
+    }
+
     private void loadRaffles(FileReader fileReader, View mview) {
+        ProgressBar progressBar = new ProgressBar(mview.getContext());
+        progressBar.setVisibility(View.VISIBLE);
         try {
             CSVReader reader = new CSVReader(fileReader);
 
             String[] nextLine;
             reader.readNext();// skip headers line
+            progressBar.setMax(10000);
             while ((nextLine = reader.readNext()) != null) {
                 // nextLine[] is an array of values from the line
-
                 Raffle raffle = curGame.addRaffleFromCsv(nextLine);
                 ContentValues raffleContentValues = raffle.raffleToContentValues();
                 mview.getContext().getContentResolver().insert(curGame.getSqlRaffleDb(), raffleContentValues);
+
 //                ContentValues raffleNumbersContentValues = raffle.numbersToContentValues(); TODO fix content provider class java
 //                mview.getContext().getContentResolver().insert(curGame.getSqlRaffleNumbersDb(), raffleNumbersContentValues);
 
@@ -136,6 +144,9 @@ public class ChooseNumbersFragment extends Fragment {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        finally {
+            progressBar.setVisibility(View.GONE);
         }
 
     }
@@ -147,7 +158,7 @@ public class ChooseNumbersFragment extends Fragment {
         LinearLayout linearLayout = mview.findViewById(R.id.statisticsLinearLayout);
 
         Statistics statistics = curGame.getStatistics();
-        statistics.time_stats_from_list(timeFrom, timeTo);
+        statistics.time_stats_from_list(timeFrom, timeTo, mview);
         int[] numberAppearance = statistics.statisticsNumberAppearance(chosenNumbers);
         Log.d(LOG_TAG, "numberAppearance " + Arrays.toString(numberAppearance));
         TextView numberone = mview.findViewById(R.id.number_one_tv);
@@ -209,7 +220,8 @@ public class ChooseNumbersFragment extends Fragment {
                     chosenNumbers.add(toggleButton);
                     textView.setText(toggleButton.getText());
                 }
-                if(chosenNumbers.size() < 3){
+                if(chosenNumbers.size() < 3 || TextUtils.isEmpty(timeFromEditText.getText())
+                        || TextUtils.isEmpty(timeUntilEditText.getText())){
                     mSearchBtn.setEnabled(false);
                 }
                 else{
@@ -237,9 +249,7 @@ public class ChooseNumbersFragment extends Fragment {
     }
 
     private void set_chosen_numbers_table_style(TableRow tableRow) {
-//        Drawable border = getResources().getDrawable(R.drawable.border);
         Drawable border = getResources().getDrawable(R.drawable.circular_border);
-//        tableRow.setBackgroundColor(Color.BLUE); // set from xml
         float cols_num = tableRow.getChildCount();
         for (int i = 0; i < cols_num; i++) {
             TextView curTextView = (TextView) tableRow.getChildAt(i);
@@ -250,82 +260,10 @@ public class ChooseNumbersFragment extends Fragment {
             curTextView.setLayoutParams(params);
             curTextView.setTextSize(32);
             curTextView.setTextAlignment(TextView.TEXT_ALIGNMENT_CENTER);
-//            curTextView.setGravity(View.TEXT_ALIGNMENT_CENTER);
-//            curTextView.setBackground(Color.BLUE);
             curTextView.setBackground(border);
         }
     }
 
     //TIME
-    private void setEditTextTime() {
-        timeFromEditText = (EditText) mview.findViewById(R.id.timeFromEditText);
-        timeFromEditText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                System.out.println("got clicked");
-                openDatePicker(from_dateListener);
-            }
-        });
-        timeUntilEditText = (EditText) mview.findViewById(R.id.timeUntilEditText);
-        timeUntilEditText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openDatePicker(to_dateListener);
-            }
-        });
-    }
-    private void openDatePicker(DatePickerDialog.OnDateSetListener listener) {
-        int day, month, year;
 
-        Calendar calendar = Calendar.getInstance();
-        day = calendar.get(Calendar.DAY_OF_MONTH);
-        month = calendar.get(Calendar.MONTH);
-        year = calendar.get(Calendar.YEAR);
-
-        DatePickerDialog datePickerDialog = new DatePickerDialog(mview.getContext(), listener, year, month, day);
-        datePickerDialog.show();
-    }
-
-    private void setDateAndTimeListener() {
-
-        from_dateListener = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-                yearFinal = i;
-                monthFinal = i1;
-                dayFinal = i2;
-
-                fromDate = new GregorianCalendar(yearFinal, monthFinal, dayFinal).getTime();
-                SimpleDateFormat ft = new SimpleDateFormat("dd/MM/yyyy");
-                Toast.makeText(mview.getContext(), ft.format(fromDate).toString(), Toast.LENGTH_SHORT).show();
-                timeFromEditText.setText(ft.format(fromDate));
-
-            }
-        };
-
-
-        to_dateListener = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-                yearFinal = i;
-                monthFinal = i1;
-                dayFinal = i2;
-
-                toDate = new GregorianCalendar(yearFinal, monthFinal, dayFinal).getTime();
-                if (fromDate == null) {
-                    Toast.makeText(mview.getContext(), R.string.please_chose_start_date_first, Toast.LENGTH_SHORT).show();
-
-                } else if (fromDate.after(toDate)) {
-                    Toast.makeText(mview.getContext(), getString(R.string.date_isnt_valid), Toast.LENGTH_SHORT).show();
-
-                } else {
-                    SimpleDateFormat ft = new SimpleDateFormat("dd/MM/yyyy");
-                    Toast.makeText(getContext(), ft.format(toDate).toString(), Toast.LENGTH_SHORT).show();
-                    timeUntilEditText.setText(ft.format(toDate));
-                }
-            }
-        };
-
-
-    }
 }
