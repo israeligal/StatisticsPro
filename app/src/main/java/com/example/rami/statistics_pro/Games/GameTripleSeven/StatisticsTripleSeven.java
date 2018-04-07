@@ -2,14 +2,10 @@ package com.example.rami.statistics_pro.Games.GameTripleSeven;
 
 
 import android.annotation.SuppressLint;
-import android.net.Uri;
 import android.util.Log;
 import android.view.View;
-import android.widget.CheckBox;
-import android.widget.HorizontalScrollView;
-import android.widget.ListView;
+import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.TableRow;
 import android.widget.ToggleButton;
 
 import com.example.rami.statistics_pro.Interfaces.Game;
@@ -19,6 +15,7 @@ import com.example.rami.statistics_pro.Interfaces.Statistics;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 
 public class StatisticsTripleSeven implements Statistics {
@@ -29,13 +26,16 @@ public class StatisticsTripleSeven implements Statistics {
         game = gameTripleSeven;
     }
 
-    public void time_stats_from_sql(Uri sql_raffle_db, ArrayList<ToggleButton> choosenNumbers, String timeFrom, String timeEnd, TableRow tableRow, ListView listView) {
-    }
+//    public void time_stats_from_sql(Uri sql_raffle_db, ArrayList<ToggleButton> choosenNumbers, String timeFrom, String timeEnd, TableRow tableRow, ListView listView) {
+//    }
 
-    public void time_stats_from_list(String timeFromFull, String timeEndFull, View view) {
+    public void time_stats_from_list(String timeFromFull, String timeEndFull, ViewGroup view) {
         ProgressBar mProgressBar = new ProgressBar(view.getContext());
         mProgressBar.setVisibility(View.VISIBLE);
+        view.addView(mProgressBar);
+
         mProgressBar.setMax(game.getGameRaffles().size());
+        Log.d(LOG_TAG, "Raffles number: " + game.getGameRaffles().size());
         @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy");
         if (timeFromFull == null || timeEndFull == null){
             timeFromFull = "01/03/2018";
@@ -48,6 +48,7 @@ public class StatisticsTripleSeven implements Statistics {
         Date timeEndDate = null;
         mNumberAppearance = new int[game.getTOTAL_NUMBERS()];
         try {
+
             timeFromDate = sdf.parse(timeFrom);
             timeEndDate = sdf.parse(timeEnd);
         } catch (ParseException e) {
@@ -70,14 +71,16 @@ public class StatisticsTripleSeven implements Statistics {
                 }
 
             } catch (ParseException e) {
+                Log.e(LOG_TAG, "Could not calc number appearance");
                 e.printStackTrace();
             }
             finally {
                 mProgressBar.setVisibility(View.GONE);
+                view.removeView(mProgressBar);
             }
 
-
         }
+        Log.d(LOG_TAG, "raffles number appearance result "+ Arrays.toString(mNumberAppearance));
     }
 
     public int[] statisticsNumberAppearance( ArrayList<ToggleButton> chosenNumbers) {

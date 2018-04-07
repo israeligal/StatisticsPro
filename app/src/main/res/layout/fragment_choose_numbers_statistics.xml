@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:id="@+id/chooseNumbersLayout"
+        android:id="@+id/choose_numbers_layout"
         >
             <TableLayout
                 android:id="@+id/gameTableId"
@@ -28,59 +28,124 @@
 
     >
     <TableRow
-        android:id="@+id/chooseNumbersRow"
+        android:id="@+id/choose_numbers_row"
         android:layout_weight="1"
         >
 
 
     </TableRow>
+    <RadioGroup
+        android:id="@+id/radio_chose_by_date_or_raffle_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end"
+
+        >
+        <RadioButton android:id="@+id/radioRaffleNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/SearchByRaffleNumber"
+            android:textSize="@dimen/chosenNumbersFragment"
+            />
+
+        <RadioButton android:id="@+id/radioDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/SearchByDates"
+            android:checked="true"
+            android:textSize="@dimen/chosenNumbersFragment"
+            />
+
+    </RadioGroup>
 
 </TableLayout>
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="end"
+        >
         <Button
             android:id="@+id/search_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:enabled="false"
             android:text="@string/chosen_number_frag_stat_btn"
+            android:gravity="start"
             />
-        <EditText
-            android:id="@+id/timeUntilEditText"
+        <LinearLayout
+            android:id="@+id/search_by_date_edit_texts"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:labelFor="@string/chosen_number_frag_ET_end_date"
-            android:hint="@string/chosen_number_frag_ET_end_date"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            />
-        <EditText
-            android:id="@+id/timeFromEditText"
+            android:orientation="horizontal"
+            android:layout_gravity="end">
+            <EditText
+                android:id="@+id/time_until_edit_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:labelFor="@string/chosen_number_frag_ET_end_date"
+                android:hint="@string/chosen_number_frag_ET_end_date"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                />
+            <EditText
+                android:id="@+id/time_from_edit_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:labelFor="@string/chosen_number_frag_ET_start_date"
+                android:hint="@string/chosen_number_frag_ET_start_date"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/search_by_raffle_number_edit_texts"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:labelFor="@string/chosen_number_frag_ET_start_date"
-            android:hint="@string/chosen_number_frag_ET_start_date"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            />
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_gravity="end"
+            android:visibility="gone"
+            >
+
+            <EditText
+                android:id="@+id/rafflesUntilEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:labelFor="@string/chosen_number_frag_ET_end_raffle"
+                android:hint="@string/chosen_number_frag_ET_end_raffle"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                />
+            <EditText
+                android:id="@+id/rafflesFromEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:labelFor="@string/chosen_number_frag_ET_start_raffle"
+                android:hint="@string/chosen_number_frag_ET_start_raffle"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                />
+
+        </LinearLayout>
 
     </LinearLayout>
 
+
     <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        >
         <TableRow
-            android:id="@+id/statisticsAppearanceRow"
+            android:id="@+id/statistics_chosen_numbers_appearance_row"
             android:visibility="gone"
-            android:layout_width="match_parent"
+            android:layout_weight="1"
             >
             <com.example.rami.statistics_pro.CustomViews.CircularTextView
                 android:id="@+id/number_one_tv"
                 android:text=""
                 android:visibility="gone"
-
                 />
             <com.example.rami.statistics_pro.CustomViews.CircularTextView
                 android:id="@+id/number_two_tv"
@@ -113,19 +178,69 @@
                 android:visibility="gone"
                 />
             <com.example.rami.statistics_pro.CustomViews.CircularTextView
-                android:id="@+id/chosen_number_table_row"
-                android:text="@string/chosen_number_tr_string"
+                android:id="@+id/chosen_number_table_row_string"
+                android:text="@string/chosen_numbers"
                 android:visibility="gone"
+                android:gravity="end"
+                android:textSize="@dimen/chosenNumbersAppearance"
 
                 />
         </TableRow>
+        <TableRow
+            android:id="@+id/statisticsCountAppearanceRow"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            >
+            <com.example.rami.statistics_pro.CustomViews.CircularTextView
+                android:id="@+id/number_appearance_one_tv"
+                android:text=""
+                android:visibility="gone"
+                />
+            <com.example.rami.statistics_pro.CustomViews.CircularTextView
+                android:id="@+id/number_appearance_two_tv"
+                android:text=""
+                android:visibility="gone"
+                />
+            <com.example.rami.statistics_pro.CustomViews.CircularTextView
+                android:id="@+id/number_appearance_three_tv"
+                android:text=""
+                android:visibility="gone"
+                />
+            <com.example.rami.statistics_pro.CustomViews.CircularTextView
+                android:id="@+id/number_appearance_four_tv"
+                android:text=""
+                android:visibility="gone"
+                />
+            <com.example.rami.statistics_pro.CustomViews.CircularTextView
+                android:id="@+id/number_appearance_five_tv"
+                android:text=""
+                android:visibility="gone"
+                />
+            <com.example.rami.statistics_pro.CustomViews.CircularTextView
+                android:id="@+id/number_appearance_six_tv"
+                android:text=""
+                android:visibility="gone"
+                />
+            <com.example.rami.statistics_pro.CustomViews.CircularTextView
+                android:id="@+id/number_appearance_seven_tv"
+                android:text=""
+                android:visibility="gone"
+                />
+            <com.example.rami.statistics_pro.CustomViews.CircularTextView
+                android:id="@+id/chosen_number_appearance_table_row_string"
+                android:text="@string/chosen_numbers_appearance"
+                android:visibility="gone"
+                android:gravity="end"
+                android:textSize="@dimen/chosenNumbersAppearance"
 
+                />
+        </TableRow>
     </TableLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/statisticsLinearLayout"
+        android:id="@+id/statistics_linear_layout"
         android:orientation="horizontal"
         >
 

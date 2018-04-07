@@ -11,4 +11,6 @@
     <dimen name="add_event_line_margin">12dp</dimen>
     <dimen name="event_info_event_name">22sp</dimen>
     <dimen name="top_margin">12dp</dimen>
+    <dimen name="chosenNumbersAppearance">16sp</dimen>
+    <dimen name="chosenNumbersFragment">16sp</dimen>
 </resources>

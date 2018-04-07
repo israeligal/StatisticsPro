@@ -1,11 +1,12 @@
 package com.example.rami.statistics_pro.Fragments;
 
-import android.app.DatePickerDialog;
-import android.content.ContentValues;
-import android.graphics.Color;
+import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,18 +16,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-
 import com.example.rami.statistics_pro.Games.GameTripleSeven.GameTripleSeven;
 import com.example.rami.statistics_pro.Interfaces.Game;
-import com.example.rami.statistics_pro.Interfaces.Raffle;
 import com.example.rami.statistics_pro.Interfaces.Statistics;
 import com.example.rami.statistics_pro.R;
+import com.example.rami.statistics_pro.Tasks.LoadRafflesTask;
 import com.example.rami.statistics_pro.Utils.CsvUtils;
 import com.example.rami.statistics_pro.Utils.GameStringUtils;
 import com.example.rami.statistics_pro.Utils.TimeUtils;
@@ -36,9 +38,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
+import java.util.concurrent.ExecutionException;
 
-public class ChooseNumbersFragment extends Fragment {
+
+public class ChooseNumbersFragment extends Fragment implements LoaderManager.LoaderCallbacks<String> {
     LinearLayout mview;
     Game curGame;
     ArrayList<ToggleButton> chosenNumbers;
@@ -46,7 +49,7 @@ public class ChooseNumbersFragment extends Fragment {
     private Button mSearchBtn;
     EditText timeFromEditText,  timeUntilEditText;
     private static String LOG_TAG = ChooseNumbersFragment.class.getName();
-
+    public static final int OPERATION_SEARCH_LOADER = 1;
 
 
     public ChooseNumbersFragment() {
@@ -57,6 +60,9 @@ public class ChooseNumbersFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
+        getLoaderManager().initLoader(OPERATION_SEARCH_LOADER, null, this);
+
         super.onCreate(savedInstanceState);
     }
 
@@ -75,7 +81,8 @@ public class ChooseNumbersFragment extends Fragment {
 
         ScrollView scrollView = (ScrollView) inflater.inflate(R.layout.fragment_choose_numbers_statistics, container, false);
 
-        mview = (LinearLayout) scrollView.findViewById(R.id.chooseNumbersLayout);
+
+        mview = (LinearLayout) scrollView.findViewById(R.id.choose_numbers_layout);
 
         View.OnClickListener onClickListener = createGameOnClickListerner();
         // here we can add user choice for different games
@@ -85,32 +92,87 @@ public class ChooseNumbersFragment extends Fragment {
         choosenNumbersTableRow = create_chosen_numbers_table();
         mSearchBtn = mview.findViewById(R.id.search_btn);
 
-        timeFromEditText =  (EditText) mview.findViewById(R.id.timeFromEditText);
-        timeUntilEditText = (EditText) mview.findViewById(R.id.timeUntilEditText);
+        timeFromEditText =  (EditText) mview.findViewById(R.id.time_from_edit_text);
+        timeUntilEditText = (EditText) mview.findViewById(R.id.time_until_edit_text);
         TimeUtils.setEditTextsDate(timeFromEditText, timeUntilEditText, mview);
+
+        setRadioSearchByDatesOrRaffles();
         setSearchButton();
-
-
 
 
 
         return scrollView;
     }
 
+    private void setRadioSearchByDatesOrRaffles() {
+        RadioGroup radioGroup = mview.findViewById(R.id.radio_chose_by_date_or_raffle_number);
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                LinearLayout dateSearch = (LinearLayout) mview.findViewById(R.id.search_by_date_edit_texts);
+                LinearLayout raffleSearch = (LinearLayout) mview.findViewById(R.id.search_by_raffle_number_edit_texts);
+                RadioButton checkedRadioButton = (RadioButton)group.findViewById(checkedId);
+                if(!checkedRadioButton.isChecked()){
+                    Log.w(LOG_TAG, "onCheckedChanged btn not checked" + checkedRadioButton.getText());
+
+                    return;
+                }
+                switch (checkedId){
+                    case R.id.radioDate:
+                        Log.d(LOG_TAG, "Radio search by dates clicked");
+                        dateSearch.setVisibility(View.VISIBLE);
+                        raffleSearch.setVisibility(View.GONE);
+                        break;
+                    case R.id.radioRaffleNumber:
+                        Log.d(LOG_TAG, "Radio search by raffle numbers clicked");
+                        dateSearch.setVisibility(View.GONE);
+                        raffleSearch.setVisibility(View.VISIBLE);
+                        break;
+                }
+            }
+        });
+    }
+
+    private void enableSearchButton(){
+        if(chosenNumbers.size() < 3){
+            mSearchBtn.setEnabled(false);
+        }
+        else{
+            mSearchBtn.setEnabled(true);
+        }
+    }
+    private boolean checkDatesFields(){
+        if (TextUtils.isEmpty(timeFromEditText.getText().toString())
+        || TextUtils.isEmpty(timeUntilEditText.getText().toString())){
+            Toast.makeText(getContext(),getString(R.string.please_chose_dates_first),Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
+
     private void setSearchButton() {
-        final Button btn = (Button) mview.findViewById(R.id.search_btn);
+        Button btn = (Button) mview.findViewById(R.id.search_btn);
         resetView(); // TODO create reset view
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                btn.setEnabled(false);
-                FileReader fileReader = CsvUtils.readCsvFile(mview, curGame.getCsvUrl());
-                if (fileReader != null) {
-                    setStatisticsProgressBar(view);
-                    loadRaffles(fileReader, mview);
-                    loadStatistics();
+                if (checkDatesFields()){
+                    Button btn =  view.findViewById(R.id.search_btn);
+                    btn.setEnabled(false);
+                    FileReader fileReader = CsvUtils.readCsvFile(mview, curGame.getCsvUrl());
+                    if (fileReader != null) {
+                        setStatisticsProgressBar(view);
+                        String result = loadRaffles(fileReader);
+                        if(result.equals("Raffles loaded Successfully")){
+                            loadStatistics();
+                        }
+                        else{
+                            Toast.makeText(getContext(),"בעיה בטעינת הקבצים מאתר הפיס",Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    btn.setEnabled(true);
                 }
-                btn.setEnabled(true);
             }
         });
     }
@@ -121,63 +183,60 @@ public class ChooseNumbersFragment extends Fragment {
 
     private void setStatisticsProgressBar(View view) {
     }
+    private void loadStatistics(){
 
-    private void loadRaffles(FileReader fileReader, View mview) {
-        ProgressBar progressBar = new ProgressBar(mview.getContext());
+
+    }
+    private String loadRaffles(FileReader fileReader) {
+        ProgressBar progressBar = new ProgressBar(getContext());
         progressBar.setVisibility(View.VISIBLE);
+        mview.addView(progressBar);
+        LoadRafflesTask loadRafflesTask = new LoadRafflesTask(getContext(),
+                progressBar,curGame);
+        loadRafflesTask.execute(fileReader);
+        String result = "";
         try {
-            CSVReader reader = new CSVReader(fileReader);
-
-            String[] nextLine;
-            reader.readNext();// skip headers line
-            progressBar.setMax(10000);
-            while ((nextLine = reader.readNext()) != null) {
-                // nextLine[] is an array of values from the line
-                Raffle raffle = curGame.addRaffleFromCsv(nextLine);
-                ContentValues raffleContentValues = raffle.raffleToContentValues();
-                mview.getContext().getContentResolver().insert(curGame.getSqlRaffleDb(), raffleContentValues);
-
-//                ContentValues raffleNumbersContentValues = raffle.numbersToContentValues(); TODO fix content provider class java
-//                mview.getContext().getContentResolver().insert(curGame.getSqlRaffleNumbersDb(), raffleNumbersContentValues);
-
-
-            }
-        } catch (IOException e) {
+            result = loadRafflesTask.get();
+        } catch (InterruptedException | ExecutionException e) {
+            Log.e(LOG_TAG, "Couldn't load raffles " + e);
             e.printStackTrace();
         }
-        finally {
-            progressBar.setVisibility(View.GONE);
-        }
-
+        mview.removeView(progressBar);
+        return result;
     }
 
-    private void loadStatistics(){
-        String timeFrom = timeFromEditText.getText().toString();
-        String timeTo = timeUntilEditText.getText().toString();
-        TableRow tableRow = mview.findViewById(R.id.statisticsAppearanceRow);
-        LinearLayout linearLayout = mview.findViewById(R.id.statisticsLinearLayout);
 
-        Statistics statistics = curGame.getStatistics();
-        statistics.time_stats_from_list(timeFrom, timeTo, mview);
-        int[] numberAppearance = statistics.statisticsNumberAppearance(chosenNumbers);
-        Log.d(LOG_TAG, "numberAppearance " + Arrays.toString(numberAppearance));
-        TextView numberone = mview.findViewById(R.id.number_one_tv);
-        numberone.setVisibility(TextView.VISIBLE);
-        int number = numberAppearance[0];
-        numberone.setText(String.valueOf(number));
-        tableRow.setVisibility(View.VISIBLE);
-        for(int i = 2; i < numberAppearance.length; ++i){// TODO put this inside game related class
-            TextView textView = (TextView)tableRow.getChildAt(i);
-            int num = numberAppearance[i];
-            textView.setText(String.valueOf(num));
-            textView.setTextSize(20);
-            textView.setVisibility(TextView.VISIBLE);
-            textView.setBackgroundColor(Color.BLUE);
-            Log.d(LOG_TAG, "set text to" + num);
+    private void makeOperationSearchQuery(FileReader fileReader) {
+        ProgressBar progressBar = new ProgressBar(getContext());
+        progressBar.setVisibility(View.VISIBLE);
+        mview.addView(progressBar);
+        LoadRafflesTask loadRafflesTask = new LoadRafflesTask(getContext(),
+                progressBar,curGame);
+        loadRafflesTask.execute(fileReader);
+        String result = "";
+        try {
+            result = loadRafflesTask.get();
+        } catch (InterruptedException | ExecutionException e) {
+            Log.e(LOG_TAG, "Couldn't load raffles " + e);
+            e.printStackTrace();
         }
-
-
+        mview.removeView(progressBar);
+        // Create a bundle called queryBundle
+        Bundle queryBundle = new Bundle();
+        // Use putString with OPERATION_QUERY_URL_EXTRA as the key and the String value of the URL as the value
+//        queryBundle.putAll(curGame);
+        // Call getSupportLoaderManager and store it in a LoaderManager variable
+        LoaderManager loaderManager = getLoaderManager();
+        // Get our Loader by calling getLoader and passing the ID we specified
+        Loader<String> loader = loaderManager.getLoader(OPERATION_SEARCH_LOADER);
+        // If the Loader was null, initialize it. Else, restart it.
+        if(loader==null){
+            loaderManager.initLoader(OPERATION_SEARCH_LOADER, queryBundle, this);
+        }else{
+            loaderManager.restartLoader(OPERATION_SEARCH_LOADER, queryBundle, this);
+        }
     }
+
 
     private View.OnClickListener createGameOnClickListerner() {
         return new View.OnClickListener() {
@@ -220,13 +279,9 @@ public class ChooseNumbersFragment extends Fragment {
                     chosenNumbers.add(toggleButton);
                     textView.setText(toggleButton.getText());
                 }
-                if(chosenNumbers.size() < 3 || TextUtils.isEmpty(timeFromEditText.getText())
-                        || TextUtils.isEmpty(timeUntilEditText.getText())){
-                    mSearchBtn.setEnabled(false);
-                }
-                else{
-                    mSearchBtn.setEnabled(true);
-                }
+
+                enableSearchButton();
+
             }
         };
     }
@@ -239,7 +294,7 @@ public class ChooseNumbersFragment extends Fragment {
 
     //TABLE
     private TableRow create_chosen_numbers_table() {
-        TableRow tableRow = (TableRow) mview.findViewById(R.id.chooseNumbersRow);
+        TableRow tableRow = (TableRow) mview.findViewById(R.id.choose_numbers_row);
         for (int i = 0; i < curGame.getResult_Number(); i++) {
             TextView curTextView = (TextView) LayoutInflater.from(tableRow.getContext()).inflate(R.layout.game_chosen_number_text_view, tableRow, false);
             tableRow.addView(curTextView);
@@ -262,6 +317,40 @@ public class ChooseNumbersFragment extends Fragment {
             curTextView.setTextAlignment(TextView.TEXT_ALIGNMENT_CENTER);
             curTextView.setBackground(border);
         }
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    @Override
+    public Loader<String> onCreateLoader(int id, final Bundle args) {
+
+        return new AsyncTaskLoader<String>(getContext()) {
+            @Override
+            public String loadInBackground() {
+                Log.d(LOG_TAG,"Start background process");
+                //Think of this as AsyncTask doInBackground() method, here you will actually initiate Network call
+                String url = "hello";//This is a url in string form
+
+
+                return url;
+            }
+
+            @Override
+            protected void onStartLoading() {
+                Log.d(LOG_TAG,"End background process");
+
+                //Think of this as AsyncTask onPreExecute() method,start your progress bar,and at the end call forceLoad();
+                forceLoad();
+            }
+        };
+    }
+
+    @Override
+    public void onLoadFinished(Loader<String> loader, String data) {
+        Log.d(LOG_TAG,"result : "+ data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<String> loader) {
     }
 
     //TIME

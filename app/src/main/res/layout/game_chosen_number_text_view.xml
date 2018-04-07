@@ -5,7 +5,6 @@
     android:layout_height="wrap_content"
     android:gravity="center"
     android:padding="3dp"
-    android:background="#E54C82"
-
+    android:textColor="@color/chosen_number_text_view_text"
      />
 

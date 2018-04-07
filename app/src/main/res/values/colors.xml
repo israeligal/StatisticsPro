@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--<color name="colorPrimary">#3F51B5</color> 3493EC 303F9F-->
-    <!--<color name="colorPrimary">#3493EC</color>-->
+    <!--<color nacolor_primarymary">#3F51B5</color> 3493EC 303F9F-->
+    <!--<color nacolor_primarymary">#3493EC</color>-->
     <color name="colorPrimary">#E54C82</color>
     <color name="colorPrimaryText">#FAFAFA</color>
     <color name="colorPrimaryDark">#303F9F</color>
@@ -22,6 +22,8 @@
     <color name="toggleButtonCheckedText">#FFFFFF</color>
     <color name="toggleButton">#FFFFFF</color>
     <color name="toggleButtonText">#000000</color>
-    <color name="chosen_number_text_view">#E54C82</color>
+    <color name="chosenNumberTextView">#97087A</color>
+    <color name="chosen_number_text_view_text">#FFFFFF</color>
+    <color name="chosenNumberTextViewBorder">#FF43B5</color>
 
 </resources>

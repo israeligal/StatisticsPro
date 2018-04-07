@@ -40,6 +40,11 @@
     <string name="download_statistics_file">מוריד קובץ סטטיסטיקה</string>
     <string name="please_chose_start_date_first">בבקשה בחר תאריך התחלה קודם</string>
     <string name="appearance_number">מספר הופעות:</string>
-    <string name="choosen_numbers">מספרים נבחרים</string>
-    <string name="chosen_number_tr_string">chosen_number_table_row_string</string>
+    <string name="chosen_numbers">מספרים נבחרים</string>
+    <string name="please_chose_dates_first">בבקשה בחר קודם תאריכים</string>
+    <string name="chosen_number_frag_ET_end_raffle">עד הגרלה מספר</string>
+    <string name="chosen_number_frag_ET_start_raffle">מהגרלה מספר</string>
+    <string name="SearchByDates">חפש לפי תאריכים</string>
+    <string name="SearchByRaffleNumber">חפש לפי מספרי הגרלה</string>
+    <string name="chosen_numbers_appearance">מספר הופעות</string>
 </resources>

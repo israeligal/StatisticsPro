@@ -40,18 +40,22 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
 
     @Override
     protected void onPostExecute(String s) {
+        Log.d(LOG_TAG, "onPostExecute " + s);
         mProgressBar.setVisibility(ProgressBar.GONE);
         super.onPostExecute(s);
     }
 
     @Override
     protected void onCancelled(String s) {
+        Log.d(LOG_TAG, "onCancelled " + s);
         mProgressBar.setVisibility(ProgressBar.GONE);
         super.onCancelled(s);
     }
 
     @Override
     protected void onCancelled() {
+        Log.d(LOG_TAG, "onCancelled without string" );
+
         mProgressBar.setVisibility(ProgressBar.GONE);
 
     }
