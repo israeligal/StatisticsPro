@@ -2,6 +2,7 @@ package com.example.rami.statistics_pro.Fragments;
 
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -20,13 +21,13 @@ import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.ScrollView;
+import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.rami.statistics_pro.Games.GameTripleSeven.GameTripleSeven;
-import com.example.rami.statistics_pro.Games.GameTripleSeven.StatisticsTripleSeven;
 import com.example.rami.statistics_pro.Interfaces.Game;
 import com.example.rami.statistics_pro.Interfaces.Raffle;
 import com.example.rami.statistics_pro.Interfaces.Statistics;
@@ -39,8 +40,6 @@ import com.opencsv.CSVReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.stream.IntStream;
 
 
 public class ChooseNumbersFragment extends Fragment implements LoaderManager.LoaderCallbacks<String> {
@@ -88,7 +87,6 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
         // here we can add user choice for different games
 
         curGame = new GameTripleSeven(mview, onClickListener);
-        Statistics curStatistics = curGame.getStatistics();
         choosenNumbersTableRow = create_chosen_numbers_table();
         mSearchBtn = mview.findViewById(R.id.search_btn);
 
@@ -98,8 +96,6 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
 
         setRadioSearchByDatesOrRaffles();
         setSearchButton();
-
-
 
         return scrollView;
     }
@@ -176,9 +172,6 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
 
 
     private void makeOperationLoadRaffles(String filePath) {
-//        ProgressBar progressBar = new ProgressBar(getContext());
-//        progressBar.setVisibility(View.VISIBLE);
-//        mview.addView(progressBar);
 
         Bundle queryBundle = new Bundle();
         queryBundle.putString("filePath",filePath);
@@ -361,40 +354,16 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
                             String timeFrom = timeFromEditText.getText().toString();
                             String timeEnd = timeUntilEditText.getText().toString();
                             Statistics statistics = curGame.getStatistics();
-                            statistics.time_stats_from_list(timeFrom, timeEnd, mview);
+                            statistics.time_stats_from_list(timeFrom, timeEnd, mview,chosenNumbers);
 
 
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-
-                                    TableRow chosenTableRow = mview.findViewById(R.id.statistics_chosen_numbers_appearance_row);
-                                    TableRow countTableRow = mview.findViewById(R.id.statistics_count_appearance_row);
-                                    Statistics statistics = curGame.getStatistics();
-                                    int[] numberAppearance = statistics.statisticsNumberAppearance(chosenNumbers);
-
-                                    handleRow(countTableRow);
-                                    handleRow(chosenTableRow);
-
-                                    for (int i = 0; i < numberAppearance.length; ++i) {
-                                        TextView chosenTextView = (TextView) chosenTableRow.getChildAt(i);
-                                        TextView countTextView = (TextView) countTableRow.getChildAt(i);
-                                        handleRowText(chosenTextView, chosenNumbers.get(i).getText().toString());
-                                        handleRowText(countTextView, String.valueOf(numberAppearance[i]));
-                                    }
                                     mProgressBar.setVisibility(View.GONE);
                                 }
 
-                                void handleRow(TableRow tableRow){
-                                    tableRow.setVisibility(View.VISIBLE);
-                                    TextView rowText = (TextView) tableRow.getChildAt(tableRow.getChildCount() - 1);
-                                    rowText.setVisibility(View.VISIBLE);
-                                }
-                                void handleRowText(TextView textView, String textViewString){
-                                    textView.setText(textViewString);
-                                    textView.setTextSize(20);
-                                    textView.setVisibility(TextView.VISIBLE);
-                                }
+
 
 
                             });
@@ -434,13 +403,38 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
                 }
                 break;
             case OPERATION_STATISTICS_LOADER:
+                TableRow chosenTableRow = mview.findViewById(R.id.statistics_chosen_numbers_appearance_row);
+                TableRow countTableRow = mview.findViewById(R.id.statistics_count_appearance_row);
+                Statistics statistics = curGame.getStatistics();
+                int[] numberAppearance = statistics.statisticsNumberAppearance(chosenNumbers);
+
+                handleRow(countTableRow);
+                handleRow(chosenTableRow);
+                for (int i = 0; i < numberAppearance.length; ++i) {
+                    TextView chosenTextView = (TextView) chosenTableRow.getChildAt(i);
+                    TextView countTextView = (TextView) countTableRow.getChildAt(i);
+                    handleRowText(chosenTextView, chosenNumbers.get(i).getText().toString());
+                    handleRowText(countTextView, String.valueOf(numberAppearance[i]));
+                }
+                statistics.addAdditionalStatistics(mview);
                 Button btn = getActivity().findViewById(R.id.search_btn);
                 btn.setEnabled(true);
                 break;
-
         }
+    }
 
 
+
+    void handleRow(TableRow tableRow){
+        tableRow.setVisibility(View.VISIBLE);
+        TextView rowText = (TextView) tableRow.getChildAt(tableRow.getChildCount() - 1);
+        rowText.setVisibility(View.VISIBLE);
+    }
+    void handleRowText(TextView textView, String textViewString){
+        textView.setText(textViewString);
+        float textSize = textView.getResources().getDimension(R.dimen.chosenNumbersAppearance);
+        textView.setTextSize(textSize);
+        textView.setVisibility(TextView.VISIBLE);
     }
 
     @Override

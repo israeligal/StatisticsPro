@@ -47,4 +47,7 @@
     <string name="SearchByDates">חפש לפי תאריכים</string>
     <string name="SearchByRaffleNumber">חפש לפי מספרי הגרלה</string>
     <string name="chosen_numbers_appearance">מספר הופעות</string>
+    <string name="times_numbers_appeared_togther">רצף המספרים האלו הופיעו יחד: %d פעמים</string>
+    <string name="last_time_appeared_together">בפעם האחרונה שרצף זה הופיעה ביחד היתה ב: %s</string>
+    <string name="additional_statistics_info">מידע סטטיסי:</string>
 </resources>

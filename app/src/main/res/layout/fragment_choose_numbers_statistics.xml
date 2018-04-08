@@ -139,7 +139,6 @@
             >
             <TableRow
                 android:id="@+id/statistics_chosen_numbers_appearance_row"
-                android:background="@color/statistics_chosen_numbers_appearance_row"
                 android:gravity="start"
                 android:visibility="gone"
                 android:layout_weight="1"
@@ -148,56 +147,71 @@
                     android:text=""
                     android:visibility="gone"
                     android:layout_weight="1"
-
+                    android:layout_marginEnd="3dp"
+                    android:background="@color/statistics_chosen_numbers_appearance_row"
+                    android:textAlignment="center"
                     />
                 <TextView
                     android:text=""
                     android:visibility="gone"
                     android:layout_weight="1"
-
+                    android:layout_marginEnd="3dp"
+                    android:background="@color/statistics_chosen_numbers_appearance_row"
+                    android:textAlignment="center"
                     />
                 <TextView
                     android:text=""
                     android:visibility="gone"
                     android:layout_weight="1"
-
+                    android:layout_marginEnd="3dp"
+                    android:background="@color/statistics_chosen_numbers_appearance_row"
+                    android:textAlignment="center"
                     />
                 <TextView
                     android:text=""
                     android:visibility="gone"
                     android:layout_weight="1"
-
+                    android:layout_marginEnd="3dp"
+                    android:background="@color/statistics_chosen_numbers_appearance_row"
+                    android:textAlignment="center"
                     />
                 <TextView
                     android:text=""
                     android:visibility="gone"
                     android:layout_weight="1"
-
+                    android:layout_marginEnd="3dp"
+                    android:background="@color/statistics_chosen_numbers_appearance_row"
+                    android:textAlignment="center"
                     />
                 <TextView
                     android:text=""
                     android:visibility="gone"
                     android:layout_weight="1"
-
+                    android:layout_marginEnd="3dp"
+                    android:background="@color/statistics_chosen_numbers_appearance_row"
+                    android:textAlignment="center"
                     />
                 <TextView
                     android:text=""
                     android:visibility="gone"
                     android:layout_weight="1"
-
+                    android:layout_marginEnd="3dp"
+                    android:background="@color/statistics_chosen_numbers_appearance_row"
+                    android:textAlignment="center"
                     />
+
                 <TextView
                     android:id="@+id/chosen_number_table_row_string"
                     android:text="@string/chosen_numbers"
                     android:visibility="gone"
                     android:gravity="end"
+                    android:background="@color/statistics_chosen_numbers_appearance_row"
                     android:textSize="@dimen/chosenNumbersAppearance"
 
                     />
             </TableRow>
             <TableRow
                 android:id="@+id/statistics_count_appearance_row"
-                android:background="@color/statistics_count_appearance_row"
                 android:visibility="gone"
                 android:gravity="start"
                 android:layout_width="match_parent"
@@ -206,37 +220,59 @@
                     android:text=""
                     android:visibility="gone"
                     android:layout_weight="1"
+                    android:layout_marginEnd="3dp"
+                    android:background="@color/statistics_count_appearance_row"
+                    android:textAlignment="center"
                     />
-                  <TextView
+                <TextView
                     android:text=""
                     android:visibility="gone"
                     android:layout_weight="1"
+                    android:layout_marginEnd="3dp"
+                    android:background="@color/statistics_count_appearance_row"
+                    android:textAlignment="center"
                     />
-                  <TextView
+                <TextView
                     android:text=""
                     android:visibility="gone"
                     android:layout_weight="1"
+                    android:layout_marginEnd="3dp"
+                    android:background="@color/statistics_count_appearance_row"
+                    android:textAlignment="center"
                     />
-                  <TextView
+                <TextView
                     android:text=""
                     android:visibility="gone"
                     android:layout_weight="1"
+                    android:layout_marginEnd="3dp"
+                    android:background="@color/statistics_count_appearance_row"
+                    android:textAlignment="center"
                     />
-                  <TextView
+                <TextView
                     android:text=""
                     android:visibility="gone"
                     android:layout_weight="1"
+                    android:layout_marginEnd="3dp"
+                    android:background="@color/statistics_count_appearance_row"
+                    android:textAlignment="center"
                     />
-                  <TextView
+                <TextView
                     android:text=""
                     android:visibility="gone"
                     android:layout_weight="1"
+                    android:layout_marginEnd="3dp"
+                    android:background="@color/statistics_count_appearance_row"
+                    android:textAlignment="center"
                     />
-                  <TextView
+                <TextView
                     android:text=""
                     android:visibility="gone"
                     android:layout_weight="1"
+                    android:layout_marginEnd="3dp"
+                    android:background="@color/statistics_count_appearance_row"
+                    android:textAlignment="center"
                     />
+
 
                 <TextView
                     android:id="@+id/chosen_number_appearance_table_row_string"
@@ -244,19 +280,28 @@
                     android:visibility="gone"
                     android:gravity="start"
                     android:textSize="@dimen/chosenNumbersAppearance"
+                    android:background="@color/statistics_count_appearance_row"
+
 
                     />
             </TableRow>
         </TableLayout>
 
-        <LinearLayout
+        <TableLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/statistics_linear_layout"
-            android:orientation="horizontal"
+            android:id="@+id/additional_statistics_table_layout"
             >
+            <TextView
+            android:text="@string/additional_statistics_info"
+            android:background="@color/additional_statistics_info"
+            android:textSize="@dimen/chosenNumbersFragment"
+            android:visibility="gone"
+            android:layout_weight="1"
+            />
 
-        </LinearLayout>
+
+        </TableLayout>
     </LinearLayout>
 
 

@@ -2,38 +2,55 @@ package com.example.rami.statistics_pro.Games.GameTripleSeven;
 
 
 import android.annotation.SuppressLint;
+import android.content.res.Resources;
+import android.support.annotation.NonNull;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TableLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.rami.statistics_pro.Interfaces.Game;
 import com.example.rami.statistics_pro.Interfaces.Raffle;
 import com.example.rami.statistics_pro.Interfaces.Statistics;
+import com.example.rami.statistics_pro.R;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
 
 public class StatisticsTripleSeven implements Statistics {
     private final static String LOG_TAG = StatisticsTripleSeven.class.getName();
     private int[] mNumberAppearance;
-    private int mLastTimeAppearedTogether;
-    private int mnumberOfTimesAppearedTogether;
+    private String mLastTimeAppearedTogether;
+    private int mNumberOfTimesAppearedTogether;
     private Game game;
     StatisticsTripleSeven(GameTripleSeven gameTripleSeven){
         game = gameTripleSeven;
+        mNumberOfTimesAppearedTogether = 0;
+        mLastTimeAppearedTogether = null;
+        mNumberAppearance = new int[game.getTOTAL_NUMBERS()];
     }
 
-//    public void time_stats_from_sql(Uri sql_raffle_db, ArrayList<ToggleButton> choosenNumbers, String timeFrom, String timeEnd, TableRow tableRow, ListView listView) {
-//    }
 
-    public void time_stats_from_list(String timeFromFull, String timeEndFull, ViewGroup view) {
+    public void time_stats_from_list(String timeFromFull, String timeEndFull, ViewGroup view, ArrayList<ToggleButton> toggleBtnChosenNumbers) {
 
+        ArrayList<Integer> chosenNumbers = getNumbersFromToggleBtns(toggleBtnChosenNumbers);
+        mNumberOfTimesAppearedTogether = 0;
+        mLastTimeAppearedTogether = null;
+        mNumberAppearance = new int[game.getTOTAL_NUMBERS()];
 
         Log.d(LOG_TAG, "Raffles Amount: " + game.getGameRaffles().size());
         @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy");
@@ -42,7 +59,6 @@ public class StatisticsTripleSeven implements Statistics {
         String timeEnd = timeEndFull.substring(0, 6) + timeEndFull.substring(8);
         Log.d(LOG_TAG, "timeFrom " + timeFrom + " timeEnd " + timeEnd);
         Date timeFromDate, timeEndDate;
-        mNumberAppearance = new int[game.getTOTAL_NUMBERS()];
         try {
             timeFromDate = sdf.parse(timeFrom);
             timeEndDate = sdf.parse(timeEnd);
@@ -53,16 +69,25 @@ public class StatisticsTripleSeven implements Statistics {
             return;
         }
         Date raffleDate;
+        int chosenNumbersFoundInRaffle = 0;
         for(Raffle curRaffle: game.getGameRaffles()){
             try {
                 raffleDate = sdf.parse(curRaffle.getmRaffleDate());
 
                 if (raffleDate.compareTo(timeFromDate) >= 0 && raffleDate.compareTo(timeEndDate) <= 0) {
-
                         for (int num: curRaffle.getmRaffleResultNumbers()) {
-
+                            if(chosenNumbers.contains(num)){
+                                chosenNumbersFoundInRaffle++;
+                            }
                         mNumberAppearance[num - 1] += 1;
                     }
+                    if(chosenNumbersFoundInRaffle == chosenNumbers.size()){
+                            if(mLastTimeAppearedTogether == null){
+                                mLastTimeAppearedTogether = curRaffle.getmRaffleDate();
+                            }
+                        mNumberOfTimesAppearedTogether++;
+                    }
+                    chosenNumbersFoundInRaffle = 0;
                 }
 
             } catch (ParseException e) {
@@ -80,6 +105,38 @@ public class StatisticsTripleSeven implements Statistics {
         }
         Log.d(LOG_TAG, "numberAppearance sum" + sum);
         Log.d(LOG_TAG, "raffles number appearance result "+ Arrays.toString(mNumberAppearance));
+    }
+
+    @Override
+    public void addAdditionalStatistics(LinearLayout mview) {
+
+        TableLayout tableLayout = mview.findViewById(R.id.additional_statistics_table_layout);
+        tableLayout.removeViews(1,tableLayout.getChildCount()-1);
+        TextView timesAppearedTogether = (TextView)LayoutInflater.from(mview.getContext()).inflate(R.layout.additional_statistics_info_text_view, mview, false);
+        TextView LastTimeAppearedTogether = (TextView)LayoutInflater.from(mview.getContext()).inflate(R.layout.additional_statistics_info_text_view, mview, false);
+        Resources resources = mview.getResources();
+        int timesAppearedColor = resources.getColor(R.color.statistics_chosen_numbers_appearance_row);
+        int LastAppearedColor = resources.getColor(R.color.statistics_count_appearance_row);
+        timesAppearedTogether.setText(resources.getString(R.string.times_numbers_appeared_togther, mNumberOfTimesAppearedTogether));
+        tableLayout.addView(timesAppearedTogether);
+        timesAppearedTogether.setBackgroundColor(timesAppearedColor);
+        if(mLastTimeAppearedTogether != null){
+            LastTimeAppearedTogether.setText(resources.getString(R.string.last_time_appeared_together, mLastTimeAppearedTogether));
+            LastTimeAppearedTogether.setBackgroundColor(LastAppearedColor);
+            tableLayout.addView(LastTimeAppearedTogether);
+        }
+        else{
+            LastTimeAppearedTogether.setText("");
+        }
+    }
+
+    private ArrayList<Integer> getNumbersFromToggleBtns(ArrayList<ToggleButton> toggleBtnChosenNumbers) {
+        ArrayList<Integer> numList = new ArrayList<>();
+        for (ToggleButton toggleButton : toggleBtnChosenNumbers){
+            String numStr = toggleButton.getText().toString();
+            numList.add(Integer.parseInt(numStr));
+        }
+        return numList;
     }
 
     public int[] statisticsNumberAppearance( ArrayList<ToggleButton> chosenNumbers) {
