@@ -25,5 +25,7 @@
     <color name="chosenNumberTextView">#97087A</color>
     <color name="chosen_number_text_view_text">#FFFFFF</color>
     <color name="chosenNumberTextViewBorder">#FF43B5</color>
+    <color name="statistics_chosen_numbers_appearance_row">#ADD8E6</color>
+    <color name="statistics_count_appearance_row">#E6E6FA</color>
 
 </resources>

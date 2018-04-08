@@ -30,4 +30,6 @@ public interface Game {
     public String getCsvUrl();
 
     int getResult_Number();
+
+    public GameCsvContract getGameCsvContract();
 }

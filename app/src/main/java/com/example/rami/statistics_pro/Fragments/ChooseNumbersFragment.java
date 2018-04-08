@@ -1,6 +1,7 @@
 package com.example.rami.statistics_pro.Fragments;
 
 import android.annotation.SuppressLint;
+import android.content.ContentValues;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -25,10 +26,11 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.rami.statistics_pro.Games.GameTripleSeven.GameTripleSeven;
+import com.example.rami.statistics_pro.Games.GameTripleSeven.StatisticsTripleSeven;
 import com.example.rami.statistics_pro.Interfaces.Game;
+import com.example.rami.statistics_pro.Interfaces.Raffle;
 import com.example.rami.statistics_pro.Interfaces.Statistics;
 import com.example.rami.statistics_pro.R;
-import com.example.rami.statistics_pro.Tasks.LoadRafflesTask;
 import com.example.rami.statistics_pro.Utils.CsvUtils;
 import com.example.rami.statistics_pro.Utils.GameStringUtils;
 import com.example.rami.statistics_pro.Utils.TimeUtils;
@@ -38,7 +40,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.concurrent.ExecutionException;
+import java.util.stream.IntStream;
 
 
 public class ChooseNumbersFragment extends Fragment implements LoaderManager.LoaderCallbacks<String> {
@@ -50,6 +52,7 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
     EditText timeFromEditText,  timeUntilEditText;
     private static String LOG_TAG = ChooseNumbersFragment.class.getName();
     public static final int OPERATION_SEARCH_LOADER = 1;
+    public static final int OPERATION_STATISTICS_LOADER = 2;
 
 
     public ChooseNumbersFragment() {
@@ -61,8 +64,6 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
-        getLoaderManager().initLoader(OPERATION_SEARCH_LOADER, null, this);
-
         super.onCreate(savedInstanceState);
     }
 
@@ -71,7 +72,6 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
     public void onDestroy() {
         super.onDestroy();
         chosenNumbers.clear();
-
     }
 
     @Override
@@ -84,7 +84,7 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
 
         mview = (LinearLayout) scrollView.findViewById(R.id.choose_numbers_layout);
 
-        View.OnClickListener onClickListener = createGameOnClickListerner();
+        View.OnClickListener onClickListener = createGameOnClickListener();
         // here we can add user choice for different games
 
         curGame = new GameTripleSeven(mview, onClickListener);
@@ -160,18 +160,11 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
                 if (checkDatesFields()){
                     Button btn =  view.findViewById(R.id.search_btn);
                     btn.setEnabled(false);
-                    FileReader fileReader = CsvUtils.readCsvFile(mview, curGame.getCsvUrl());
-                    if (fileReader != null) {
-                        setStatisticsProgressBar(view);
-                        String result = loadRaffles(fileReader);
-                        if(result.equals("Raffles loaded Successfully")){
-                            loadStatistics();
-                        }
-                        else{
-                            Toast.makeText(getContext(),"בעיה בטעינת הקבצים מאתר הפיס",Toast.LENGTH_SHORT).show();
-                        }
+                    String filePath = CsvUtils.readCsvFile(mview, curGame.getCsvUrl());
+                    if (filePath != null) {
+                        makeOperationLoadRaffles(filePath);
+
                     }
-                    btn.setEnabled(true);
                 }
             }
         });
@@ -181,64 +174,26 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
         // TODO create reset view
     }
 
-    private void setStatisticsProgressBar(View view) {
-    }
-    private void loadStatistics(){
 
+    private void makeOperationLoadRaffles(String filePath) {
+//        ProgressBar progressBar = new ProgressBar(getContext());
+//        progressBar.setVisibility(View.VISIBLE);
+//        mview.addView(progressBar);
 
-    }
-    private String loadRaffles(FileReader fileReader) {
-        ProgressBar progressBar = new ProgressBar(getContext());
-        progressBar.setVisibility(View.VISIBLE);
-        mview.addView(progressBar);
-        LoadRafflesTask loadRafflesTask = new LoadRafflesTask(getContext(),
-                progressBar,curGame);
-        loadRafflesTask.execute(fileReader);
-        String result = "";
-        try {
-            result = loadRafflesTask.get();
-        } catch (InterruptedException | ExecutionException e) {
-            Log.e(LOG_TAG, "Couldn't load raffles " + e);
-            e.printStackTrace();
-        }
-        mview.removeView(progressBar);
-        return result;
-    }
-
-
-    private void makeOperationSearchQuery(FileReader fileReader) {
-        ProgressBar progressBar = new ProgressBar(getContext());
-        progressBar.setVisibility(View.VISIBLE);
-        mview.addView(progressBar);
-        LoadRafflesTask loadRafflesTask = new LoadRafflesTask(getContext(),
-                progressBar,curGame);
-        loadRafflesTask.execute(fileReader);
-        String result = "";
-        try {
-            result = loadRafflesTask.get();
-        } catch (InterruptedException | ExecutionException e) {
-            Log.e(LOG_TAG, "Couldn't load raffles " + e);
-            e.printStackTrace();
-        }
-        mview.removeView(progressBar);
-        // Create a bundle called queryBundle
         Bundle queryBundle = new Bundle();
-        // Use putString with OPERATION_QUERY_URL_EXTRA as the key and the String value of the URL as the value
-//        queryBundle.putAll(curGame);
-        // Call getSupportLoaderManager and store it in a LoaderManager variable
+        queryBundle.putString("filePath",filePath);
         LoaderManager loaderManager = getLoaderManager();
-        // Get our Loader by calling getLoader and passing the ID we specified
         Loader<String> loader = loaderManager.getLoader(OPERATION_SEARCH_LOADER);
-        // If the Loader was null, initialize it. Else, restart it.
         if(loader==null){
             loaderManager.initLoader(OPERATION_SEARCH_LOADER, queryBundle, this);
+
         }else{
             loaderManager.restartLoader(OPERATION_SEARCH_LOADER, queryBundle, this);
         }
     }
 
 
-    private View.OnClickListener createGameOnClickListerner() {
+    private View.OnClickListener createGameOnClickListener() {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -322,37 +277,191 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
     @SuppressLint("StaticFieldLeak")
     @Override
     public Loader<String> onCreateLoader(int id, final Bundle args) {
+        switch (id){
+            case OPERATION_SEARCH_LOADER:
+                return new AsyncTaskLoader<String>(getContext()) {
+                    ProgressBar mProgressBar;
+                    @Override
+                    public String loadInBackground() {
+//                        mProgressBar.setVisibility(View.GONE);
+                        String filePath = args.getString("filePath");
+                        CSVReader reader = null;
 
-        return new AsyncTaskLoader<String>(getContext()) {
-            @Override
-            public String loadInBackground() {
-                Log.d(LOG_TAG,"Start background process");
-                //Think of this as AsyncTask doInBackground() method, here you will actually initiate Network call
-                String url = "hello";//This is a url in string form
+                        try {
+
+                            assert filePath != null;
+                            reader = new CSVReader(new FileReader(filePath));
 
 
-                return url;
-            }
+                            reader.readNext();// skip headers line
+                            String[] nextLine = reader.readNext();
+                            String stringId = nextLine[curGame.getGameCsvContract().getRaffleIdNumber()];
+                            int numberOfRaffles = Integer.parseInt(stringId);
 
-            @Override
-            protected void onStartLoading() {
-                Log.d(LOG_TAG,"End background process");
+                            while (nextLine != null) {
+                                mProgressBar.setProgress(mProgressBar.getProgress() + 1);
 
-                //Think of this as AsyncTask onPreExecute() method,start your progress bar,and at the end call forceLoad();
-                forceLoad();
-            }
-        };
+                                if(curGame.getGameRaffles().size() == numberOfRaffles){
+                                    Log.d(LOG_TAG, "Raffles already loaded");
+                                    break;
+                                }
+                                else if(curGame.getGameRaffles().size() > numberOfRaffles){
+                                    Log.w(LOG_TAG, "error with raffles amount" + "Raffles size: " +
+                                            curGame.getGameRaffles().size() + "csv Raffles size: "+ numberOfRaffles);
+                                    break;
+                                }
+                                Raffle raffle = curGame.addRaffleFromCsv(nextLine);
+                                ContentValues raffleContentValues = raffle.raffleToContentValues();
+                                getContext().getContentResolver().insert(curGame.getSqlRaffleDb(), raffleContentValues);
+
+                                nextLine = reader.readNext();
+                            }
+                            Log.d(LOG_TAG, "loaded raffle into curgame and mysql");
+
+                        } catch (IOException e) {
+                            Log.e(LOG_TAG, "Error while loading raffles");
+                            e.printStackTrace();
+                            return null;
+                        }
+                        finally {
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mProgressBar.setVisibility(View.GONE);
+                                }
+                            });
+                        }
+                        Log.d(LOG_TAG, "loaded raffle into curgame and mysql");
+                        return "Raffles loaded Successfully";
+                    }
+
+
+
+                    @Override
+                    protected void onStartLoading() {
+                        mProgressBar = new ProgressBar(getContext(),null,android.R.attr.progressBarStyleHorizontal);
+                        mProgressBar.setMax(10000);
+                        mview.addView(mProgressBar);
+                        Log.d(LOG_TAG,"Start background process");
+
+                        //Think of this as AsyncTask onPreExecute() method,start your progress bar,and at the end call forceLoad();
+                        forceLoad();
+                    }
+                };
+            case OPERATION_STATISTICS_LOADER:
+                return new AsyncTaskLoader<String>(getContext()) {
+                    ProgressBar mProgressBar;
+
+
+                    @Override
+                    public String loadInBackground() {
+
+
+                            LinearLayout linearLayout = mview.findViewById(R.id.statistics_linear_layout);
+                            String timeFrom = timeFromEditText.getText().toString();
+                            String timeEnd = timeUntilEditText.getText().toString();
+                            Statistics statistics = curGame.getStatistics();
+                            statistics.time_stats_from_list(timeFrom, timeEnd, mview);
+
+
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+
+                                    TableRow chosenTableRow = mview.findViewById(R.id.statistics_chosen_numbers_appearance_row);
+                                    TableRow countTableRow = mview.findViewById(R.id.statistics_count_appearance_row);
+                                    Statistics statistics = curGame.getStatistics();
+                                    int[] numberAppearance = statistics.statisticsNumberAppearance(chosenNumbers);
+
+                                    handleRow(countTableRow);
+                                    handleRow(chosenTableRow);
+
+                                    for (int i = 0; i < numberAppearance.length; ++i) {
+                                        TextView chosenTextView = (TextView) chosenTableRow.getChildAt(i);
+                                        TextView countTextView = (TextView) countTableRow.getChildAt(i);
+                                        handleRowText(chosenTextView, chosenNumbers.get(i).getText().toString());
+                                        handleRowText(countTextView, String.valueOf(numberAppearance[i]));
+                                    }
+                                    mProgressBar.setVisibility(View.GONE);
+                                }
+
+                                void handleRow(TableRow tableRow){
+                                    tableRow.setVisibility(View.VISIBLE);
+                                    TextView rowText = (TextView) tableRow.getChildAt(tableRow.getChildCount() - 1);
+                                    rowText.setVisibility(View.VISIBLE);
+                                }
+                                void handleRowText(TextView textView, String textViewString){
+                                    textView.setText(textViewString);
+                                    textView.setTextSize(20);
+                                    textView.setVisibility(TextView.VISIBLE);
+                                }
+
+
+                            });
+
+                        return "Raffles loaded Successfully";
+
+                    }
+
+                    @Override
+                    protected void onStartLoading() {
+                        mProgressBar = new ProgressBar(getContext(),null,android.R.attr.progressBarStyleHorizontal);
+                        mProgressBar.setVisibility(View.VISIBLE);
+                        mProgressBar.setMax(10000);
+
+                        Log.d(LOG_TAG,"Start background process");
+
+                        //Think of this as AsyncTask onPreExecute() method,start your progress bar,and at the end call forceLoad();
+                        forceLoad();
+                    }
+                };
+
+        }
+
+        return null;
     }
 
     @Override
     public void onLoadFinished(Loader<String> loader, String data) {
         Log.d(LOG_TAG,"result : "+ data);
+        switch(loader.getId()){
+            case OPERATION_SEARCH_LOADER:
+                if(data != null && data.equals("Raffles loaded Successfully")){
+                    makeOperationLoadStatistics();
+                }
+                else{
+                    Toast.makeText(getContext(),"בעיה בטעינת הקבצים מאתר הפיס",Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case OPERATION_STATISTICS_LOADER:
+                Button btn = getActivity().findViewById(R.id.search_btn);
+                btn.setEnabled(true);
+                break;
+
+        }
+
+
     }
 
     @Override
     public void onLoaderReset(Loader<String> loader) {
     }
 
-    //TIME
+    private void makeOperationLoadStatistics(){
+//        ProgressBar progressBar = new ProgressBar(getContext());
+//        progressBar.setVisibility(View.VISIBLE);
+//        mview.addView(progressBar);
+
+        Bundle queryBundle = new Bundle();
+        LoaderManager loaderManager = getLoaderManager();
+        Loader<String> loader = loaderManager.getLoader(OPERATION_STATISTICS_LOADER);
+        if(loader==null){
+            loaderManager.initLoader(OPERATION_STATISTICS_LOADER, queryBundle, this);
+
+        }else{
+            loaderManager.restartLoader(OPERATION_STATISTICS_LOADER, queryBundle, this);
+        }
+
+    }
 
 }

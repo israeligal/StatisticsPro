@@ -2,6 +2,7 @@ package com.example.rami.statistics_pro.Games.GameTripleSeven;
 import android.content.ContentValues;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.example.rami.statistics_pro.Interfaces.Raffle;
 import com.example.rami.statistics_pro.SqlLiteDataBase.StatisticsProContracts.TripleSevenRaffleEntry;
@@ -9,7 +10,7 @@ import com.example.rami.statistics_pro.SqlLiteDataBase.StatisticsProContracts.Tr
 
 import java.util.Arrays;
 
-public class RaffleTripleSeven implements Raffle, Parcelable{
+public class RaffleTripleSeven implements Raffle{
 
     private int mRaffleDay;
     private int mRaffleMonth;
@@ -33,6 +34,7 @@ public class RaffleTripleSeven implements Raffle, Parcelable{
 
     }
     public RaffleTripleSeven(String[] csvString) {
+        this.mRaffleId = extractRaffleNumberFromCSv(csvString);
         int[] raffleDate = extractRaffleDateFromCSv(csvString);
         int[] raffleNumbers = extractRaffleResultNumbersFromCsv(csvString);
         int raffleWinnersNumber = extractRaffleWinnersNumberFromCSv(csvString);
@@ -44,48 +46,41 @@ public class RaffleTripleSeven implements Raffle, Parcelable{
         this.mRaffleWinnersNumber =raffleWinnersNumber;
     }
 
-    protected RaffleTripleSeven(Parcel in) {
-        mRaffleDay = in.readInt();
-        mRaffleMonth = in.readInt();
-        mRaffleYear = in.readInt();
-        mRaffleDate = in.readString();
+//    protected RaffleTripleSeven(Parcel in) {
+//        mRaffleDay = in.readInt();
+//        mRaffleMonth = in.readInt();
+//        mRaffleYear = in.readInt();
+//        mRaffleDate = in.readString();
+//
+////        String raffleResultNumbersString = in.readString(); //read numbers string array to int array
+////        String[] s = raffleResultNumbersString.split(",");
+////        for (int curr = 0; curr < s.length; curr++)
+////            mRaffleResultNumbers[curr] = Integer.parseInt(s[curr]);
+////        mRaffleResultNumbers = in.createIntArray();
+//        in.readIntArray(mRaffleResultNumbers);
+//        mRaffleId = in.readInt();
+//        mRaffleWinnersNumber = in.readInt();
+//    }
 
-//        String raffleResultNumbersString = in.readString(); //read numbers string array to int array
-//        String[] s = raffleResultNumbersString.split(",");
-//        for (int curr = 0; curr < s.length; curr++)
-//            mRaffleResultNumbers[curr] = Integer.parseInt(s[curr]);
-//        mRaffleResultNumbers = in.createIntArray();
-        in.readIntArray(mRaffleResultNumbers);
-        mRaffleId = in.readInt();
-        mRaffleWinnersNumber = in.readInt();
-    }
+//    public static final Creator<RaffleTripleSeven> CREATOR = new Creator<RaffleTripleSeven>() {
+//        @Override
+//        public RaffleTripleSeven createFromParcel(Parcel in) {
+//            return new RaffleTripleSeven(in);
+//        }
+//
+//        @Override
+//        public RaffleTripleSeven[] newArray(int size) {
+//            return new RaffleTripleSeven[size];
+//        }
+//    };
 
-    public static final Creator<RaffleTripleSeven> CREATOR = new Creator<RaffleTripleSeven>() {
-        @Override
-        public RaffleTripleSeven createFromParcel(Parcel in) {
-            return new RaffleTripleSeven(in);
-        }
 
-        @Override
-        public RaffleTripleSeven[] newArray(int size) {
-            return new RaffleTripleSeven[size];
-        }
-    };
-
-    private static RaffleTripleSeven makeRaffleFromCsv(String[] csvString){
-        int[] raffleDate = extractRaffleDateFromCSv(csvString);
-        int[] raffleResultNumbers = extractRaffleResultNumbersFromCsv(csvString);
-        int raffleNumber = extractRaffleNumberFromCSv(csvString);
-        int raffleWinnersNumber = extractRaffleWinnersNumberFromCSv(csvString);
-        return new RaffleTripleSeven(
-                raffleDate[0],
-                raffleDate[1],
-                raffleDate[2],
-                csvString[CsvContractTripleSeven.DATE],
-                raffleNumber,
-                raffleResultNumbers,
-                raffleWinnersNumber
-                );
+    @Override
+    public boolean equals(Object obj) {
+        if (getClass() != obj.getClass())
+            return false;
+        RaffleTripleSeven raffleTripleSeven = (RaffleTripleSeven)obj;
+        return mRaffleId == raffleTripleSeven.mRaffleId;
     }
 
     private static int extractRaffleWinnersNumberFromCSv(String[] csvString) {
@@ -93,7 +88,7 @@ public class RaffleTripleSeven implements Raffle, Parcelable{
         return Integer.parseInt(raffleStringNumber);
     }
     private static int extractRaffleNumberFromCSv(String[] csvString) {
-        String raffleStringNumber = csvString[CsvContractTripleSeven.RAFFLE_NUMBER];
+        String raffleStringNumber = csvString[CsvContractTripleSeven.RAFFLE_ID_NUMBER];
         return Integer.parseInt(raffleStringNumber);
     }
 
@@ -102,7 +97,7 @@ public class RaffleTripleSeven implements Raffle, Parcelable{
         String date = csvString[CsvContractTripleSeven.DATE];
         String day = date.substring(0, 2);
         String month = date.substring(3, 5);
-        String year = date.substring(6, 8);
+        String year = date.substring(6);
         dateArray[CsvContractTripleSeven.DATE_ORDER.DAY.getValue()] = Integer.parseInt(day);
         dateArray[CsvContractTripleSeven.DATE_ORDER.MONTH.getValue()] = Integer.parseInt(month);
         dateArray[CsvContractTripleSeven.DATE_ORDER.YEAR.getValue()] = Integer.parseInt(year);
@@ -124,7 +119,8 @@ public class RaffleTripleSeven implements Raffle, Parcelable{
         for (int num : mRaffleResultNumbers){
             numbersString.append(num).append(" ");
         }
-        return  String.valueOf(mRaffleDay) + "\n" +
+        return  String.valueOf(mRaffleId) +  "\n" +
+                String.valueOf(mRaffleDay) + "\n" +
                 String.valueOf(mRaffleMonth) + "\n" +
                 String.valueOf(mRaffleYear) + "\n" +
                 numbersString.toString() + "\n";
@@ -163,21 +159,21 @@ public class RaffleTripleSeven implements Raffle, Parcelable{
         return Arrays.toString(mRaffleResultNumbers);
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(mRaffleDay);
-        dest.writeInt(mRaffleMonth);
-        dest.writeInt(mRaffleYear);
-        dest.writeString(mRaffleDate);
-        dest.writeIntArray(mRaffleResultNumbers);
-        dest.writeInt(mRaffleId);
-        dest.writeInt(mRaffleWinnersNumber);
-    }
+//    @Override
+//    public int describeContents() {
+//        return 0;
+//    }
+//
+//    @Override
+//    public void writeToParcel(Parcel dest, int flags) {
+//        dest.writeInt(mRaffleDay);
+//        dest.writeInt(mRaffleMonth);
+//        dest.writeInt(mRaffleYear);
+//        dest.writeString(mRaffleDate);
+//        dest.writeIntArray(mRaffleResultNumbers);
+//        dest.writeInt(mRaffleId);
+//        dest.writeInt(mRaffleWinnersNumber);
+//    }
 
     public ContentValues raffleToContentValues(){
         ContentValues contentValues = new ContentValues();

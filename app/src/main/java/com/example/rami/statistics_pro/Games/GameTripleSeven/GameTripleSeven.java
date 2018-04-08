@@ -3,6 +3,7 @@ package com.example.rami.statistics_pro.Games.GameTripleSeven;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.ToggleButton;
 import com.example.rami.statistics_pro.Interfaces.Game;
+import com.example.rami.statistics_pro.Interfaces.GameCsvContract;
 import com.example.rami.statistics_pro.Interfaces.Raffle;
 import com.example.rami.statistics_pro.Interfaces.Statistics;
 import com.example.rami.statistics_pro.R;
@@ -28,7 +30,7 @@ public class GameTripleSeven implements Game {
     private static final int TABLE_COLUMNS = 10;
     private static final int IMAGE_HEIGHT = 70;
     private static final int IMAGE_WIDTH = 0;
-
+    private static final GameCsvContract gameCsvContract = new CsvContractTripleSeven();
     private TableLayout gameTable;
     private ArrayList<Raffle> gameRaffles;
     private Uri SQL_RAFFLE_DB = StatisticsProContracts.TripleSevenRaffleEntry.CONTENT_URI;
@@ -41,6 +43,7 @@ public class GameTripleSeven implements Game {
         gameRaffles = new ArrayList<>();
         gameTable = view.findViewById(R.id.gameTableId);
         mStatisticsTripleSeven = new StatisticsTripleSeven(this);
+
 
         // create game table
         ToggleButton[][] buttonsArray = new ToggleButton[TABLE_ROWS][TABLE_COLUMNS];
@@ -74,6 +77,11 @@ public class GameTripleSeven implements Game {
         gameTable.setPadding(0,5,0,5);
 
     }
+
+    public GameCsvContract getGameCsvContract() {
+        return gameCsvContract;
+    }
+
     private ToggleButton createNewToggleButton(TableRow currentTableRow, View.OnClickListener clickListener,
                                                int row, int col){
 

@@ -3,6 +3,7 @@ package com.example.rami.statistics_pro.Utils;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -14,12 +15,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 public class CsvUtils {
-    private static File csvFile;
-    public static String FILE_NAME = "statisticsPro.csv";
+
+    public static String FILE_NAME = "statisticsProRaffles.csv";
 
     public static FileInputStream getInputStream() {
         return inputStream;
@@ -32,49 +34,46 @@ public class CsvUtils {
     private static FileInputStream inputStream;
     private static Date date;
     private static String LOG_TAG = CsvUtils.class.getName();
-    //TODO  make sure progressbar works
 
-    public static FileReader readCsvFile(View view, String csv_url) {
-        FileReader fileReader = null;
+    public static String readCsvFile(View view, String csv_url) {
         String path = view.getContext().getFilesDir().getPath();
+        String filePath = path + "/" + FILE_NAME;;
+        File file = new File(filePath);
+        if(file.exists()){
+            Log.d(LOG_TAG, "Raffles csv file exists");
+            String fileDate = DateFormat.format("dd/MM/yyyy", new Date(file.lastModified())).toString();
+            String todayDate = DateFormat.format("dd/MM/yyyy", Calendar.getInstance().getTime()).toString();
+
+            if (fileDate.equals(todayDate)){
+                Log.d(LOG_TAG, "Date of raffles file is matching today");
+                return filePath;
+            }
+        }
+
+        // execute this when the downloader must be fired
+        Log.d(LOG_TAG,"Raffles csv file was not found or not dated, downloading file");
+        ProgressBar mProgressBar = setProgressBar(view.getContext());
+        final DownloadTask downloadTask = new DownloadTask(view.getContext(), mProgressBar);
+        AsyncTask<String,Integer,String> task = downloadTask.execute(csv_url);
+        ((LinearLayout)view).addView(mProgressBar);
+
         try {
-            fileReader = new FileReader(path + "/" + FILE_NAME);
-            Log.d(LOG_TAG,"csv file found");
-            return fileReader;
-        } catch (FileNotFoundException file_not_found) {
-            // execute this when the downloader must be fired
-            Log.d(LOG_TAG,"csv file was not found, downloading file");
-            ProgressBar mProgressBar = setProgressBar(view.getContext());
-//            mProgressBar.setVisibility(View.VISIBLE);
-            final DownloadTask downloadTask = new DownloadTask(view.getContext(), mProgressBar);
-            AsyncTask<String,Integer,String> task = downloadTask.execute(csv_url);
-            ((LinearLayout)view).addView(mProgressBar);
-
-            try {
-                String success = task.get();
-                if (success.equals("Downloaded Successfully")){
-                    fileReader = new FileReader(path + "/" + FILE_NAME);
-                }
-                return fileReader;
-
-            }catch  (FileNotFoundException file_not_found_after_download){
-                Log.e(LOG_TAG, "csv file was not downloaded successfully");
-                return null;
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
+            String success = task.get();
+            if (success.equals("Downloaded Successfully") && file.exists()){
+                return filePath;
             }
 
+        }catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
         }
-    return null;
+        Log.e(LOG_TAG, "csv file was not downloaded successfully");
+        return null;
+
+
     }
 
     private static ProgressBar setProgressBar(Context context) {
-        // instantiate it within the onCreate method
         ProgressBar mProgressBar = new ProgressBar(context);
-        mProgressBar.setIndeterminate(true);
-        mProgressBar.setScrollBarStyle(View.SCROLLBARS_INSIDE_INSET);
         mProgressBar.cancelLongPress();
         return mProgressBar;
     }
