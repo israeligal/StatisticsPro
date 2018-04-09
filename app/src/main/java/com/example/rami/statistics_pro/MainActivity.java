@@ -6,6 +6,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -35,10 +36,16 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout)findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(viewPager);
 
-
-
     }
-
+//FirebaseFunctions.getInstance()
+//        .getHttpsCallable("myCoolFunction")
+//    .call(optionalObject)
+//    .addOnFailureListener {
+//        Log.wtf("FF", it)
+//    }
+//    .addOnSuccessListener {
+//        toast(it.data.toString())
+//    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();

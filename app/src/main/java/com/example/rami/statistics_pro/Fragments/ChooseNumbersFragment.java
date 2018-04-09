@@ -2,7 +2,6 @@ package com.example.rami.statistics_pro.Fragments;
 
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
-import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -21,7 +20,6 @@ import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.ScrollView;
-import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,6 +29,7 @@ import com.example.rami.statistics_pro.Games.GameTripleSeven.GameTripleSeven;
 import com.example.rami.statistics_pro.Interfaces.Game;
 import com.example.rami.statistics_pro.Interfaces.Raffle;
 import com.example.rami.statistics_pro.Interfaces.Statistics;
+import com.example.rami.statistics_pro.Loaders.OperationSearchLoader;
 import com.example.rami.statistics_pro.R;
 import com.example.rami.statistics_pro.Utils.CsvUtils;
 import com.example.rami.statistics_pro.Utils.GameStringUtils;
@@ -43,7 +42,6 @@ import java.util.ArrayList;
 
 
 public class ChooseNumbersFragment extends Fragment implements LoaderManager.LoaderCallbacks<String> {
-    LinearLayout mview;
     Game curGame;
     ArrayList<ToggleButton> chosenNumbers;
     TableRow choosenNumbersTableRow;
@@ -81,7 +79,7 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
         ScrollView scrollView = (ScrollView) inflater.inflate(R.layout.fragment_choose_numbers_statistics, container, false);
 
 
-        mview = (LinearLayout) scrollView.findViewById(R.id.choose_numbers_layout);
+        LinearLayout mview = (LinearLayout) scrollView.findViewById(R.id.choose_numbers_fragment_layout);
 
         View.OnClickListener onClickListener = createGameOnClickListener();
         // here we can add user choice for different games
@@ -101,10 +99,12 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
     }
 
     private void setRadioSearchByDatesOrRaffles() {
+        ViewGroup mview = (ViewGroup) getActivity().findViewById(R.id.choose_numbers_fragment_layout);
         RadioGroup radioGroup = mview.findViewById(R.id.radio_chose_by_date_or_raffle_number);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
+                ViewGroup mview = (ViewGroup) getActivity().findViewById(R.id.choose_numbers_fragment_layout);
                 LinearLayout dateSearch = (LinearLayout) mview.findViewById(R.id.search_by_date_edit_texts);
                 LinearLayout raffleSearch = (LinearLayout) mview.findViewById(R.id.search_by_raffle_number_edit_texts);
                 RadioButton checkedRadioButton = (RadioButton)group.findViewById(checkedId);
@@ -148,11 +148,12 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
 
 
     private void setSearchButton() {
-        Button btn = (Button) mview.findViewById(R.id.search_btn);
+        Button btn = (Button) getActivity().findViewById(R.id.search_btn);
         resetView(); // TODO create reset view
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                ViewGroup mview = (ViewGroup) getActivity().findViewById(R.id.choose_numbers_fragment_layout);
                 if (checkDatesFields()){
                     Button btn =  view.findViewById(R.id.search_btn);
                     btn.setEnabled(false);
@@ -242,9 +243,9 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
 
     //TABLE
     private TableRow create_chosen_numbers_table() {
-        TableRow tableRow = (TableRow) mview.findViewById(R.id.choose_numbers_row);
+        TableRow tableRow = (TableRow) getActivity().findViewById(R.id.choose_numbers_row);
         for (int i = 0; i < curGame.getResult_Number(); i++) {
-            TextView curTextView = (TextView) LayoutInflater.from(tableRow.getContext()).inflate(R.layout.game_chosen_number_text_view, tableRow, false);
+            TextView curTextView = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.game_chosen_number_text_view, tableRow, false);
             tableRow.addView(curTextView);
         }
         set_chosen_numbers_table_style(tableRow);
@@ -270,77 +271,10 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
     @SuppressLint("StaticFieldLeak")
     @Override
     public Loader<String> onCreateLoader(int id, final Bundle args) {
+
         switch (id){
             case OPERATION_SEARCH_LOADER:
-                return new AsyncTaskLoader<String>(getContext()) {
-                    ProgressBar mProgressBar;
-                    @Override
-                    public String loadInBackground() {
-//                        mProgressBar.setVisibility(View.GONE);
-                        String filePath = args.getString("filePath");
-                        CSVReader reader = null;
-
-                        try {
-
-                            assert filePath != null;
-                            reader = new CSVReader(new FileReader(filePath));
-
-
-                            reader.readNext();// skip headers line
-                            String[] nextLine = reader.readNext();
-                            String stringId = nextLine[curGame.getGameCsvContract().getRaffleIdNumber()];
-                            int numberOfRaffles = Integer.parseInt(stringId);
-
-                            while (nextLine != null) {
-                                mProgressBar.setProgress(mProgressBar.getProgress() + 1);
-
-                                if(curGame.getGameRaffles().size() == numberOfRaffles){
-                                    Log.d(LOG_TAG, "Raffles already loaded");
-                                    break;
-                                }
-                                else if(curGame.getGameRaffles().size() > numberOfRaffles){
-                                    Log.w(LOG_TAG, "error with raffles amount" + "Raffles size: " +
-                                            curGame.getGameRaffles().size() + "csv Raffles size: "+ numberOfRaffles);
-                                    break;
-                                }
-                                Raffle raffle = curGame.addRaffleFromCsv(nextLine);
-                                ContentValues raffleContentValues = raffle.raffleToContentValues();
-                                getContext().getContentResolver().insert(curGame.getSqlRaffleDb(), raffleContentValues);
-
-                                nextLine = reader.readNext();
-                            }
-                            Log.d(LOG_TAG, "loaded raffle into curgame and mysql");
-
-                        } catch (IOException e) {
-                            Log.e(LOG_TAG, "Error while loading raffles");
-                            e.printStackTrace();
-                            return null;
-                        }
-                        finally {
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    mProgressBar.setVisibility(View.GONE);
-                                }
-                            });
-                        }
-                        Log.d(LOG_TAG, "loaded raffle into curgame and mysql");
-                        return "Raffles loaded Successfully";
-                    }
-
-
-
-                    @Override
-                    protected void onStartLoading() {
-                        mProgressBar = new ProgressBar(getContext(),null,android.R.attr.progressBarStyleHorizontal);
-                        mProgressBar.setMax(10000);
-                        mview.addView(mProgressBar);
-                        Log.d(LOG_TAG,"Start background process");
-
-                        //Think of this as AsyncTask onPreExecute() method,start your progress bar,and at the end call forceLoad();
-                        forceLoad();
-                    }
-                };
+                return new OperationSearchLoader(getContext(), curGame, args, getActivity());
             case OPERATION_STATISTICS_LOADER:
                 return new AsyncTaskLoader<String>(getContext()) {
                     ProgressBar mProgressBar;
@@ -350,7 +284,7 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
                     public String loadInBackground() {
 
 
-                            LinearLayout linearLayout = mview.findViewById(R.id.statistics_linear_layout);
+                            ViewGroup mview = getActivity().findViewById(R.id.choose_numbers_fragment_layout);
                             String timeFrom = timeFromEditText.getText().toString();
                             String timeEnd = timeUntilEditText.getText().toString();
                             Statistics statistics = curGame.getStatistics();
@@ -403,20 +337,9 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
                 }
                 break;
             case OPERATION_STATISTICS_LOADER:
-                TableRow chosenTableRow = mview.findViewById(R.id.statistics_chosen_numbers_appearance_row);
-                TableRow countTableRow = mview.findViewById(R.id.statistics_count_appearance_row);
                 Statistics statistics = curGame.getStatistics();
-                int[] numberAppearance = statistics.statisticsNumberAppearance(chosenNumbers);
-
-                handleRow(countTableRow);
-                handleRow(chosenTableRow);
-                for (int i = 0; i < numberAppearance.length; ++i) {
-                    TextView chosenTextView = (TextView) chosenTableRow.getChildAt(i);
-                    TextView countTextView = (TextView) countTableRow.getChildAt(i);
-                    handleRowText(chosenTextView, chosenNumbers.get(i).getText().toString());
-                    handleRowText(countTextView, String.valueOf(numberAppearance[i]));
-                }
-                statistics.addAdditionalStatistics(mview);
+                ViewGroup mview = (ViewGroup) getActivity().findViewById(R.id.choose_numbers_fragment_layout);
+                statistics.addAppearanceRow(mview, chosenNumbers);
                 Button btn = getActivity().findViewById(R.id.search_btn);
                 btn.setEnabled(true);
                 break;
@@ -425,17 +348,7 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
 
 
 
-    void handleRow(TableRow tableRow){
-        tableRow.setVisibility(View.VISIBLE);
-        TextView rowText = (TextView) tableRow.getChildAt(tableRow.getChildCount() - 1);
-        rowText.setVisibility(View.VISIBLE);
-    }
-    void handleRowText(TextView textView, String textViewString){
-        textView.setText(textViewString);
-        float textSize = textView.getResources().getDimension(R.dimen.chosenNumbersAppearance);
-        textView.setTextSize(textSize);
-        textView.setVisibility(TextView.VISIBLE);
-    }
+
 
     @Override
     public void onLoaderReset(Loader<String> loader) {

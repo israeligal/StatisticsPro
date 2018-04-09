@@ -8,9 +8,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -31,7 +33,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
-public class StatisticsTripleSeven implements Statistics {
+public class StatisticsTripleSeven extends Statistics {
     private final static String LOG_TAG = StatisticsTripleSeven.class.getName();
     private int[] mNumberAppearance;
     private String mLastTimeAppearedTogether;
@@ -108,7 +110,7 @@ public class StatisticsTripleSeven implements Statistics {
     }
 
     @Override
-    public void addAdditionalStatistics(LinearLayout mview) {
+    public void addAdditionalStatistics(ViewGroup mview) {
 
         TableLayout tableLayout = mview.findViewById(R.id.additional_statistics_table_layout);
         tableLayout.removeViews(1,tableLayout.getChildCount()-1);
@@ -129,6 +131,9 @@ public class StatisticsTripleSeven implements Statistics {
             LastTimeAppearedTogether.setText("");
         }
     }
+
+
+
 
     private ArrayList<Integer> getNumbersFromToggleBtns(ArrayList<ToggleButton> toggleBtnChosenNumbers) {
         ArrayList<Integer> numList = new ArrayList<>();

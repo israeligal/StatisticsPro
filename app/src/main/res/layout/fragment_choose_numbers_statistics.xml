@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:id="@+id/choose_numbers_layout"
+        android:id="@+id/choose_numbers_fragment_layout"
         >
         <TableLayout
             android:id="@+id/gameTableId"

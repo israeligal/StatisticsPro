@@ -4,7 +4,6 @@ package com.example.rami.statistics_pro.Utils;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -40,18 +39,15 @@ public class CsvUtils {
         String filePath = path + "/" + FILE_NAME;;
         File file = new File(filePath);
         if(file.exists()){
-            Log.d(LOG_TAG, "Raffles csv file exists");
             String fileDate = DateFormat.format("dd/MM/yyyy", new Date(file.lastModified())).toString();
             String todayDate = DateFormat.format("dd/MM/yyyy", Calendar.getInstance().getTime()).toString();
 
             if (fileDate.equals(todayDate)){
-                Log.d(LOG_TAG, "Date of raffles file is matching today");
                 return filePath;
             }
         }
 
         // execute this when the downloader must be fired
-        Log.d(LOG_TAG,"Raffles csv file was not found or not dated, downloading file");
         ProgressBar mProgressBar = setProgressBar(view.getContext());
         final DownloadTask downloadTask = new DownloadTask(view.getContext(), mProgressBar);
         AsyncTask<String,Integer,String> task = downloadTask.execute(csv_url);
@@ -66,7 +62,6 @@ public class CsvUtils {
         }catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
-        Log.e(LOG_TAG, "csv file was not downloaded successfully");
         return null;
 
 
