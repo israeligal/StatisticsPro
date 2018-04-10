@@ -33,72 +33,9 @@ public class OperationSearchLoader extends AsyncTaskLoader<String> {
         mActivity = activity;
     }
 
+
     @Override
     public String loadInBackground() {
-
-        String filePath = mArgs.getString("filePath");
-        CSVReader reader;
-
-        try {
-
-            assert filePath != null;
-            reader = new CSVReader(new FileReader(filePath));
-
-
-            reader.readNext();// skip headers line
-            String[] nextLine = reader.readNext();
-            String stringId = nextLine[mGame.getGameCsvContract().getRaffleIdNumber()];
-            int numberOfRaffles = Integer.parseInt(stringId);
-
-            while (nextLine != null) {
-                mProgressBar.setProgress(mProgressBar.getProgress() + 1);
-
-                if(mGame.getGameRaffles().size() == numberOfRaffles){
-                    Log.d(LOG_TAG, "Raffles already loaded");
-                    break;
-                }
-                else if(mGame.getGameRaffles().size() > numberOfRaffles){
-                    Log.w(LOG_TAG, "error with raffles amount" + "Raffles size: " +
-                            mGame.getGameRaffles().size() + "csv Raffles size: "+ numberOfRaffles);
-                    break;
-                }
-                Raffle raffle = mGame.addRaffleFromCsv(nextLine);
-                ContentValues raffleContentValues = raffle.raffleToContentValues();
-                getContext().getContentResolver().insert(mGame.getSqlRaffleDb(), raffleContentValues);
-
-                nextLine = reader.readNext();
-            }
-            Log.d(LOG_TAG, "loaded raffle into curgame and mysql");
-
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "Error while loading raffles");
-            e.printStackTrace();
-            return null;
-        }
-
-        finally {
-            mActivity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mProgressBar.setVisibility(View.GONE);
-                }
-            });
-        }
-        Log.d(LOG_TAG, "loaded raffle into curgame and mysql");
-        return "Raffles loaded Successfully";
+        return null;
     }
-    @Override
-    protected void onStartLoading() {
-        ViewGroup mview = mActivity.findViewById(R.id.choose_numbers_fragment_layout);
-        mProgressBar = new ProgressBar(getContext(),null,android.R.attr.progressBarStyleHorizontal);
-        mProgressBar.setMax(10000);
-        mview.addView(mProgressBar);
-        Log.d(LOG_TAG,"Start background process");
-
-        //Think of this as AsyncTask onPreExecute() method,start your progress bar,and at the end call forceLoad();
-        forceLoad();
-    }
-
-
-
 }
