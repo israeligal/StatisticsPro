@@ -1,11 +1,8 @@
 package com.example.rami.statistics_pro.Tasks;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.os.PowerManager;
 import android.util.Log;
-import android.widget.ProgressBar;
 
 import com.example.rami.statistics_pro.Utils.CsvUtils;
 
@@ -18,46 +15,37 @@ import java.net.URL;
 
 // usually, subclasses of AsyncTask are declared inside the activity class.
 // that way, you can easily modify the UI thread from here
-// TODO dont download file if existing
+
 
 public class DownloadTask extends AsyncTask<String, Integer, String> {
-    private Context context;
-    private PowerManager.WakeLock mWakeLock;
-    private ProgressBar mProgressBar;
     private static String LOG_TAG = DownloadTask.class.getName();
+    private String path;
 
-    public DownloadTask(Context context, ProgressBar progressBar) {
-        this.context = context;
-        this.mProgressBar = progressBar;
-
+    public DownloadTask(Context context) {
+        path = context.getFilesDir().getPath();
     }
 
     @Override
     protected void onProgressUpdate(Integer... values) {
-        mProgressBar.setProgress(values[0]);
+
     }
 
 
     @Override
     protected void onPostExecute(String s) {
         Log.d(LOG_TAG, "onPostExecute " + s);
-        mProgressBar.setVisibility(ProgressBar.GONE);
         super.onPostExecute(s);
     }
 
     @Override
     protected void onCancelled(String s) {
         Log.d(LOG_TAG, "onCancelled " + s);
-        mProgressBar.setVisibility(ProgressBar.GONE);
         super.onCancelled(s);
     }
 
     @Override
     protected void onCancelled() {
         Log.d(LOG_TAG, "onCancelled without string" );
-
-        mProgressBar.setVisibility(ProgressBar.GONE);
-
     }
 
     @Override
@@ -88,11 +76,9 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
             int fileLength = connection.getContentLength();
             Log.d(LOG_TAG, "file length "+ fileLength);
 
-            mProgressBar.setMax(fileLength);
             // download the file
             input = connection.getInputStream();
-//            String path = context.getFilesDir();
-            String path = context.getFilesDir().getPath();
+
             String file_path = path + "/" + CsvUtils.FILE_NAME;
             output = new FileOutputStream(file_path);
             Log.d(LOG_TAG, "file path: " + file_path);
@@ -117,7 +103,6 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
             return e.toString();
         } finally {
             try {
-                Log.d(LOG_TAG,"downloadTask finally section");
                 if (output != null)
                     output.close();
                 if (input != null)
@@ -129,8 +114,6 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
             if (connection != null)
                 connection.disconnect();
         }
-
-
 
         return "Downloaded Successfully";
     }

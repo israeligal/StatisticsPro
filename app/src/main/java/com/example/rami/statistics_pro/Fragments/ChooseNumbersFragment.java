@@ -1,7 +1,5 @@
 package com.example.rami.statistics_pro.Fragments;
 
-import android.annotation.SuppressLint;
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -30,19 +28,15 @@ import android.widget.ToggleButton;
 import com.example.rami.statistics_pro.Games.GameTripleSeven.GameTripleSeven;
 import com.example.rami.statistics_pro.Games.GameTripleSeven.RaffleTripleSeven;
 import com.example.rami.statistics_pro.Interfaces.Game;
-import com.example.rami.statistics_pro.Interfaces.Raffle;
 import com.example.rami.statistics_pro.BaseClass.Statistics;
+import com.example.rami.statistics_pro.Loaders.OperationSearchLoader;
 import com.example.rami.statistics_pro.R;
 import com.example.rami.statistics_pro.Utils.CsvUtils;
 import com.example.rami.statistics_pro.Utils.GameStringUtils;
 import com.example.rami.statistics_pro.Utils.TimeUtils;
 import com.example.rami.statistics_pro.data.StatisticsProContracts;
-import com.opencsv.CSVReader;
 
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 
 public class ChooseNumbersFragment extends Fragment implements LoaderManager.LoaderCallbacks {
@@ -176,7 +170,7 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
     private void makeOperationLoadRaffles(String filePath) {
 
         Bundle queryBundle = new Bundle();
-        queryBundle.putString("filePath",filePath);
+        queryBundle.putString("filePath", filePath);
         LoaderManager loaderManager = getLoaderManager();
 //        Loader<String> loader = loaderManager.getLoader(OPERATION_SEARCH_LOADER);
         Loader<String> loader = loaderManager.getLoader(CURSOR_LOADER);
@@ -274,79 +268,13 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
         }
     }
 
-    @SuppressLint("StaticFieldLeak")
+
     @Override
     public Loader onCreateLoader(int id, final Bundle args) {
-
+        final ProgressBar mProgressBar = new ProgressBar(getContext(), null, android.R.attr.progressBarStyleHorizontal);
         switch (id){
             case OPERATION_SEARCH_LOADER:
-                return new AsyncTaskLoader<String>(getContext()) {
-                    ProgressBar mProgressBar;
-
-
-                    @Override
-                    public String loadInBackground() {
-                        String filePath = args.getString("filePath");
-                        CSVReader reader;
-
-                        try {
-
-                            assert filePath != null;
-                            reader = new CSVReader(new FileReader(filePath));
-
-
-                            reader.readNext();// skip headers line
-                            String[] nextLine = reader.readNext();
-                            String stringId = nextLine[curGame.getGameCsvContract().getRaffleIdNumber()];
-                            int numberOfRaffles = Integer.parseInt(stringId);
-
-                            while (nextLine != null) {
-                                mProgressBar.setProgress(mProgressBar.getProgress() + 1);
-
-                                if (curGame.getGameRaffles().size() == numberOfRaffles) {
-                                    Log.d(LOG_TAG, "Raffles already loaded");
-                                    break;
-                                } else if (curGame.getGameRaffles().size() > numberOfRaffles) {
-                                    Log.w(LOG_TAG, "error with raffles amount" + "Raffles size: " +
-                                            curGame.getGameRaffles().size() + "csv Raffles size: " + numberOfRaffles);
-                                    break;
-                                }
-                                Raffle raffle = curGame.addRaffleFromCsv(nextLine);
-                                ContentValues raffleContentValues = raffle.raffleToContentValues();
-                                getContext().getContentResolver().insert(curGame.getSqlRaffleDb(), raffleContentValues);
-
-                                nextLine = reader.readNext();
-                            }
-                            Log.d(LOG_TAG, "loaded raffle into curgame and mysql");
-
-                        } catch (IOException e) {
-                            Log.e(LOG_TAG, "Error while loading raffles");
-                            e.printStackTrace();
-                            return null;
-                        } finally {
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    mProgressBar.setVisibility(View.GONE);
-                                }
-                            });
-                        }
-                        Log.d(LOG_TAG, "loaded raffle into curgame and mysql");
-                        return "Raffles loaded Successfully";
-                    }
-
-                    @Override
-                    protected void onStartLoading() {
-                        ViewGroup mview = getActivity().findViewById(R.id.choose_numbers_fragment_layout);
-                        mProgressBar = new ProgressBar(getContext(), null, android.R.attr.progressBarStyleHorizontal);
-                        mProgressBar.setMax(10000);
-                        mview.addView(mProgressBar);
-                        Log.d(LOG_TAG, "Start background process");
-
-                        //Think of this as AsyncTask onPreExecute() method,start your progress bar,and at the end call forceLoad();
-                        forceLoad();
-                    }
-                };
+                return new OperationSearchLoader(getContext());
             case OPERATION_STATISTICS_LOADER:
                 return new AsyncTaskLoader<String>(getContext()) {
                     ProgressBar mProgressBar;

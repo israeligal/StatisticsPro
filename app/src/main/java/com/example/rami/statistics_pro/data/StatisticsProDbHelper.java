@@ -10,7 +10,7 @@ public class StatisticsProDbHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "tripleSevenRaffles.db";
 
 
-    public StatisticsProDbHelper(Context context) {
+    StatisticsProDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -24,32 +24,6 @@ public class StatisticsProDbHelper extends SQLiteOpenHelper {
                 + TripleSevenRaffleEntry.COLUMN_RAFFLE_WINNERS_NUMBER + " INTEGER NOT NULL "
                 + ");";
 
-//        String CREATE_T7_RAFFLES_NUMBERS_TABLE =
-//                "CREATE TABLE "+ TripleSevenRaffleNumbersEntry.TABLE_NAME  + " ("
-//                + TripleSevenRaffleNumbersEntry.COLUMN_RAFFLE_ID
-//                + " TEXT REFERENCES " + TripleSevenRaffleEntry.TABLE_NAME  +
-//                "(" + TripleSevenRaffleNumbersEntry.COLUMN_RAFFLE_ID + ") NOT NULL, "
-//                + TripleSevenRaffleNumbersEntry.COLUMN_RAFFLE_NUMBER_1 + " INTEGER NOT NULL, "
-//                + TripleSevenRaffleNumbersEntry.COLUMN_RAFFLE_NUMBER_2 + " INTEGER NOT NULL, "
-//                + TripleSevenRaffleNumbersEntry.COLUMN_RAFFLE_NUMBER_3 + " INTEGER NOT NULL, "
-//                + TripleSevenRaffleNumbersEntry.COLUMN_RAFFLE_NUMBER_4 + " INTEGER NOT NULL, "
-//                + TripleSevenRaffleNumbersEntry.COLUMN_RAFFLE_NUMBER_5 + " INTEGER NOT NULL, "
-//                + TripleSevenRaffleNumbersEntry.COLUMN_RAFFLE_NUMBER_6 + " INTEGER NOT NULL, "
-//                + TripleSevenRaffleNumbersEntry.COLUMN_RAFFLE_NUMBER_7 + " INTEGER NOT NULL, "
-//                + TripleSevenRaffleNumbersEntry.COLUMN_RAFFLE_NUMBER_8 + " INTEGER NOT NULL, "
-//                + TripleSevenRaffleNumbersEntry.COLUMN_RAFFLE_NUMBER_9 + " INTEGER NOT NULL, "
-//                + TripleSevenRaffleNumbersEntry.COLUMN_RAFFLE_NUMBER_10 + " INTEGER NOT NULL, "
-//                + TripleSevenRaffleNumbersEntry.COLUMN_RAFFLE_NUMBER_11 + " INTEGER NOT NULL, "
-//                + TripleSevenRaffleNumbersEntry.COLUMN_RAFFLE_NUMBER_12 + " INTEGER NOT NULL, "
-//                + TripleSevenRaffleNumbersEntry.COLUMN_RAFFLE_NUMBER_13 + " INTEGER NOT NULL, "
-//                + TripleSevenRaffleNumbersEntry.COLUMN_RAFFLE_NUMBER_14 + " INTEGER NOT NULL, "
-//                + TripleSevenRaffleNumbersEntry.COLUMN_RAFFLE_NUMBER_15 + " INTEGER NOT NULL, "
-//                + TripleSevenRaffleNumbersEntry.COLUMN_RAFFLE_NUMBER_16 + " INTEGER NOT NULL, "
-//                + TripleSevenRaffleNumbersEntry.COLUMN_RAFFLE_NUMBER_17 + " INTEGER NOT NULL "
-//                + ");";
-
-//        String execSql = CREATE_T7_RAFFLES_TABLE + CREATE_T7_RAFFLES_NUMBERS_TABLE;
-//        db.execSQL("PRAGMA foreign_keys = 1");
         db.execSQL(CREATE_T7_RAFFLES_TABLE);
     }
 

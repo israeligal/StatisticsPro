@@ -9,16 +9,17 @@ import com.example.rami.statistics_pro.Fragments.ChooseNumbersFragment;
 import com.example.rami.statistics_pro.Fragments.PersonalAreaFragment;
 import com.example.rami.statistics_pro.Fragments.StatisticsSearchFragment;
 import com.example.rami.statistics_pro.Fragments.UpcomingEventsFragment;
+import com.example.rami.statistics_pro.Interfaces.Game;
 import com.example.rami.statistics_pro.R;
 
 
 public class EventsPagerAdapter extends FragmentPagerAdapter {
     private Context mContext;
-
-    public EventsPagerAdapter(FragmentManager fm, Context context) {
+    private Game mGame;
+    public EventsPagerAdapter(FragmentManager fm, Context context, Game game) {
         super(fm);
         mContext = context;
-
+        mGame = game;
     }
 
     @Override

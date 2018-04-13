@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     private static StatisticsProUser currentUser;
     private static FirebaseAuth mFirebaseAuth;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

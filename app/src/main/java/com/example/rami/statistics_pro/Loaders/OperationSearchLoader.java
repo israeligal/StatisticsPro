@@ -20,17 +20,13 @@ import java.io.IOException;
 
 
 public class OperationSearchLoader extends AsyncTaskLoader<String> {
-    private Game mGame;
-    private Activity mActivity;
-    ProgressBar mProgressBar;
+
     private final static String LOG_TAG = OperationSearchLoader.class.getName();
     private Bundle mArgs;
 
-    public OperationSearchLoader(Context context, Game game, Bundle args, Activity activity) {
+    public OperationSearchLoader(Context context) {
         super(context);
-        mGame = game;
-        mArgs = args;
-        mActivity = activity;
+
     }
 
 

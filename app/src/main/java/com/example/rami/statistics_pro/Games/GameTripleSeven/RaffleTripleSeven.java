@@ -5,7 +5,6 @@ import android.os.Parcelable;
 
 import com.example.rami.statistics_pro.Interfaces.Raffle;
 import com.example.rami.statistics_pro.data.StatisticsProContracts.TripleSevenRaffleEntry;
-//import com.example.rami.statistics_pro.data.StatisticsProContracts.TripleSevenRaffleNumbersEntry;
 
 import java.util.Arrays;
 
@@ -38,11 +37,7 @@ public class RaffleTripleSeven implements Raffle, Parcelable{
     protected RaffleTripleSeven(Parcel in) {
         mRaffleDate = in.readString();
 
-//        String raffleResultNumbersString = in.readString(); //read numbers string array to int array
-//        String[] s = raffleResultNumbersString.split(",");
-//        for (int curr = 0; curr < s.length; curr++)
-//            mRaffleResultNumbers[curr] = Integer.parseInt(s[curr]);
-//        mRaffleResultNumbers = in.createIntArray();
+
         in.readIntArray(mRaffleResultNumbers);
         mRaffleId = in.readInt();
         mRaffleWinnersNumber = in.readInt();
@@ -78,17 +73,6 @@ public class RaffleTripleSeven implements Raffle, Parcelable{
         return Integer.parseInt(raffleStringNumber);
     }
 
-//    private static int[] extractRaffleDateFromCSv(String[] csvString){
-//        int[] dateArray = new int[3];
-//        String date = csvString[CsvContractTripleSeven.DATE];
-//        String day = date.substring(0, 2);
-//        String month = date.substring(3, 5);
-//        String year = date.substring(6);
-//        dateArray[CsvContractTripleSeven.DATE_ORDER.DAY.getValue()] = Integer.parseInt(day);
-//        dateArray[CsvContractTripleSeven.DATE_ORDER.MONTH.getValue()] = Integer.parseInt(month);
-//        dateArray[CsvContractTripleSeven.DATE_ORDER.YEAR.getValue()] = Integer.parseInt(year);
-//        return dateArray;
-//    }
 
     private static int[] extractRaffleResultNumbersFromCsv(String[] csvString) {
         int[] raffleNumbers = new int[GameTripleSeven.FILLED_NUMBERS];
@@ -161,15 +145,5 @@ public class RaffleTripleSeven implements Raffle, Parcelable{
         contentValues.put(TripleSevenRaffleEntry.COLUMN_RAFFLE_WINNERS_NUMBER,  mRaffleWinnersNumber);
         return contentValues;
     }
-//    public ContentValues numbersToContentValues(){
-//        ContentValues contentValues = new ContentValues();
-//        contentValues.put(TripleSevenRaffleNumbersEntry.COLUMN_RAFFLE_ID, mRaffleId);
-//        StringBuilder stringBuilder = new StringBuilder(TripleSevenRaffleNumbersEntry.COLUMN_RAFFLE_NUMBER_1);
-//        stringBuilder.deleteCharAt(stringBuilder.length() - 1);
-//        for (int i = 0 ; i < mRaffleResultNumbers.length ; i++) {
-//            contentValues.put(stringBuilder.toString() + i,  mRaffleResultNumbers[i]);
-//        }
-//
-//        return contentValues;
-//    }
+
 }
