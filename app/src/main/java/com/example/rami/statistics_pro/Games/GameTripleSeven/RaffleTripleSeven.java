@@ -14,6 +14,7 @@ public class RaffleTripleSeven implements Raffle, Parcelable{
     private int[] mRaffleResultNumbers;
     private int mRaffleId;
     private int mRaffleWinnersNumber;
+
     private static String LOG_TAG = RaffleTripleSeven.class.getName();
 
     public RaffleTripleSeven(String mRaffleDate, int mRaffleId,
@@ -26,18 +27,19 @@ public class RaffleTripleSeven implements Raffle, Parcelable{
 
     }
     public RaffleTripleSeven(String[] csvString) {
+
         this.mRaffleId = extractRaffleNumberFromCSv(csvString);
         int[] raffleNumbers = extractRaffleResultNumbersFromCsv(csvString);
         int raffleWinnersNumber = extractRaffleWinnersNumberFromCSv(csvString);
         this.mRaffleDate = csvString[CsvContractTripleSeven.DATE];
         this.mRaffleResultNumbers = raffleNumbers;
         this.mRaffleWinnersNumber =raffleWinnersNumber;
+
     }
 
     protected RaffleTripleSeven(Parcel in) {
+
         mRaffleDate = in.readString();
-
-
         in.readIntArray(mRaffleResultNumbers);
         mRaffleId = in.readInt();
         mRaffleWinnersNumber = in.readInt();
@@ -65,30 +67,39 @@ public class RaffleTripleSeven implements Raffle, Parcelable{
     }
 
     private static int extractRaffleWinnersNumberFromCSv(String[] csvString) {
+
         String raffleStringNumber = csvString[CsvContractTripleSeven.WINNERS_NUMBER];
+
         return Integer.parseInt(raffleStringNumber);
     }
     private static int extractRaffleNumberFromCSv(String[] csvString) {
+
         String raffleStringNumber = csvString[CsvContractTripleSeven.RAFFLE_ID_NUMBER];
+
         return Integer.parseInt(raffleStringNumber);
     }
 
-
     private static int[] extractRaffleResultNumbersFromCsv(String[] csvString) {
+
         int[] raffleNumbers = new int[GameTripleSeven.FILLED_NUMBERS];
         int csvResultNumbersStart = CsvContractTripleSeven.RESULT_NUMBERS_START;
+
         for (int i = 0; i < GameTripleSeven.FILLED_NUMBERS; i++){
             raffleNumbers[i] = Integer.parseInt(csvString[csvResultNumbersStart + i]);
         }
+
         return raffleNumbers;
     }
 
     @Override
     public String toString() {
+
         StringBuilder numbersString = new StringBuilder();
+
         for (int num : mRaffleResultNumbers){
             numbersString.append(num).append(" ");
         }
+
         return  String.valueOf(mRaffleId) +  "\n" +
                 numbersString.toString() + "\n";
 
@@ -109,18 +120,27 @@ public class RaffleTripleSeven implements Raffle, Parcelable{
     public int getmRaffleWinnersNumber() {
         return mRaffleWinnersNumber;
     }
-    public String getRaffleNumbersString(){
+
+    private String getRaffleNumbersString(){
 
         return Arrays.toString(mRaffleResultNumbers);
     }
+
+    /** retrieve raffle numbers array from a string that looks like a number array. ex. [1, 2 ,3] */
     public static int[] getRaffleNumbersIntArray(String raffleNumberString){
+
         raffleNumberString = raffleNumberString.substring(1,raffleNumberString.length()-1);
         raffleNumberString = raffleNumberString.replaceAll("\\s","");
         String[] stringArray = raffleNumberString.split(",");
+
         int[] raffleNumberIntArray = new int[stringArray.length];
+
         for (int i = 0; i < stringArray.length; i++) {
+
             raffleNumberIntArray[i] = Integer.parseInt(stringArray[i]);
+
             }
+
         return raffleNumberIntArray;
     }
 
@@ -131,6 +151,7 @@ public class RaffleTripleSeven implements Raffle, Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+
         dest.writeString(mRaffleDate);
         dest.writeIntArray(mRaffleResultNumbers);
         dest.writeInt(mRaffleId);
@@ -138,11 +159,13 @@ public class RaffleTripleSeven implements Raffle, Parcelable{
     }
 
     public ContentValues raffleToContentValues(){
+
         ContentValues contentValues = new ContentValues();
         contentValues.put(TripleSevenRaffleEntry.COLUMN_RAFFLE_ID, mRaffleId);
         contentValues.put(TripleSevenRaffleEntry.COLUMN_RAFFLE_DATE,  mRaffleDate);
         contentValues.put(TripleSevenRaffleEntry.COLUMN_RAFFLE_RESULT_NUMBERS,  getRaffleNumbersString());
         contentValues.put(TripleSevenRaffleEntry.COLUMN_RAFFLE_WINNERS_NUMBER,  mRaffleWinnersNumber);
+
         return contentValues;
     }
 

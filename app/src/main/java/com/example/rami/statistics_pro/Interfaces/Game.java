@@ -18,7 +18,7 @@ public abstract class Game {
     protected Statistics mStatistics;
     protected TableLayout gameTable;
     protected static int TOTAL_NUMBERS;
-    protected static int FILLED_NUMBERS;
+    public static int FILLED_NUMBERS;
     protected static int RESULT_NUMBER;
     protected static int TABLE_ROWS;
     protected static int TABLE_COLUMNS;

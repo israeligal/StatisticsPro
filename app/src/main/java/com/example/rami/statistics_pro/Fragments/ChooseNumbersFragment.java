@@ -1,5 +1,6 @@
 package com.example.rami.statistics_pro.Fragments;
 
+import android.annotation.SuppressLint;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -269,6 +270,7 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
     }
 
 
+    @SuppressLint("StaticFieldLeak")
     @Override
     public Loader onCreateLoader(int id, final Bundle args) {
         final ProgressBar mProgressBar = new ProgressBar(getContext(), null, android.R.attr.progressBarStyleHorizontal);
