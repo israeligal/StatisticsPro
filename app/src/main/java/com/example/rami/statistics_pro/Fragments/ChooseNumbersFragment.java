@@ -30,7 +30,7 @@ import com.example.rami.statistics_pro.Games.GameTripleSeven.GameTripleSeven;
 import com.example.rami.statistics_pro.Games.GameTripleSeven.RaffleTripleSeven;
 import com.example.rami.statistics_pro.BaseClass.Game;
 import com.example.rami.statistics_pro.BaseClass.Statistics;
-import com.example.rami.statistics_pro.Loaders.OperationSearchLoader;
+import com.example.rami.statistics_pro.Loaders.OperationCsvLoader;
 import com.example.rami.statistics_pro.R;
 import com.example.rami.statistics_pro.Utils.CsvUtils;
 import com.example.rami.statistics_pro.Utils.GameStringUtils;
@@ -47,7 +47,7 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
     private Button mSearchBtn;
     EditText timeFromEditText,  timeUntilEditText;
     private static String LOG_TAG = ChooseNumbersFragment.class.getName();
-    public static final int OPERATION_SEARCH_LOADER = 1;
+    public static final int OPERATION_CSV_LOADER = 1;
     public static final int OPERATION_STATISTICS_LOADER = 2;
     public static final int CURSOR_LOADER = 3;
 
@@ -157,14 +157,10 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
                     btn.setEnabled(false);
 
                     //TODO move all reading raffles logic to onCreateView
-                    String filePath = CsvUtils.readCsvFile(mview, curGame.getCsvUrl());
 
-                    if (filePath != null) {
+                        makeOperationLoadRaffles();
 
 
-                        makeOperationLoadRaffles(filePath);
-
-                    }
                 }
             }
         });
@@ -175,20 +171,39 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
     }
 
 
-    private void makeOperationLoadRaffles(String filePath) {
+    private void makeOperationLoadRaffles() {
+
+
+        LoaderManager loaderManager = getLoaderManager();
+
+        Loader<String> loader = loaderManager.getLoader(CURSOR_LOADER);
+        if(loader==null){
+            loaderManager.initLoader(CURSOR_LOADER, null, this);
+
+        }else{
+            loaderManager.restartLoader(CURSOR_LOADER, null, this);
+        }
+    }
+
+    /**
+     *  Download csv file if necessary.
+     *  Updates db.
+     *  Loads raffles to curGame raffles.
+     */
+     private void makeOperationCsvRaffles() {
+
+        String filePath = CsvUtils.readCsvFile(getContext(), curGame.getCsvUrl());
 
         Bundle queryBundle = new Bundle();
         queryBundle.putString("filePath", filePath);
         LoaderManager loaderManager = getLoaderManager();
-//        Loader<String> loader = loaderManager.getLoader(OPERATION_SEARCH_LOADER);
-        Loader<String> loader = loaderManager.getLoader(CURSOR_LOADER);
+
+        Loader<String> loader = loaderManager.getLoader(OPERATION_CSV_LOADER);
         if(loader==null){
-            loaderManager.initLoader(CURSOR_LOADER, queryBundle, this);
-//            loaderManager.initLoader(OPERATION_SEARCH_LOADER, queryBundle, this);
+            loaderManager.initLoader(OPERATION_CSV_LOADER, queryBundle, this);
 
         }else{
-            loaderManager.restartLoader(CURSOR_LOADER, queryBundle, this);
-//            loaderManager.restartLoader(OPERATION_SEARCH_LOADER, queryBundle, this);
+            loaderManager.restartLoader(OPERATION_CSV_LOADER, queryBundle, this);
         }
     }
 
@@ -281,16 +296,16 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
     @Override
     public Loader onCreateLoader(int id, final Bundle args) {
         switch (id){
-            case OPERATION_SEARCH_LOADER:
-                return new OperationSearchLoader(getContext(),"", curGame);
+            case OPERATION_CSV_LOADER:
+                return new OperationCsvLoader(getContext(), args.getString("filepath"),
+                        curGame);
+
             case OPERATION_STATISTICS_LOADER:
                 return new AsyncTaskLoader<String>(getContext()) {
                     ProgressBar mProgressBar;
 
-
                     @Override
                     public String loadInBackground() {
-
 
                             ViewGroup mview = getActivity().findViewById(R.id.choose_numbers_fragment_layout);
                             String timeFrom = timeFromEditText.getText().toString();
@@ -339,24 +354,40 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
     public void onLoadFinished(Loader loader, Object data) {
         Log.d(LOG_TAG,"result : "+ data);
         switch(loader.getId()){
-            case OPERATION_SEARCH_LOADER:
+            case OPERATION_CSV_LOADER:
                 if(data != null && data.equals("Raffles loaded Successfully")){
                     makeOperationLoadStatistics();
                 }
                 else{
-                    Toast.makeText(getContext(),"בעיה בטעינת הקבצים מאתר הפיס",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(),"בעיה בטעינת הקבצים מאתר הפיס",
+                            Toast.LENGTH_SHORT).show();
                 }
                 break;
+
             case OPERATION_STATISTICS_LOADER:
                 Statistics statistics = curGame.getStatistics();
-                ViewGroup mview = (ViewGroup) getActivity().findViewById(R.id.choose_numbers_fragment_layout);
+
+                ViewGroup mview = (ViewGroup) getActivity()
+                        .findViewById(R.id.choose_numbers_fragment_layout);
+
                 statistics.addAppearanceRow(mview, chosenNumbers);
+
                 Button btn = getActivity().findViewById(R.id.search_btn);
                 btn.setEnabled(true);
                 break;
+
             case CURSOR_LOADER:
                 Cursor cursor = (Cursor) data;
-                loadRafflesFromDb(cursor);
+                if(cursor.moveToFirst()){
+                    //loads raffles from mySQL db.
+                    loadRafflesFromDb(cursor);
+
+                    // calls to another loader to load relevant statistics info about the game.
+                    makeOperationLoadStatistics();
+                }
+                else{
+                    makeOperationCsvRaffles();
+                }
         }
     }
 
@@ -371,11 +402,10 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
             String raffleNumbersString = cursor.getString(2);
             int[] raffleNumbers = RaffleTripleSeven.getRaffleNumbersIntArray(raffleNumbersString);
             int raffleWinnersNumber = cursor.getInt(3);
+
             curGame.getGameRaffles().add(new RaffleTripleSeven(raffleDate, raffleId,
                     raffleNumbers, raffleWinnersNumber));
         }
-
-        makeOperationLoadStatistics();
 
     }
 

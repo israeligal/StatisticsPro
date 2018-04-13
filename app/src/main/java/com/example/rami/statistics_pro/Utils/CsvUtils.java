@@ -40,13 +40,13 @@ public class CsvUtils {
      * if it does returns its path, else download from the web and returns path.
      * Intended only for small downloads
      *
-     * @param view view reference
+     * @param context context reference
      * @param csv_url csv file url
      * @return string to file path
      */
-    public static String readCsvFile(View view, String csv_url) {
+    public static String readCsvFile(Context context, String csv_url) {
 
-        String path = view.getContext().getFilesDir().getPath();
+        String path = context.getFilesDir().getPath();
         String filePath = path + "/" + FILE_NAME;;
         File file = new File(filePath);
         if(file.exists()){
@@ -58,7 +58,7 @@ public class CsvUtils {
             }
         }
 
-        final DownloadTask downloadTask = new DownloadTask(view.getContext());
+        final DownloadTask downloadTask = new DownloadTask(context);
         AsyncTask<String,Integer,String> task = downloadTask.execute(csv_url);
 
         try {

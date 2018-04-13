@@ -4,25 +4,22 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.example.rami.statistics_pro.BaseClass.Game;
 import com.example.rami.statistics_pro.Interfaces.Raffle;
-import com.example.rami.statistics_pro.R;
 import com.opencsv.CSVReader;
 
 import java.io.FileReader;
 import java.io.IOException;
 
 
-public class OperationSearchLoader extends AsyncTaskLoader<String> {
+public class OperationCsvLoader extends AsyncTaskLoader<String> {
 
-    private final static String LOG_TAG = OperationSearchLoader.class.getName();
+    private final static String LOG_TAG = OperationCsvLoader.class.getName();
     private String mFilepath;
     private Game mGame;
 
-    public OperationSearchLoader(Context context,String filepath, Game game) {
+    public OperationCsvLoader(Context context, String filepath, Game game) {
         super(context);
         mFilepath = filepath;
         mGame = game;
