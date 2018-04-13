@@ -34,7 +34,18 @@ public class CsvUtils {
     private static Date date;
     private static String LOG_TAG = CsvUtils.class.getName();
 
+
+    /**
+     * Checks if file already exist and if it was created today.
+     * if it does returns its path, else download from the web and returns path.
+     * Intended only for small downloads
+     *
+     * @param view view reference
+     * @param csv_url csv file url
+     * @return string to file path
+     */
     public static String readCsvFile(View view, String csv_url) {
+
         String path = view.getContext().getFilesDir().getPath();
         String filePath = path + "/" + FILE_NAME;;
         File file = new File(filePath);
@@ -47,11 +58,8 @@ public class CsvUtils {
             }
         }
 
-        // execute this when the downloader must be fired
-        ProgressBar mProgressBar = setProgressBar(view.getContext());
-        final DownloadTask downloadTask = new DownloadTask(view.getContext(), mProgressBar);
+        final DownloadTask downloadTask = new DownloadTask(view.getContext());
         AsyncTask<String,Integer,String> task = downloadTask.execute(csv_url);
-        ((LinearLayout)view).addView(mProgressBar);
 
         try {
             String success = task.get();
@@ -67,11 +75,7 @@ public class CsvUtils {
 
     }
 
-    private static ProgressBar setProgressBar(Context context) {
-        ProgressBar mProgressBar = new ProgressBar(context);
-        mProgressBar.cancelLongPress();
-        return mProgressBar;
-    }
+
 
     public static boolean saveCsvFile(){
 

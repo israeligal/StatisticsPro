@@ -1,4 +1,4 @@
-package com.example.rami.statistics_pro.Interfaces;
+package com.example.rami.statistics_pro.BaseClass;
 
 import android.net.Uri;
 import android.view.View;
@@ -8,6 +8,8 @@ import android.widget.ToggleButton;
 
 import com.example.rami.statistics_pro.BaseClass.Statistics;
 import com.example.rami.statistics_pro.Games.GameTripleSeven.StatisticsTripleSeven;
+import com.example.rami.statistics_pro.Interfaces.GameCsvContract;
+import com.example.rami.statistics_pro.Interfaces.Raffle;
 import com.example.rami.statistics_pro.R;
 
 import java.util.ArrayList;
@@ -16,7 +18,6 @@ public abstract class Game {
 
     protected ArrayList<Raffle> gameRaffles;
     protected Statistics mStatistics;
-    protected TableLayout gameTable;
     protected static int TOTAL_NUMBERS;
     public static int FILLED_NUMBERS;
     protected static int RESULT_NUMBER;
@@ -24,7 +25,7 @@ public abstract class Game {
     protected static int TABLE_COLUMNS;
     protected static int IMAGE_HEIGHT;
     protected static int IMAGE_WIDTH;
-
+    protected static GameCsvContract gameCsvContract;
 
     abstract public Uri getSqlRaffleDb();
 
@@ -33,6 +34,7 @@ public abstract class Game {
     abstract public GameCsvContract getGameCsvContract();
 
     abstract public String getCsvUrl();
+
 
     abstract protected ToggleButton createNewToggleButton(TableRow currentTableRow,
                                                           View.OnClickListener clickListener,
@@ -53,7 +55,7 @@ public abstract class Game {
     }
 
     protected void createGameTable(View view, View.OnClickListener clickListener){
-        gameTable = view.findViewById(R.id.gameTableId);
+        TableLayout gameTable = view.findViewById(R.id.gameTableId);
 
         // create game table
         ToggleButton[][] buttonsArray = new ToggleButton[TABLE_ROWS][TABLE_COLUMNS];

@@ -28,7 +28,7 @@ import android.widget.ToggleButton;
 
 import com.example.rami.statistics_pro.Games.GameTripleSeven.GameTripleSeven;
 import com.example.rami.statistics_pro.Games.GameTripleSeven.RaffleTripleSeven;
-import com.example.rami.statistics_pro.Interfaces.Game;
+import com.example.rami.statistics_pro.BaseClass.Game;
 import com.example.rami.statistics_pro.BaseClass.Statistics;
 import com.example.rami.statistics_pro.Loaders.OperationSearchLoader;
 import com.example.rami.statistics_pro.R;
@@ -145,16 +145,23 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
 
 
     private void setSearchButton(final ViewGroup mview) {
-        Button btn = (Button) mview.findViewById(R.id.search_btn);
         resetView(); // TODO create reset view
+
+        Button btn = (Button) mview.findViewById(R.id.search_btn);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (checkDatesFields()){
+
                     Button btn =  view.findViewById(R.id.search_btn);
                     btn.setEnabled(false);
+
+                    //TODO move all reading raffles logic to onCreateView
                     String filePath = CsvUtils.readCsvFile(mview, curGame.getCsvUrl());
+
                     if (filePath != null) {
+
+
                         makeOperationLoadRaffles(filePath);
 
                     }
@@ -273,10 +280,9 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
     @SuppressLint("StaticFieldLeak")
     @Override
     public Loader onCreateLoader(int id, final Bundle args) {
-        final ProgressBar mProgressBar = new ProgressBar(getContext(), null, android.R.attr.progressBarStyleHorizontal);
         switch (id){
             case OPERATION_SEARCH_LOADER:
-                return new OperationSearchLoader(getContext());
+                return new OperationSearchLoader(getContext(),"", curGame);
             case OPERATION_STATISTICS_LOADER:
                 return new AsyncTaskLoader<String>(getContext()) {
                     ProgressBar mProgressBar;
@@ -378,9 +384,6 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
     }
 
     private void makeOperationLoadStatistics(){
-//        ProgressBar progressBar = new ProgressBar(getContext());
-//        progressBar.setVisibility(View.VISIBLE);
-//        mview.addView(progressBar);
 
         Bundle queryBundle = new Bundle();
         LoaderManager loaderManager = getLoaderManager();

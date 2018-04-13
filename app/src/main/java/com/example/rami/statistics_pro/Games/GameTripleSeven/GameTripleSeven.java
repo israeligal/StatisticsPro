@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.TableRow;
 import android.widget.ToggleButton;
 
-import com.example.rami.statistics_pro.Interfaces.Game;
+import com.example.rami.statistics_pro.BaseClass.Game;
 import com.example.rami.statistics_pro.Interfaces.GameCsvContract;
 import com.example.rami.statistics_pro.Interfaces.Raffle;
 import com.example.rami.statistics_pro.Utils.GameStringUtils;
@@ -17,12 +17,12 @@ import java.util.ArrayList;
 public class GameTripleSeven extends Game {
 
 
-    private static final GameCsvContract gameCsvContract = new CsvContractTripleSeven();
     private Uri SQL_RAFFLE_DB = StatisticsProContracts.TripleSevenRaffleEntry.CONTENT_URI;
 
 
     public GameTripleSeven(View view, View.OnClickListener clickListener){
 
+        gameCsvContract = new CsvContractTripleSeven();
         TOTAL_NUMBERS = 70;
         FILLED_NUMBERS = 17;
         RESULT_NUMBER = 7;

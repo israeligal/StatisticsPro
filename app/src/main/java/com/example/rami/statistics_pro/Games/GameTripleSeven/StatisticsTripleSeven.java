@@ -10,7 +10,7 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.example.rami.statistics_pro.Interfaces.Game;
+import com.example.rami.statistics_pro.BaseClass.Game;
 import com.example.rami.statistics_pro.Interfaces.Raffle;
 import com.example.rami.statistics_pro.BaseClass.Statistics;
 import com.example.rami.statistics_pro.R;
