@@ -142,6 +142,8 @@
                 android:gravity="start"
                 android:visibility="gone"
                 android:layout_weight="1"
+
+
                 >
                 <TextView
                     android:text=""
@@ -150,6 +152,7 @@
                     android:layout_marginEnd="3dp"
                     android:background="@color/statistics_chosen_numbers_appearance_row"
                     android:textAlignment="center"
+                    android:maxLines="1"
                     />
                 <TextView
                     android:text=""
@@ -158,6 +161,8 @@
                     android:layout_marginEnd="3dp"
                     android:background="@color/statistics_chosen_numbers_appearance_row"
                     android:textAlignment="center"
+                    android:maxLines="1"
+
                     />
                 <TextView
                     android:text=""
@@ -166,6 +171,8 @@
                     android:layout_marginEnd="3dp"
                     android:background="@color/statistics_chosen_numbers_appearance_row"
                     android:textAlignment="center"
+                    android:maxLines="1"
+
                     />
                 <TextView
                     android:text=""
@@ -174,6 +181,8 @@
                     android:layout_marginEnd="3dp"
                     android:background="@color/statistics_chosen_numbers_appearance_row"
                     android:textAlignment="center"
+                    android:maxLines="1"
+
                     />
                 <TextView
                     android:text=""
@@ -182,6 +191,8 @@
                     android:layout_marginEnd="3dp"
                     android:background="@color/statistics_chosen_numbers_appearance_row"
                     android:textAlignment="center"
+                    android:maxLines="1"
+
                     />
                 <TextView
                     android:text=""
@@ -190,6 +201,8 @@
                     android:layout_marginEnd="3dp"
                     android:background="@color/statistics_chosen_numbers_appearance_row"
                     android:textAlignment="center"
+                    android:maxLines="1"
+
                     />
                 <TextView
                     android:text=""
@@ -198,6 +211,8 @@
                     android:layout_marginEnd="3dp"
                     android:background="@color/statistics_chosen_numbers_appearance_row"
                     android:textAlignment="center"
+                    android:maxLines="1"
+
                     />
 
                 <TextView
@@ -207,6 +222,8 @@
                     android:gravity="end"
                     android:background="@color/statistics_chosen_numbers_appearance_row"
                     android:textSize="@dimen/chosenNumbersAppearance"
+                    android:maxLines="1"
+
 
                     />
             </TableRow>
@@ -215,6 +232,7 @@
                 android:visibility="gone"
                 android:gravity="start"
                 android:layout_width="match_parent"
+
                 >
                 <TextView
                     android:text=""
@@ -223,6 +241,8 @@
                     android:layout_marginEnd="3dp"
                     android:background="@color/statistics_count_appearance_row"
                     android:textAlignment="center"
+                    android:maxLines="1"
+
                     />
                 <TextView
                     android:text=""
@@ -231,6 +251,8 @@
                     android:layout_marginEnd="3dp"
                     android:background="@color/statistics_count_appearance_row"
                     android:textAlignment="center"
+                    android:maxLines="1"
+
                     />
                 <TextView
                     android:text=""
@@ -239,6 +261,8 @@
                     android:layout_marginEnd="3dp"
                     android:background="@color/statistics_count_appearance_row"
                     android:textAlignment="center"
+                    android:maxLines="1"
+
                     />
                 <TextView
                     android:text=""
@@ -247,6 +271,8 @@
                     android:layout_marginEnd="3dp"
                     android:background="@color/statistics_count_appearance_row"
                     android:textAlignment="center"
+                    android:maxLines="1"
+
                     />
                 <TextView
                     android:text=""
@@ -255,6 +281,8 @@
                     android:layout_marginEnd="3dp"
                     android:background="@color/statistics_count_appearance_row"
                     android:textAlignment="center"
+                    android:maxLines="1"
+
                     />
                 <TextView
                     android:text=""
@@ -263,6 +291,8 @@
                     android:layout_marginEnd="3dp"
                     android:background="@color/statistics_count_appearance_row"
                     android:textAlignment="center"
+                    android:maxLines="1"
+
                     />
                 <TextView
                     android:text=""
@@ -271,6 +301,8 @@
                     android:layout_marginEnd="3dp"
                     android:background="@color/statistics_count_appearance_row"
                     android:textAlignment="center"
+                    android:maxLines="1"
+
                     />
 
 
@@ -281,8 +313,7 @@
                     android:gravity="start"
                     android:textSize="@dimen/chosenNumbersAppearance"
                     android:background="@color/statistics_count_appearance_row"
-
-
+                    android:maxLines="1"
                     />
             </TableRow>
         </TableLayout>

@@ -46,7 +46,7 @@
             android:screenOrientation="portrait"
             />
 
-        <provider android:name=".SqlLiteDataBase.StatisticsProProvider"
+        <provider android:name=".data.StatisticsProProvider"
             android:authorities="com.example.rami.statistics_pro"
             android:exported="false" >
         </provider>

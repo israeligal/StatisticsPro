@@ -1,12 +1,9 @@
 package com.example.rami.statistics_pro.Interfaces;
 
 import android.net.Uri;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.ListView;
 import android.widget.TableLayout;
-import android.widget.TableRow;
+
+import com.example.rami.statistics_pro.BaseClass.Statistics;
 
 import java.util.ArrayList;
 
@@ -25,7 +22,7 @@ public interface Game {
 
     public Raffle addRaffleFromCsv(String[] csvString);
     public Uri getSqlRaffleDb();
-    public Uri getSqlRaffleNumbersDb();
+//    public Uri getSqlRaffleNumbersDb();
     public Statistics getStatistics();
     public String getCsvUrl();
 

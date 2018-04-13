@@ -1,21 +1,17 @@
 package com.example.rami.statistics_pro.Games.GameTripleSeven;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.ToggleButton;
 import com.example.rami.statistics_pro.Interfaces.Game;
 import com.example.rami.statistics_pro.Interfaces.GameCsvContract;
 import com.example.rami.statistics_pro.Interfaces.Raffle;
-import com.example.rami.statistics_pro.Interfaces.Statistics;
+import com.example.rami.statistics_pro.BaseClass.Statistics;
 import com.example.rami.statistics_pro.R;
-import com.example.rami.statistics_pro.SqlLiteDataBase.StatisticsProContracts;
+import com.example.rami.statistics_pro.data.StatisticsProContracts;
 import com.example.rami.statistics_pro.Utils.GameStringUtils;
 
 import java.util.ArrayList;
@@ -34,7 +30,6 @@ public class GameTripleSeven implements Game {
     private TableLayout gameTable;
     private ArrayList<Raffle> gameRaffles;
     private Uri SQL_RAFFLE_DB = StatisticsProContracts.TripleSevenRaffleEntry.CONTENT_URI;
-    private Uri SQL_RAFFLE_NUMBERS_DB = StatisticsProContracts.TripleSevenRaffleNumbersEntry.CONTENT_URI;
     private StatisticsTripleSeven mStatisticsTripleSeven;
 
     public GameTripleSeven(View view, View.OnClickListener clickListener){
@@ -124,10 +119,10 @@ public class GameTripleSeven implements Game {
         return SQL_RAFFLE_DB;
     }
 
-    @Override
-    public Uri getSqlRaffleNumbersDb() {
-        return SQL_RAFFLE_NUMBERS_DB;
-    }
+//    @Override
+//    public Uri getSqlRaffleNumbersDb() {
+//        return SQL_RAFFLE_NUMBERS_DB;
+//    }
 
     public ArrayList<Raffle> getGameRaffles() {
         return gameRaffles;

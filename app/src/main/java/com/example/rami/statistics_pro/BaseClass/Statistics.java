@@ -1,11 +1,9 @@
-package com.example.rami.statistics_pro.Interfaces;
+package com.example.rami.statistics_pro.BaseClass;
 
 
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -49,8 +47,6 @@ public abstract class Statistics {
     }
     private void handleRowText(TextView textView, String textViewString){
         textView.setText(textViewString);
-        float textSize = textView.getResources().getDimension(R.dimen.chosenNumbersAppearance);
-        Log.d(LOG_TAG, "handleRowText: textSize "+ textSize);
         textView.setTextSize(16);
         textView.setVisibility(TextView.VISIBLE);
     }

@@ -3,35 +3,23 @@ package com.example.rami.statistics_pro.Games.GameTripleSeven;
 
 import android.annotation.SuppressLint;
 import android.content.res.Resources;
-import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.rami.statistics_pro.Interfaces.Game;
 import com.example.rami.statistics_pro.Interfaces.Raffle;
-import com.example.rami.statistics_pro.Interfaces.Statistics;
+import com.example.rami.statistics_pro.BaseClass.Statistics;
 import com.example.rami.statistics_pro.R;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
 
 public class StatisticsTripleSeven extends Statistics {
     private final static String LOG_TAG = StatisticsTripleSeven.class.getName();
@@ -72,25 +60,28 @@ public class StatisticsTripleSeven extends Statistics {
         }
         Date raffleDate;
         int chosenNumbersFoundInRaffle = 0;
+        int i = 0;
+
         for(Raffle curRaffle: game.getGameRaffles()){
             try {
                 raffleDate = sdf.parse(curRaffle.getmRaffleDate());
-
                 if (raffleDate.compareTo(timeFromDate) >= 0 && raffleDate.compareTo(timeEndDate) <= 0) {
-                        for (int num: curRaffle.getmRaffleResultNumbers()) {
+                    i++;
+                    for (int num: curRaffle.getmRaffleResultNumbers()) {
                             if(chosenNumbers.contains(num)){
                                 chosenNumbersFoundInRaffle++;
                             }
                         mNumberAppearance[num - 1] += 1;
                     }
+
                     if(chosenNumbersFoundInRaffle == chosenNumbers.size()){
                             if(mLastTimeAppearedTogether == null){
                                 mLastTimeAppearedTogether = curRaffle.getmRaffleDate();
                             }
                         mNumberOfTimesAppearedTogether++;
                     }
-                    chosenNumbersFoundInRaffle = 0;
                 }
+                chosenNumbersFoundInRaffle = 0;
 
             } catch (ParseException e) {
                 Log.e(LOG_TAG, "Could not calc number appearance");
@@ -113,7 +104,7 @@ public class StatisticsTripleSeven extends Statistics {
     public void addAdditionalStatistics(ViewGroup mview) {
 
         TableLayout tableLayout = mview.findViewById(R.id.additional_statistics_table_layout);
-        tableLayout.removeViews(1,tableLayout.getChildCount()-1);
+        tableLayout.removeViews(1,tableLayout.getChildCount() - 1);
         TextView timesAppearedTogether = (TextView)LayoutInflater.from(mview.getContext()).inflate(R.layout.additional_statistics_info_text_view, mview, false);
         TextView LastTimeAppearedTogether = (TextView)LayoutInflater.from(mview.getContext()).inflate(R.layout.additional_statistics_info_text_view, mview, false);
         Resources resources = mview.getResources();

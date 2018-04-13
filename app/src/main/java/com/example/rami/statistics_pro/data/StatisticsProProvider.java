@@ -1,4 +1,4 @@
-package com.example.rami.statistics_pro.SqlLiteDataBase;
+package com.example.rami.statistics_pro.data;
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -39,8 +39,8 @@ public class StatisticsProProvider extends ContentProvider {
 
         sUriMatcher.addURI(StatisticsProContracts.CONTENT_AUTHORITY, StatisticsProContracts.PATH_TRIPLE_SEVEN_RAFFLES, RAFFLES);
         sUriMatcher.addURI(StatisticsProContracts.CONTENT_AUTHORITY, StatisticsProContracts.PATH_TRIPLE_SEVEN_RAFFLES + "/#", RAFFLE_ID);
-        sUriMatcher.addURI(StatisticsProContracts.CONTENT_AUTHORITY, StatisticsProContracts.PATH_TRIPLE_SEVEN_RAFFLES_NUMBERS + "/#", RAFFLES);
-        sUriMatcher.addURI(StatisticsProContracts.CONTENT_AUTHORITY, StatisticsProContracts.PATH_TRIPLE_SEVEN_RAFFLES_NUMBERS + "/#", RAFFLE_ID);
+//        sUriMatcher.addURI(StatisticsProContracts.CONTENT_AUTHORITY, StatisticsProContracts.PATH_TRIPLE_SEVEN_RAFFLES_NUMBERS + "/#", RAFFLES);
+//        sUriMatcher.addURI(StatisticsProContracts.CONTENT_AUTHORITY, StatisticsProContracts.PATH_TRIPLE_SEVEN_RAFFLES_NUMBERS + "/#", RAFFLE_ID);
 
 
 

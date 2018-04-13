@@ -2,11 +2,13 @@ package com.example.rami.statistics_pro.Fragments;
 
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.text.TextUtils;
 import android.util.Log;
@@ -26,22 +28,24 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.rami.statistics_pro.Games.GameTripleSeven.GameTripleSeven;
+import com.example.rami.statistics_pro.Games.GameTripleSeven.RaffleTripleSeven;
 import com.example.rami.statistics_pro.Interfaces.Game;
 import com.example.rami.statistics_pro.Interfaces.Raffle;
-import com.example.rami.statistics_pro.Interfaces.Statistics;
-import com.example.rami.statistics_pro.Loaders.OperationSearchLoader;
+import com.example.rami.statistics_pro.BaseClass.Statistics;
 import com.example.rami.statistics_pro.R;
 import com.example.rami.statistics_pro.Utils.CsvUtils;
 import com.example.rami.statistics_pro.Utils.GameStringUtils;
 import com.example.rami.statistics_pro.Utils.TimeUtils;
+import com.example.rami.statistics_pro.data.StatisticsProContracts;
 import com.opencsv.CSVReader;
 
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
-public class ChooseNumbersFragment extends Fragment implements LoaderManager.LoaderCallbacks<String> {
+public class ChooseNumbersFragment extends Fragment implements LoaderManager.LoaderCallbacks {
     Game curGame;
     ArrayList<ToggleButton> chosenNumbers;
     TableRow choosenNumbersTableRow;
@@ -50,6 +54,7 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
     private static String LOG_TAG = ChooseNumbersFragment.class.getName();
     public static final int OPERATION_SEARCH_LOADER = 1;
     public static final int OPERATION_STATISTICS_LOADER = 2;
+    public static final int CURSOR_LOADER = 3;
 
 
     public ChooseNumbersFragment() {
@@ -78,7 +83,6 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
 
         ScrollView scrollView = (ScrollView) inflater.inflate(R.layout.fragment_choose_numbers_statistics, container, false);
 
-
         LinearLayout mview = (LinearLayout) scrollView.findViewById(R.id.choose_numbers_fragment_layout);
 
         View.OnClickListener onClickListener = createGameOnClickListener();
@@ -98,12 +102,11 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
         return scrollView;
     }
 
-    private void setRadioSearchByDatesOrRaffles(ViewGroup mview) {
+    private void setRadioSearchByDatesOrRaffles(final ViewGroup mview) {
         RadioGroup radioGroup = mview.findViewById(R.id.radio_chose_by_date_or_raffle_number);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                ViewGroup mview = (ViewGroup) group.findViewById(R.id.choose_numbers_fragment_layout);
                 LinearLayout dateSearch = (LinearLayout) mview.findViewById(R.id.search_by_date_edit_texts);
                 LinearLayout raffleSearch = (LinearLayout) mview.findViewById(R.id.search_by_raffle_number_edit_texts);
                 RadioButton checkedRadioButton = (RadioButton)group.findViewById(checkedId);
@@ -146,13 +149,12 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
     }
 
 
-    private void setSearchButton(ViewGroup mview) {
+    private void setSearchButton(final ViewGroup mview) {
         Button btn = (Button) mview.findViewById(R.id.search_btn);
         resetView(); // TODO create reset view
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ViewGroup mview = (ViewGroup) view.findViewById(R.id.choose_numbers_fragment_layout);
                 if (checkDatesFields()){
                     Button btn =  view.findViewById(R.id.search_btn);
                     btn.setEnabled(false);
@@ -176,12 +178,15 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
         Bundle queryBundle = new Bundle();
         queryBundle.putString("filePath",filePath);
         LoaderManager loaderManager = getLoaderManager();
-        Loader<String> loader = loaderManager.getLoader(OPERATION_SEARCH_LOADER);
+//        Loader<String> loader = loaderManager.getLoader(OPERATION_SEARCH_LOADER);
+        Loader<String> loader = loaderManager.getLoader(CURSOR_LOADER);
         if(loader==null){
-            loaderManager.initLoader(OPERATION_SEARCH_LOADER, queryBundle, this);
+            loaderManager.initLoader(CURSOR_LOADER, queryBundle, this);
+//            loaderManager.initLoader(OPERATION_SEARCH_LOADER, queryBundle, this);
 
         }else{
-            loaderManager.restartLoader(OPERATION_SEARCH_LOADER, queryBundle, this);
+            loaderManager.restartLoader(CURSOR_LOADER, queryBundle, this);
+//            loaderManager.restartLoader(OPERATION_SEARCH_LOADER, queryBundle, this);
         }
     }
 
@@ -271,7 +276,7 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
 
     @SuppressLint("StaticFieldLeak")
     @Override
-    public Loader<String> onCreateLoader(int id, final Bundle args) {
+    public Loader onCreateLoader(int id, final Bundle args) {
 
         switch (id){
             case OPERATION_SEARCH_LOADER:
@@ -385,14 +390,17 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
                         forceLoad();
                     }
                 };
-
+            case CURSOR_LOADER:
+                return new CursorLoader(getContext()
+                        , StatisticsProContracts.TripleSevenRaffleEntry.CONTENT_URI
+                        , null, null, null,null);
         }
 
         return null;
     }
 
     @Override
-    public void onLoadFinished(Loader<String> loader, String data) {
+    public void onLoadFinished(Loader loader, Object data) {
         Log.d(LOG_TAG,"result : "+ data);
         switch(loader.getId()){
             case OPERATION_SEARCH_LOADER:
@@ -410,15 +418,33 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
                 Button btn = getActivity().findViewById(R.id.search_btn);
                 btn.setEnabled(true);
                 break;
+            case CURSOR_LOADER:
+                Cursor cursor = (Cursor) data;
+                loadRafflesFromDb(cursor);
         }
     }
 
+    private void loadRafflesFromDb(Cursor cursor) {
+        if(cursor == null){
+            return;
+        }
 
+        while(cursor.moveToNext()){
+            int raffleId = cursor.getInt(0);
+            String raffleDate = cursor.getString(1);
+            String raffleNumbersString = cursor.getString(2);
+            int[] raffleNumbers = RaffleTripleSeven.getRaffleNumbersIntArray(raffleNumbersString);
+            int raffleWinnersNumber = cursor.getInt(3);
+            curGame.getGameRaffles().add(new RaffleTripleSeven(raffleDate, raffleId,
+                    raffleNumbers, raffleWinnersNumber));
+        }
 
+        makeOperationLoadStatistics();
 
+    }
 
     @Override
-    public void onLoaderReset(Loader<String> loader) {
+    public void onLoaderReset(Loader loader) {
     }
 
     private void makeOperationLoadStatistics(){
@@ -434,6 +460,7 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
 
         }else{
             loaderManager.restartLoader(OPERATION_STATISTICS_LOADER, queryBundle, this);
+
         }
 
     }
