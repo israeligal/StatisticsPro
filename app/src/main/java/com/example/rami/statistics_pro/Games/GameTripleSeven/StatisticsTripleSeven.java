@@ -105,14 +105,19 @@ public class StatisticsTripleSeven extends Statistics {
 
         TableLayout tableLayout = mview.findViewById(R.id.additional_statistics_table_layout);
         tableLayout.removeViews(1,tableLayout.getChildCount() - 1);
-        TextView timesAppearedTogether = (TextView)LayoutInflater.from(mview.getContext()).inflate(R.layout.additional_statistics_info_text_view, mview, false);
-        TextView LastTimeAppearedTogether = (TextView)LayoutInflater.from(mview.getContext()).inflate(R.layout.additional_statistics_info_text_view, mview, false);
+        TextView timesAppearedTogether = (TextView)LayoutInflater.from(mview.getContext())
+                .inflate(R.layout.additional_statistics_info_text_view, mview, false);
+        TextView LastTimeAppearedTogether = (TextView)LayoutInflater.from(mview.getContext())
+                .inflate(R.layout.additional_statistics_info_text_view, mview, false);
+
         Resources resources = mview.getResources();
         int timesAppearedColor = resources.getColor(R.color.statistics_chosen_numbers_appearance_row);
         int LastAppearedColor = resources.getColor(R.color.statistics_count_appearance_row);
+
         timesAppearedTogether.setText(resources.getString(R.string.times_numbers_appeared_togther, mNumberOfTimesAppearedTogether));
         tableLayout.addView(timesAppearedTogether);
         timesAppearedTogether.setBackgroundColor(timesAppearedColor);
+
         if(mLastTimeAppearedTogether != null){
             LastTimeAppearedTogether.setText(resources.getString(R.string.last_time_appeared_together, mLastTimeAppearedTogether));
             LastTimeAppearedTogether.setBackgroundColor(LastAppearedColor);

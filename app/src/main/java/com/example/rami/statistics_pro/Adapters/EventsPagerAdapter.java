@@ -28,8 +28,6 @@ public class EventsPagerAdapter extends FragmentPagerAdapter {
                 return new ChooseNumbersFragment();
             case 1:
                 return new UpcomingEventsFragment();
-            case 2:
-                return new StatisticsSearchFragment();
             default:
                 return new ChooseNumbersFragment();
         }
@@ -37,7 +35,7 @@ public class EventsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 3;
+        return 2;
     }
 
     @Override
@@ -47,8 +45,6 @@ public class EventsPagerAdapter extends FragmentPagerAdapter {
                 return mContext.getString(R.string.choose_numbers_page_title);
             case 1:
                 return mContext.getString(R.string.search_statistics_queries_page_title);
-            case 2:
-                return mContext.getString(R.string.settings_page_title);
             default:
                 return mContext.getString(R.string.choose_numbers_page_title);
         }

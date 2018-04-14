@@ -46,7 +46,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/SearchByRaffleNumber"
-                    android:textSize="@dimen/chosenNumbersFragment"
+                    android:textSize="@dimen/chosen_numbers_fragment"
                     />
 
                 <RadioButton android:id="@+id/radioDate"
@@ -54,80 +54,109 @@
                     android:layout_height="wrap_content"
                     android:text="@string/SearchByDates"
                     android:checked="true"
-                    android:textSize="@dimen/chosenNumbersFragment"
+                    android:textSize="@dimen/chosen_numbers_fragment"
                     />
 
             </RadioGroup>
 
         </TableLayout>
+
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_gravity="end"
             >
+            <Button
+                android:id="@+id/clear_screen_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/clear_screen_btn"
+                android:layout_weight="1"
+                android:layout_gravity="top"
+                android:layout_marginEnd="5dp"
+                android:visibility="gone"
+                android:background="@drawable/button_stats_selector"
+                android:textColor="@color/buttons_stats_color_selector"
+
+                />
+
             <Button
                 android:id="@+id/search_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="top"
+                android:layout_weight="0.5"
                 android:enabled="false"
                 android:text="@string/chosen_number_frag_stat_btn"
-                android:gravity="start"
+                android:background="@drawable/button_stats_selector"
+                android:textColor="@color/buttons_stats_color_selector"
                 />
-            <LinearLayout
+
+            <RelativeLayout
                 android:id="@+id/search_by_date_edit_texts"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_gravity="end">
+                android:layout_height="match_parent"
+                android:layout_weight="3.3"
+
+                >
+
                 <EditText
                     android:id="@+id/time_until_edit_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:labelFor="@string/chosen_number_frag_ET_end_date"
-                    android:hint="@string/chosen_number_frag_ET_end_date"
                     android:focusable="false"
                     android:focusableInTouchMode="false"
+                    android:hint="@string/chosen_number_frag_ET_end_date"
+                    android:labelFor="@string/chosen_number_frag_ET_end_date"
+                    android:textSize="@dimen/edit_txt_btns"
+                    android:layout_toStartOf="@+id/time_from_edit_text"
+                    android:layout_centerVertical="true"
+                    android:maxLines="1"
                     />
+
                 <EditText
                     android:id="@+id/time_from_edit_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:labelFor="@string/chosen_number_frag_ET_start_date"
-                    android:hint="@string/chosen_number_frag_ET_start_date"
+                    android:textSize="@dimen/edit_txt_btns"
                     android:focusable="false"
                     android:focusableInTouchMode="false"
+                    android:hint="@string/chosen_number_frag_ET_start_date"
+                    android:labelFor="@string/chosen_number_frag_ET_start_date"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:maxLines="1"
                     />
-            </LinearLayout>
-            <LinearLayout
+
+            </RelativeLayout>
+
+            <RelativeLayout
                 android:id="@+id/search_by_raffle_number_edit_texts"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
+                android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:visibility="gone"
-                >
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <EditText
-                    android:id="@+id/rafflesUntilEditText"
+                    android:id="@+id/raffles_until_edit_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:labelFor="@string/chosen_number_frag_ET_end_raffle"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
                     android:hint="@string/chosen_number_frag_ET_end_raffle"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"
-                    />
+                    android:labelFor="@string/chosen_number_frag_ET_end_raffle" />
+
                 <EditText
-                    android:id="@+id/rafflesFromEditText"
+                    android:id="@+id/raffles_from_edit_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:labelFor="@string/chosen_number_frag_ET_start_raffle"
-                    android:hint="@string/chosen_number_frag_ET_start_raffle"
                     android:focusable="false"
                     android:focusableInTouchMode="false"
-                    />
+                    android:hint="@string/chosen_number_frag_ET_start_raffle"
+                    android:labelFor="@string/chosen_number_frag_ET_start_raffle" />
 
-            </LinearLayout>
+            </RelativeLayout>
 
         </LinearLayout>
 
@@ -149,7 +178,7 @@
                     android:text=""
                     android:visibility="gone"
                     android:layout_weight="1"
-                    android:layout_marginEnd="3dp"
+                    android:layout_marginEnd="@dimen/appearance_row"
                     android:background="@color/statistics_chosen_numbers_appearance_row"
                     android:textAlignment="center"
                     android:maxLines="1"
@@ -158,17 +187,7 @@
                     android:text=""
                     android:visibility="gone"
                     android:layout_weight="1"
-                    android:layout_marginEnd="3dp"
-                    android:background="@color/statistics_chosen_numbers_appearance_row"
-                    android:textAlignment="center"
-                    android:maxLines="1"
-
-                    />
-                <TextView
-                    android:text=""
-                    android:visibility="gone"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="3dp"
+                    android:layout_marginEnd="@dimen/appearance_row"
                     android:background="@color/statistics_chosen_numbers_appearance_row"
                     android:textAlignment="center"
                     android:maxLines="1"
@@ -178,7 +197,7 @@
                     android:text=""
                     android:visibility="gone"
                     android:layout_weight="1"
-                    android:layout_marginEnd="3dp"
+                    android:layout_marginEnd="@dimen/appearance_row"
                     android:background="@color/statistics_chosen_numbers_appearance_row"
                     android:textAlignment="center"
                     android:maxLines="1"
@@ -188,7 +207,7 @@
                     android:text=""
                     android:visibility="gone"
                     android:layout_weight="1"
-                    android:layout_marginEnd="3dp"
+                    android:layout_marginEnd="@dimen/appearance_row"
                     android:background="@color/statistics_chosen_numbers_appearance_row"
                     android:textAlignment="center"
                     android:maxLines="1"
@@ -198,7 +217,7 @@
                     android:text=""
                     android:visibility="gone"
                     android:layout_weight="1"
-                    android:layout_marginEnd="3dp"
+                    android:layout_marginEnd="@dimen/appearance_row"
                     android:background="@color/statistics_chosen_numbers_appearance_row"
                     android:textAlignment="center"
                     android:maxLines="1"
@@ -208,7 +227,17 @@
                     android:text=""
                     android:visibility="gone"
                     android:layout_weight="1"
-                    android:layout_marginEnd="3dp"
+                    android:layout_marginEnd="@dimen/appearance_row"
+                    android:background="@color/statistics_chosen_numbers_appearance_row"
+                    android:textAlignment="center"
+                    android:maxLines="1"
+
+                    />
+                <TextView
+                    android:text=""
+                    android:visibility="gone"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="@dimen/appearance_row"
                     android:background="@color/statistics_chosen_numbers_appearance_row"
                     android:textAlignment="center"
                     android:maxLines="1"
@@ -218,12 +247,10 @@
                 <TextView
                     android:id="@+id/chosen_number_table_row_string"
                     android:text="@string/chosen_numbers"
-                    android:visibility="gone"
                     android:gravity="end"
                     android:background="@color/statistics_chosen_numbers_appearance_row"
-                    android:textSize="@dimen/chosenNumbersAppearance"
+                    android:textSize="@dimen/chosen_numbers_appearance"
                     android:maxLines="1"
-
 
                     />
             </TableRow>
@@ -238,7 +265,7 @@
                     android:text=""
                     android:visibility="gone"
                     android:layout_weight="1"
-                    android:layout_marginEnd="3dp"
+                    android:layout_marginEnd="@dimen/appearance_row"
                     android:background="@color/statistics_count_appearance_row"
                     android:textAlignment="center"
                     android:maxLines="1"
@@ -248,7 +275,7 @@
                     android:text=""
                     android:visibility="gone"
                     android:layout_weight="1"
-                    android:layout_marginEnd="3dp"
+                    android:layout_marginEnd="@dimen/appearance_row"
                     android:background="@color/statistics_count_appearance_row"
                     android:textAlignment="center"
                     android:maxLines="1"
@@ -258,7 +285,7 @@
                     android:text=""
                     android:visibility="gone"
                     android:layout_weight="1"
-                    android:layout_marginEnd="3dp"
+                    android:layout_marginEnd="@dimen/appearance_row"
                     android:background="@color/statistics_count_appearance_row"
                     android:textAlignment="center"
                     android:maxLines="1"
@@ -268,7 +295,7 @@
                     android:text=""
                     android:visibility="gone"
                     android:layout_weight="1"
-                    android:layout_marginEnd="3dp"
+                    android:layout_marginEnd="@dimen/appearance_row"
                     android:background="@color/statistics_count_appearance_row"
                     android:textAlignment="center"
                     android:maxLines="1"
@@ -278,7 +305,7 @@
                     android:text=""
                     android:visibility="gone"
                     android:layout_weight="1"
-                    android:layout_marginEnd="3dp"
+                    android:layout_marginEnd="@dimen/appearance_row"
                     android:background="@color/statistics_count_appearance_row"
                     android:textAlignment="center"
                     android:maxLines="1"
@@ -288,7 +315,7 @@
                     android:text=""
                     android:visibility="gone"
                     android:layout_weight="1"
-                    android:layout_marginEnd="3dp"
+                    android:layout_marginEnd="@dimen/appearance_row"
                     android:background="@color/statistics_count_appearance_row"
                     android:textAlignment="center"
                     android:maxLines="1"
@@ -298,7 +325,7 @@
                     android:text=""
                     android:visibility="gone"
                     android:layout_weight="1"
-                    android:layout_marginEnd="3dp"
+                    android:layout_marginEnd="@dimen/appearance_row"
                     android:background="@color/statistics_count_appearance_row"
                     android:textAlignment="center"
                     android:maxLines="1"
@@ -309,9 +336,8 @@
                 <TextView
                     android:id="@+id/chosen_number_appearance_table_row_string"
                     android:text="@string/chosen_numbers_appearance"
-                    android:visibility="gone"
                     android:gravity="start"
-                    android:textSize="@dimen/chosenNumbersAppearance"
+                    android:textSize="@dimen/chosen_numbers_appearance"
                     android:background="@color/statistics_count_appearance_row"
                     android:maxLines="1"
                     />
@@ -326,7 +352,7 @@
             <TextView
             android:text="@string/additional_statistics_info"
             android:background="@color/additional_statistics_info"
-            android:textSize="@dimen/chosenNumbersFragment"
+            android:textSize="@dimen/chosen_numbers_fragment"
             android:visibility="gone"
             android:layout_weight="1"
             />

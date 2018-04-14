@@ -22,7 +22,7 @@ android {
     productFlavors {
     }
     sourceSets {
-        main.res.srcDirs += 'src/main/res/drawable/resVector'
+//        main.res.srcDirs += 'src/main/res/drawable/resVector'
     }
 }
 

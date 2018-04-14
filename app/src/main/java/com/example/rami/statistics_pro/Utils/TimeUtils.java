@@ -3,6 +3,7 @@ package com.example.rami.statistics_pro.Utils;
 
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -20,7 +21,13 @@ public class TimeUtils {
     private static  DatePickerDialog.OnDateSetListener to_dateListener;
     private static int dayFinal, monthFinal, yearFinal;
     private static Date fromDate, toDate;
+    private static Date FIRST_RAFFLE_DATE;
+    private static Date TODAYS_DATE;
 
+    static {
+        FIRST_RAFFLE_DATE = new GregorianCalendar(2002, 3, 13).getTime();
+        TODAYS_DATE = Calendar.getInstance().getTime();
+    }
 
     /** Take ChosenNumbersFragment view and sets edit text to handle the dates
      *  Set date picker dialog and set date listeners
@@ -60,6 +67,9 @@ public class TimeUtils {
         year = calendar.get(Calendar.YEAR);
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(mview.getContext(), listener, year, month, day);
+        DatePicker datePicker = datePickerDialog.getDatePicker();
+        datePicker.setMinDate(FIRST_RAFFLE_DATE.getTime());
+        datePicker.setMaxDate(TODAYS_DATE.getTime());
         datePickerDialog.show();
     }
 
@@ -75,8 +85,8 @@ public class TimeUtils {
 
                 fromDate = new GregorianCalendar(yearFinal, monthFinal, dayFinal).getTime();
                 SimpleDateFormat ft = new SimpleDateFormat("dd/MM/yyyy");
-                Toast.makeText(mview.getContext(), ft.format(fromDate).toString(), Toast.LENGTH_SHORT).show();
-                timeFromEditText.setText(ft.format(fromDate));
+                    Toast.makeText(mview.getContext(), ft.format(fromDate).toString(), Toast.LENGTH_SHORT).show();
+                    timeFromEditText.setText(ft.format(fromDate));
 
             }
         };

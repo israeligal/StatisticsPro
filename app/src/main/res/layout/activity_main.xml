@@ -23,10 +23,11 @@
         app:tabSelectedTextColor="@color/tabSelectedColor"
         app:tabTextColor="@color/tabsTextColor"
         android:layoutDirection="rtl"
-
+        app:tabTextAppearance="@style/tab_layout_text_style"
 
        />
     <android.support.v7.widget.AppCompatImageView
+        android:layout_marginTop="4dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scaleType="fitStart"

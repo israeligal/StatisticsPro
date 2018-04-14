@@ -28,5 +28,11 @@
     <color name="statistics_chosen_numbers_appearance_row">#ADD8E6</color>
     <color name="statistics_count_appearance_row">#E6E6FA</color>
     <color name="additional_statistics_info">#20B2AA</color>
+    <color name="date_edit_text">#87CEFA</color>
+    <color name="buttonStatsBackground" >#FFFFFF</color>
+    <color name="buttonStatsTextEnabled">#E54C82</color>
+    <color name="buttonStatsFrameEnabled">#E54C82</color>
+    <color name="buttonStateTextDisabled">#C0C0C0</color>
+    <color name="buttonStatsFrameDisabled">#C0C0C0</color>
 
 </resources>

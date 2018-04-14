@@ -21,6 +21,7 @@ import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.ScrollView;
+import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,13 +45,14 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
     Game curGame;
     ArrayList<ToggleButton> chosenNumbers;
     TableRow choosenNumbersTableRow;
-    private Button mSearchBtn;
     EditText timeFromEditText,  timeUntilEditText;
     private static String LOG_TAG = ChooseNumbersFragment.class.getName();
     public static final int OPERATION_CSV_LOADER = 1;
     public static final int OPERATION_STATISTICS_LOADER = 2;
     public static final int CURSOR_LOADER = 3;
-
+    private Button mSearchButton;
+    private String filepath;
+    private boolean RafflesLoaded;
 
     public ChooseNumbersFragment() {
         // Required empty public constructor
@@ -84,19 +86,71 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
         // here we can add user choice for different games
 
         curGame = new GameTripleSeven(mview, onClickListener);
-        choosenNumbersTableRow = create_chosen_numbers_table(mview);
-        mSearchBtn = mview.findViewById(R.id.search_btn);
+
+        choosenNumbersTableRow = createChosenNumbersTable(mview);
+
+        mSearchButton = mview.findViewById(R.id.search_btn);
 
         timeFromEditText =  (EditText) mview.findViewById(R.id.time_from_edit_text);
         timeUntilEditText = (EditText) mview.findViewById(R.id.time_until_edit_text);
         TimeUtils.setEditTextsDate(timeFromEditText, timeUntilEditText, mview);
 
         setRadioSearchByDatesOrRaffles(mview);
-        setSearchButton(mview);
+
+        setButtons(mview);
+
+        filepath = CsvUtils.getCsvFile(getContext(), curGame.getCsvUrl());
+
+        //TODO write game method to update db.
+        // TODO fix sqldb - doesnt load all raffles - only 3K are loaded instead of 9k
+//        makeOperationLoadRaffles();
+        makeOperationCsvRaffles();
+
 
         return scrollView;
     }
 
+    /** sets button listeners */
+    private void setButtons(ViewGroup mview) {
+        setSearchButtonListener(mview);
+        setClearScreenButtonListener(mview);
+    }
+
+    /** set clear screen button to reset the view */
+    private void setClearScreenButtonListener(final ViewGroup mview) {
+        Button clear_screen_btn = (Button) mview.findViewById(R.id.clear_screen_btn);
+        clear_screen_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                resetView(mview);
+            }
+        });
+    }
+
+    /** change stats layout to gone, empty chosen numbers, remove additional stats */
+    private void resetView(ViewGroup mview) {
+        TableRow countTableRow = mview.findViewById(R.id.statistics_count_appearance_row);
+        TableRow chosenTableRow = mview.findViewById(R.id.statistics_chosen_numbers_appearance_row);
+        TableLayout additionalStatTB = mview.findViewById(R.id.additional_statistics_table_layout);
+
+//        additionalStatRow.removeViews(1,additionalStatRow.getChildCount());
+        chosenNumbers.clear();
+        timeFromEditText.setText("");
+        timeUntilEditText.setText("");
+        for(int i = 0; i < chosenTableRow.getChildCount(); ++i){
+            TextView textView = (TextView) chosenTableRow.getChildAt(i);
+            textView.setText("");
+        }
+
+
+        chosenTableRow.setVisibility(View.GONE);
+        countTableRow.setVisibility(View.GONE);
+        additionalStatTB.setVisibility(View.GONE);
+
+
+    }
+
+    /** sets a radio group for choosing either by date or by raffle number */
     private void setRadioSearchByDatesOrRaffles(final ViewGroup mview) {
         RadioGroup radioGroup = mview.findViewById(R.id.radio_chose_by_date_or_raffle_number);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -126,53 +180,49 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
         });
     }
 
-    private void enableSearchButton(){
-        if(chosenNumbers.size() < 3){
-            mSearchBtn.setEnabled(false);
-        }
-        else{
-            mSearchBtn.setEnabled(true);
-        }
-    }
-    private boolean checkDatesFields(){
+
+
+    private boolean checkSearchButtonEnabled(){
         if (TextUtils.isEmpty(timeFromEditText.getText().toString())
         || TextUtils.isEmpty(timeUntilEditText.getText().toString())){
             Toast.makeText(getContext(),getString(R.string.please_chose_dates_first),Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        else if(chosenNumbers.size() < 2){
+            Toast.makeText(getContext(),getString(R.string.chosen_at_least_numbers),Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
     }
 
 
-    private void setSearchButton(final ViewGroup mview) {
-        resetView(); // TODO create reset view
+    private void setSearchButtonListener(final ViewGroup mview) {
 
         Button btn = (Button) mview.findViewById(R.id.search_btn);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (checkDatesFields()){
+                if (checkSearchButtonEnabled()){
 
-                    Button btn =  view.findViewById(R.id.search_btn);
-                    btn.setEnabled(false);
+                    if (RafflesLoaded){ // TODO add progress bar until raffles are loaded
 
-                    //TODO move all reading raffles logic to onCreateView
+                        Button btn =  view.findViewById(R.id.search_btn);
+                        btn.setEnabled(false);
+                        makeOperationLoadStatistics();
+                    } else{
 
-                        makeOperationLoadRaffles();
-
+                        Toast.makeText(getContext(), "הגרלות נטענות ברקע לחץ שוב על הכפתור עוד דקה",Toast.LENGTH_SHORT).show();
+                    }
 
                 }
             }
         });
     }
 
-    private void resetView() {
-        // TODO create reset view
-    }
+
 
 
     private void makeOperationLoadRaffles() {
-
 
         LoaderManager loaderManager = getLoaderManager();
 
@@ -186,24 +236,19 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
     }
 
     /**
-     *  Download csv file if necessary.
      *  Updates db.
      *  Loads raffles to curGame raffles.
      */
      private void makeOperationCsvRaffles() {
 
-        String filePath = CsvUtils.readCsvFile(getContext(), curGame.getCsvUrl());
-
-        Bundle queryBundle = new Bundle();
-        queryBundle.putString("filePath", filePath);
         LoaderManager loaderManager = getLoaderManager();
 
         Loader<String> loader = loaderManager.getLoader(OPERATION_CSV_LOADER);
         if(loader==null){
-            loaderManager.initLoader(OPERATION_CSV_LOADER, queryBundle, this);
+            loaderManager.initLoader(OPERATION_CSV_LOADER, null, this);
 
         }else{
-            loaderManager.restartLoader(OPERATION_CSV_LOADER, queryBundle, this);
+            loaderManager.restartLoader(OPERATION_CSV_LOADER, null, this);
         }
     }
 
@@ -230,6 +275,9 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
                     CharSequence lastText;
                     CharSequence curText = "";
                     int removeNumberIndex = chosenNumbers.indexOf(toggleButton);
+                    if (removeNumberIndex == -1){
+                        removeNumberIndex = 0;
+                    }
                     chosenNumbers.remove(toggleButton);
                     for (int i = choosenNumbersTableRow.getChildCount() - 1; i >= removeNumberIndex; i--) {
                         TextView textView = (TextView) choosenNumbersTableRow.getChildAt(i);
@@ -250,25 +298,33 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
                     textView.setText(toggleButton.getText());
                 }
 
-                enableSearchButton();
+                enableBtn();
 
             }
         };
     }
+
+    private void enableBtn() { 
+        if(chosenNumbers.size() < 2){
+            mSearchButton.setEnabled(false);
+        }
+        else{
+            mSearchButton.setEnabled(true);
+        }
+     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
     }
 
-
     //TABLE
-    private TableRow create_chosen_numbers_table(ViewGroup mview) {
-
+    private TableRow createChosenNumbersTable(ViewGroup mview) {
 
         TableRow tableRow = (TableRow) mview.findViewById(R.id.choose_numbers_row);
         for (int i = 0; i < curGame.getResult_Number(); i++) {
-            TextView curTextView = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.game_chosen_number_text_view, tableRow, false);
+            TextView curTextView = (TextView) LayoutInflater.from(getContext())
+                    .inflate(R.layout.game_chosen_number_text_view, tableRow, false);
             tableRow.addView(curTextView);
         }
         set_chosen_numbers_table_style(tableRow);
@@ -297,7 +353,7 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
     public Loader onCreateLoader(int id, final Bundle args) {
         switch (id){
             case OPERATION_CSV_LOADER:
-                return new OperationCsvLoader(getContext(), args.getString("filepath"),
+                return new OperationCsvLoader(getContext(), filepath,
                         curGame);
 
             case OPERATION_STATISTICS_LOADER:
@@ -356,7 +412,7 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
         switch(loader.getId()){
             case OPERATION_CSV_LOADER:
                 if(data != null && data.equals("Raffles loaded Successfully")){
-                    makeOperationLoadStatistics();
+                    RafflesLoaded = true;
                 }
                 else{
                     Toast.makeText(getContext(),"בעיה בטעינת הקבצים מאתר הפיס",
@@ -370,20 +426,24 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
                 ViewGroup mview = (ViewGroup) getActivity()
                         .findViewById(R.id.choose_numbers_fragment_layout);
 
-                statistics.addAppearanceRow(mview, chosenNumbers);
+                statistics.addStatistics(mview, chosenNumbers);
 
-                Button btn = getActivity().findViewById(R.id.search_btn);
-                btn.setEnabled(true);
+                Button searchBtn = getActivity().findViewById(R.id.search_btn);
+                Button clearScreenBtn = getActivity().findViewById(R.id.clear_screen_btn);
+
+                searchBtn.setEnabled(true);
+                clearScreenBtn.setVisibility(View.VISIBLE);
+
                 break;
 
             case CURSOR_LOADER:
                 Cursor cursor = (Cursor) data;
-                if(cursor.moveToFirst()){
+                if(cursor.getCount() > 10){
                     //loads raffles from mySQL db.
                     loadRafflesFromDb(cursor);
 
-                    // calls to another loader to load relevant statistics info about the game.
-                    makeOperationLoadStatistics();
+                    // enables search btn to start searching statistics
+                    RafflesLoaded = true;
                 }
                 else{
                     makeOperationCsvRaffles();

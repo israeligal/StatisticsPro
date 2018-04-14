@@ -44,7 +44,7 @@ public class CsvUtils {
      * @param csv_url csv file url
      * @return string to file path
      */
-    public static String readCsvFile(Context context, String csv_url) {
+    public static String getCsvFile(Context context, String csv_url) {
 
         String path = context.getFilesDir().getPath();
         String filePath = path + "/" + FILE_NAME;;

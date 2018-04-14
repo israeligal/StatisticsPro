@@ -33,7 +33,6 @@ public class OperationCsvLoader extends AsyncTaskLoader<String> {
 
             reader = new CSVReader(new FileReader(mFilepath));
 
-
             reader.readNext();// skip headers line
             String[] nextLine = reader.readNext();
             String stringId = nextLine[mGame.getGameCsvContract().getRaffleIdNumber()];
@@ -57,7 +56,6 @@ public class OperationCsvLoader extends AsyncTaskLoader<String> {
 
                 nextLine = reader.readNext();
             }
-            Log.d(LOG_TAG, "loaded raffle into curgame and mysql");
 
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error while loading raffles");

@@ -16,14 +16,17 @@ import java.util.ArrayList;
 public abstract class Statistics {
     private final static String LOG_TAG = Statistics.class.getName();
 
-
+    /** add number appearance statistics to view */
     public abstract int[]  statisticsNumberAppearance(ArrayList<ToggleButton> chosenNumbers);
 
+    /** creates statistics from game raffles array list */
     public abstract void time_stats_from_list(String timeFromFull, String timeEndFull, ViewGroup view, ArrayList<ToggleButton> chosenNumbers);
 
+    /** add additional statistics to view */
     public abstract void addAdditionalStatistics(ViewGroup mview);
 
-    public void addAppearanceRow(ViewGroup mview, ArrayList<ToggleButton> chosenNumbers){
+    /** add all statistics to view */
+    public void addStatistics(ViewGroup mview, ArrayList<ToggleButton> chosenNumbers){
 
             TableRow countTableRow = mview.findViewById(R.id.statistics_count_appearance_row);
             TableRow chosenTableRow = mview.findViewById(R.id.statistics_chosen_numbers_appearance_row);
@@ -31,20 +34,36 @@ public abstract class Statistics {
 
             handleRow(countTableRow);
             handleRow(chosenTableRow);
-            for (int i = 0; i < numberAppearance.length; ++i) {
+
+            for (int i = 0; i < chosenTableRow.getChildCount() - 1; ++i) {
                 TextView chosenTextView = (TextView) chosenTableRow.getChildAt(i);
                 TextView countTextView = (TextView) countTableRow.getChildAt(i);
-                handleRowText(chosenTextView, chosenNumbers.get(i).getText().toString());
-                handleRowText(countTextView, String.valueOf(numberAppearance[i]));
+
+                // if its a chosen number text view
+                if(i < numberAppearance.length){
+                    handleRowText(chosenTextView, chosenNumbers.get(i).getText().toString());
+                    handleRowText(countTextView, String.valueOf(numberAppearance[i]));
+                }
+
+                // else remove text view from screen
+                else{
+                    chosenTextView.setVisibility(View.GONE);
+                    countTextView.setVisibility(View.GONE);
+                }
             }
+
             addAdditionalStatistics(mview);
 
         }
+
+    /** make the rows and his child visible */
     private  void handleRow(TableRow tableRow){
         tableRow.setVisibility(View.VISIBLE);
         TextView rowText = (TextView) tableRow.getChildAt(tableRow.getChildCount() - 1);
         rowText.setVisibility(View.VISIBLE);
     }
+
+    /** sets row text style */
     private void handleRowText(TextView textView, String textViewString){
         textView.setText(textViewString);
         textView.setTextSize(16);
