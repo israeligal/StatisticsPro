@@ -40,7 +40,6 @@ public class TimeUtils {
         timeFromEditText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                System.out.println("got clicked");
                 openDatePicker(from_dateListener, mview);
             }
         });
@@ -66,10 +65,12 @@ public class TimeUtils {
         month = calendar.get(Calendar.MONTH);
         year = calendar.get(Calendar.YEAR);
 
-        DatePickerDialog datePickerDialog = new DatePickerDialog(mview.getContext(), listener, year, month, day);
+        DatePickerDialog datePickerDialog =
+                new DatePickerDialog(mview.getContext(), listener, year, month, day);
         DatePicker datePicker = datePickerDialog.getDatePicker();
         datePicker.setMinDate(FIRST_RAFFLE_DATE.getTime());
         datePicker.setMaxDate(TODAYS_DATE.getTime());
+
         datePickerDialog.show();
     }
 
@@ -85,9 +86,24 @@ public class TimeUtils {
 
                 fromDate = new GregorianCalendar(yearFinal, monthFinal, dayFinal).getTime();
                 SimpleDateFormat ft = new SimpleDateFormat("dd/MM/yyyy");
-                    Toast.makeText(mview.getContext(), ft.format(fromDate).toString(), Toast.LENGTH_SHORT).show();
+
+                if(fromDate.before(FIRST_RAFFLE_DATE)){
+                    Toast.makeText(mview.getContext(), "תאריכי ההגרלות מתחילים מתאריך " +
+                            FIRST_RAFFLE_DATE, Toast.LENGTH_SHORT).show();
+
+                }
+                else if(fromDate.after(TODAYS_DATE)){
+                    Toast.makeText(mview.getContext(),
+                            mview.getContext().getString(R.string.date_after_today),
+                            Toast.LENGTH_SHORT).show();
+                }
+
+                else{
+                    Toast.makeText(mview.getContext(), ft.format(fromDate)
+                            , Toast.LENGTH_SHORT).show();
                     timeFromEditText.setText(ft.format(fromDate));
 
+                }
             }
         };
 
@@ -106,7 +122,13 @@ public class TimeUtils {
                 } else if (fromDate.after(toDate)) {
                     Toast.makeText(mview.getContext(), mview.getContext().getString(R.string.date_isnt_valid), Toast.LENGTH_SHORT).show();
 
-                } else {
+                }
+                else if(toDate.after(TODAYS_DATE)){
+                    Toast.makeText(mview.getContext(), mview.getContext().getString(R.string.date_after_today)
+                            , Toast.LENGTH_SHORT).show();
+                }
+
+                else {
                     SimpleDateFormat ft = new SimpleDateFormat("dd/MM/yyyy");
                     Toast.makeText(mview.getContext(), ft.format(toDate).toString(), Toast.LENGTH_SHORT).show();
                     timeUntilEditText.setText(ft.format(toDate));

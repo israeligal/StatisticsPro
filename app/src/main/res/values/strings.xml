@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">פיס 777 - סטטיסטיקה</string>
 
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-
     <string name="choose_numbers_page_title">סטטיסטיקת מספרים</string>
     <string name="search_statistics_queries_page_title">סטטיסטיקה כללית</string>
     <string name="settings_page_title">הגדרות</string>
@@ -53,4 +53,5 @@
     <string name="notification_title">טוען מידע על הגרלות</string>
     <string name="clear_screen_btn">נקה מסך</string>
     <string name="chosen_at_least_numbers">בחר לפחות שני מספרים לחיפוש</string>
+    <string name="date_after_today">אין אפשרות לבחור תאריך עתידי עדיין</string>
 </resources>

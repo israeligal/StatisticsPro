@@ -50,9 +50,10 @@ public class OperationCsvLoader extends AsyncTaskLoader<String> {
                     break;
                 }
                 Raffle raffle = mGame.addRaffleFromCsv(nextLine);
-                ContentValues raffleContentValues = raffle.raffleToContentValues();
-                getContext().getContentResolver().insert(mGame.getSqlRaffleDb()
-                        , raffleContentValues);
+
+//                ContentValues raffleContentValues = raffle.raffleToContentValues();
+//                getContext().getContentResolver().insert(mGame.getSqlRaffleDb()
+//                        , raffleContentValues);
 
                 nextLine = reader.readNext();
             }
@@ -63,7 +64,8 @@ public class OperationCsvLoader extends AsyncTaskLoader<String> {
             return null;
         }
 
-        Log.d(LOG_TAG, "loaded raffle into curgame and mysql");
+//        Log.d(LOG_TAG, "loaded raffle into curgame and mysql");
+        Log.d(LOG_TAG, "loaded raffle into curgame");
         return "Raffles loaded Successfully";
     }
 

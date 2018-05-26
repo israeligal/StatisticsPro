@@ -15,6 +15,18 @@
       },
       "oauth_client": [
         {
+          "client_id": "181078895312-c2rve84nr1ndm1r7cqtqe2g1mbu7p2ij.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.rami.statistics_pro",
+            "certificate_hash": "33b4961cd19aae94aed48edd8a0ef535fd34fcaa"
+          }
+        },
+        {
+          "client_id": "181078895312-q0h2ljhahvse3al4t5dooe0fqsjp8b8s.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
           "client_id": "181078895312-q0h2ljhahvse3al4t5dooe0fqsjp8b8s.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,8 +41,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "181078895312-q0h2ljhahvse3al4t5dooe0fqsjp8b8s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2

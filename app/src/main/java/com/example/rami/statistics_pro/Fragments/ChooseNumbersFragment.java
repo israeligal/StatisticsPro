@@ -33,8 +33,9 @@ import com.example.rami.statistics_pro.BaseClass.Game;
 import com.example.rami.statistics_pro.BaseClass.Statistics;
 import com.example.rami.statistics_pro.Loaders.OperationCsvLoader;
 import com.example.rami.statistics_pro.R;
+//import com.example.rami.statistics_pro.Tasks.FirebseGetRafflesFunctionTask;
 import com.example.rami.statistics_pro.Utils.CsvUtils;
-import com.example.rami.statistics_pro.Utils.GameStringUtils;
+import com.example.rami.statistics_pro.Utils.GameUtils;
 import com.example.rami.statistics_pro.Utils.TimeUtils;
 import com.example.rami.statistics_pro.data.StatisticsProContracts;
 
@@ -45,7 +46,7 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
     Game curGame;
     ArrayList<ToggleButton> chosenNumbers;
     TableRow choosenNumbersTableRow;
-    EditText timeFromEditText,  timeUntilEditText;
+    EditText dateFromEditText,  dateUntilEditText;
     private static String LOG_TAG = ChooseNumbersFragment.class.getName();
     public static final int OPERATION_CSV_LOADER = 1;
     public static final int OPERATION_STATISTICS_LOADER = 2;
@@ -77,6 +78,8 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+//        FirebseGetRafflesFunctionTask a = new FirebseGetRafflesFunctionTask();
+//        a.getRafflesFromCloud();
 
         ScrollView scrollView = (ScrollView) inflater.inflate(R.layout.fragment_choose_numbers_statistics, container, false);
 
@@ -91,9 +94,7 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
 
         mSearchButton = mview.findViewById(R.id.search_btn);
 
-        timeFromEditText =  (EditText) mview.findViewById(R.id.time_from_edit_text);
-        timeUntilEditText = (EditText) mview.findViewById(R.id.time_until_edit_text);
-        TimeUtils.setEditTextsDate(timeFromEditText, timeUntilEditText, mview);
+        setRaffleNumbersAndDateEditTexts(mview);
 
         setRadioSearchByDatesOrRaffles(mview);
 
@@ -108,6 +109,23 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
 
 
         return scrollView;
+    }
+
+    private void setRaffleNumbersAndDateEditTexts(ViewGroup mview) {
+        setDateEditTexts(mview);
+        setRaffleNumbersEditTexts(mview);
+
+    }
+
+    private void setRaffleNumbersEditTexts(ViewGroup mview) {
+
+    }
+
+
+    private void setDateEditTexts(ViewGroup mview) {
+        dateFromEditText =  (EditText) mview.findViewById(R.id.time_from_edit_text);
+        dateUntilEditText = (EditText) mview.findViewById(R.id.time_until_edit_text);
+        TimeUtils.setEditTextsDate(dateFromEditText, dateUntilEditText, mview);
     }
 
     /** sets button listeners */
@@ -129,22 +147,45 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
 
     /** change stats layout to gone, empty chosen numbers, remove additional stats */
     private void resetView(ViewGroup mview) {
-        TableRow countTableRow = mview.findViewById(R.id.statistics_count_appearance_row);
-        TableRow chosenTableRow = mview.findViewById(R.id.statistics_chosen_numbers_appearance_row);
+        TableRow statsCountTableRow = mview.findViewById(R.id.statistics_count_appearance_row);
+        TableRow statsChosenTableRow =
+                mview.findViewById(R.id.statistics_chosen_numbers_appearance_row);
         TableLayout additionalStatTB = mview.findViewById(R.id.additional_statistics_table_layout);
+        TableRow chosenNumbersGameTableRow = mview.findViewById(R.id.chosen_numbers_game_table_row);
+
 
 //        additionalStatRow.removeViews(1,additionalStatRow.getChildCount());
         chosenNumbers.clear();
-        timeFromEditText.setText("");
-        timeUntilEditText.setText("");
-        for(int i = 0; i < chosenTableRow.getChildCount(); ++i){
-            TextView textView = (TextView) chosenTableRow.getChildAt(i);
+        dateFromEditText.setText("");
+        dateUntilEditText.setText("");
+
+        for(int i = 0; i < statsChosenTableRow.getChildCount(); ++i){
+            TextView textView = (TextView) statsChosenTableRow.getChildAt(i);
+            textView.setText("");
+        }
+
+        for(int i = 0; i < chosenNumbersGameTableRow.getChildCount(); ++i){
+            TextView textView = (TextView) chosenNumbersGameTableRow.getChildAt(i);
             textView.setText("");
         }
 
 
-        chosenTableRow.setVisibility(View.GONE);
-        countTableRow.setVisibility(View.GONE);
+
+        TableLayout gameTable = mview.findViewById(R.id.gameTableId);
+        for(int i=0 ; i < gameTable.getChildCount() ; ++i){
+            TableRow gameTableRow = (TableRow) gameTable.getChildAt(i);
+            for(int j = 0; j < gameTableRow.getChildCount(); ++j){
+                ToggleButton btn = (ToggleButton)gameTableRow.getChildAt(j);
+                btn.setChecked(false);
+                btn.setSelected(false);
+                int btnDrawableResource =
+                        GameUtils.getNumberResourceId(btn.getText().toString(), btn,
+                                false);
+                btn.setBackgroundResource(btnDrawableResource);
+            }
+        }
+        statsChosenTableRow.setVisibility(View.GONE);
+        statsCountTableRow.setVisibility(View.GONE);
         additionalStatTB.setVisibility(View.GONE);
 
 
@@ -156,11 +197,13 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                LinearLayout dateSearch = (LinearLayout) mview.findViewById(R.id.search_by_date_edit_texts);
-                LinearLayout raffleSearch = (LinearLayout) mview.findViewById(R.id.search_by_raffle_number_edit_texts);
+                ViewGroup dateSearch = (ViewGroup) mview.findViewById(R.id.search_by_date_edit_texts);
+                ViewGroup raffleSearch =
+                        (ViewGroup) mview.findViewById(R.id.search_by_raffle_number_edit_texts);
                 RadioButton checkedRadioButton = (RadioButton)group.findViewById(checkedId);
                 if(!checkedRadioButton.isChecked()){
-                    Log.w(LOG_TAG, "onCheckedChanged btn not checked" + checkedRadioButton.getText());
+                    Log.w(LOG_TAG, "onCheckedChanged btn not checked" +
+                            checkedRadioButton.getText());
 
                     return;
                 }
@@ -183,8 +226,8 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
 
 
     private boolean checkSearchButtonEnabled(){
-        if (TextUtils.isEmpty(timeFromEditText.getText().toString())
-        || TextUtils.isEmpty(timeUntilEditText.getText().toString())){
+        if (TextUtils.isEmpty(dateFromEditText.getText().toString())
+        || TextUtils.isEmpty(dateUntilEditText.getText().toString())){
             Toast.makeText(getContext(),getString(R.string.please_chose_dates_first),Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -269,7 +312,7 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
                 // toggle off
                 else if (!toggleButton.isChecked()) {
                     Log.d(LOG_TAG, "game clickListener, number " + toggleButton.getText() + " toggle off");
-                    int res_id = GameStringUtils.getNumberResourceName(toggleButton.getText().toString(), toggleButton,false);
+                    int res_id = GameUtils.getNumberResourceId(toggleButton.getText().toString(), toggleButton,false);
                     toggleButton.setBackgroundResource(res_id);
 //                    toggleButton.setBackgroundResource(R.drawable.master_a);
                     CharSequence lastText;
@@ -291,7 +334,7 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
                 else {
                     Log.d(LOG_TAG, "game clickListener, number " + toggleButton.getText() + " toggle on");
                     TextView textView = (TextView) choosenNumbersTableRow.getChildAt(chosenNumbers.size());
-                    int res_id = GameStringUtils.getNumberResourceName(toggleButton.getText().toString(), toggleButton,true);
+                    int res_id = GameUtils.getNumberResourceId(toggleButton.getText().toString(), toggleButton,true);
                     toggleButton.setBackgroundResource(res_id); //
 //                    toggleButton.setBackgroundResource(R.drawable.master_b);
                     chosenNumbers.add(toggleButton);
@@ -321,7 +364,7 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
     //TABLE
     private TableRow createChosenNumbersTable(ViewGroup mview) {
 
-        TableRow tableRow = (TableRow) mview.findViewById(R.id.choose_numbers_row);
+        TableRow tableRow = (TableRow) mview.findViewById(R.id.chosen_numbers_game_table_row);
         for (int i = 0; i < curGame.getResult_Number(); i++) {
             TextView curTextView = (TextView) LayoutInflater.from(getContext())
                     .inflate(R.layout.game_chosen_number_text_view, tableRow, false);
@@ -364,8 +407,8 @@ public class ChooseNumbersFragment extends Fragment implements LoaderManager.Loa
                     public String loadInBackground() {
 
                             ViewGroup mview = getActivity().findViewById(R.id.choose_numbers_fragment_layout);
-                            String timeFrom = timeFromEditText.getText().toString();
-                            String timeEnd = timeUntilEditText.getText().toString();
+                            String timeFrom = dateFromEditText.getText().toString();
+                            String timeEnd = dateUntilEditText.getText().toString();
                             Statistics statistics = curGame.getStatistics();
                             statistics.time_stats_from_list(timeFrom, timeEnd, mview,chosenNumbers);
 

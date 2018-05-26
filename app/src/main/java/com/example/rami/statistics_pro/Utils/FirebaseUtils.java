@@ -7,6 +7,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class FirebaseUtils {
@@ -34,10 +35,12 @@ public class FirebaseUtils {
 
 
     private static void setProviders() {
-        providers = new ArrayList<>();
-        providers.add(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build());
-        providers.add(new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build());
-        providers.add(new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build());
+         providers = Arrays.asList(
+                new AuthUI.IdpConfig.EmailBuilder().build());
+//                new AuthUI.IdpConfig.PhoneBuilder().build(),
+//                new AuthUI.IdpConfig.GoogleBuilder().build(),
+//                new AuthUI.IdpConfig.FacebookBuilder().build());
+
     }
 
 

@@ -8,7 +8,7 @@ import android.widget.ToggleButton;
 import com.example.rami.statistics_pro.BaseClass.Game;
 import com.example.rami.statistics_pro.Interfaces.GameCsvContract;
 import com.example.rami.statistics_pro.Interfaces.Raffle;
-import com.example.rami.statistics_pro.Utils.GameStringUtils;
+import com.example.rami.statistics_pro.Utils.GameUtils;
 import com.example.rami.statistics_pro.data.StatisticsProContracts;
 
 import java.util.ArrayList;
@@ -53,7 +53,7 @@ public class GameTripleSeven extends Game {
                                                int row, int col){
 
         int buttonNumber = row * 10 + col + 1;
-        int resourceId = GameStringUtils.getNumberResourceName(buttonNumber, currentTableRow,
+        int resourceId = GameUtils.getNumberResourceId(buttonNumber, currentTableRow,
                 false);
         ToggleButton curButton = new ToggleButton(currentTableRow.getContext());
 

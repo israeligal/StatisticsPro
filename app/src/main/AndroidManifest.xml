@@ -28,23 +28,24 @@
             android:value="AIzaSyDkCID5Hd-SoUdFxvKtQEaQGEGsgJB6gjg" />
 
         <activity
-            android:name="com.example.rami.statistics_pro.FirebaseAuth"
+            android:name="com.example.rami.statistics_pro.SignInActivity"
             android:label="@string/title_activity_fire_base_auth"
             android:screenOrientation="portrait"
             >
 
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"
-                    />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
 
         </activity>
 
         <activity
             android:name="com.example.rami.statistics_pro.MainActivity"
             android:screenOrientation="portrait"
-            />
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"
+                    />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <provider android:name=".data.StatisticsProProvider"
             android:authorities="com.example.rami.statistics_pro"

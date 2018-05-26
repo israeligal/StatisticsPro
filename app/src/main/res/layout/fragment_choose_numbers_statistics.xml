@@ -28,7 +28,7 @@
 
             >
             <TableRow
-                android:id="@+id/choose_numbers_row"
+                android:id="@+id/chosen_numbers_game_table_row"
                 android:layout_weight="1"
                 >
 
